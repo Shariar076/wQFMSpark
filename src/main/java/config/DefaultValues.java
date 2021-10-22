@@ -1,4 +1,4 @@
-package configs;
+package config;
 
 public interface DefaultValues {
     // Use this for logical biparititoning

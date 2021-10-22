@@ -1,11 +1,17 @@
-package mappers;
+package mapper;
 
 import org.apache.spark.api.java.function.MapFunction;
 import org.apache.spark.sql.Row;
-import structures.InitialTable;
-import structures.Quartet;
+import structure.InitialTable;
+import structure.Quartet;
 
 public class QuartetStringMapper implements MapFunction<Row, Quartet> {
+    private static void updateInitialTableWithTaxon(String taxonOrg, int taxonMapped){
+        InitialTable.TAXA_COUNT++;
+        InitialTable.TAXA_LIST.add(taxonMapped);
+        InitialTable.map_of_str_vs_int_tax_list.put(taxonOrg, taxonMapped);
+        InitialTable.map_of_int_vs_str_tax_list.put(taxonMapped, taxonOrg);
+    }
     @Override
     public Quartet call(Row row) throws Exception {
         // String quartetString = row.getAs("value");
@@ -22,35 +28,27 @@ public class QuartetStringMapper implements MapFunction<Row, Quartet> {
         if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[0])) {
             a = InitialTable.map_of_str_vs_int_tax_list.get(arr[0]);
         } else { //THIS taxon doesn't exist.
-            a = InitialTable.TAXA_COUNTER;
-            InitialTable.TAXA_COUNTER++;
-            InitialTable.map_of_str_vs_int_tax_list.put(arr[0], a);
-            InitialTable.map_of_int_vs_str_tax_list.put(a, arr[0]);
+            a = InitialTable.TAXA_COUNT;
+            updateInitialTableWithTaxon(arr[0], a);
         }
 
         if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[1])) {
             b = InitialTable.map_of_str_vs_int_tax_list.get(arr[1]);
         } else { //THIS taxon doesn't exist.
-            b = InitialTable.TAXA_COUNTER;
-            InitialTable.TAXA_COUNTER++;
-            InitialTable.map_of_str_vs_int_tax_list.put(arr[1], b);
-            InitialTable.map_of_int_vs_str_tax_list.put(b, arr[1]);
+            b = InitialTable.TAXA_COUNT;
+            updateInitialTableWithTaxon(arr[1], b);
         }
         if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[2])) {
             c = InitialTable.map_of_str_vs_int_tax_list.get(arr[2]);
         } else { //THIS taxon doesn't exist.
-            c = InitialTable.TAXA_COUNTER;
-            InitialTable.TAXA_COUNTER++;
-            InitialTable.map_of_str_vs_int_tax_list.put(arr[2], c);
-            InitialTable.map_of_int_vs_str_tax_list.put(c, arr[2]);
+            c = InitialTable.TAXA_COUNT;
+            updateInitialTableWithTaxon(arr[2], c);
         }
         if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[3])) {
             d = InitialTable.map_of_str_vs_int_tax_list.get(arr[3]);
         } else { //THIS taxon doesn't exist.
-            d = InitialTable.TAXA_COUNTER;
-            InitialTable.TAXA_COUNTER++;
-            InitialTable.map_of_str_vs_int_tax_list.put(arr[3], d);
-            InitialTable.map_of_int_vs_str_tax_list.put(d, arr[3]);
+            d = InitialTable.TAXA_COUNT;
+            updateInitialTableWithTaxon(arr[3], d);
         }
 
         quartet.initialiseQuartet(a, b, c, d, Double.parseDouble(arr[4]));

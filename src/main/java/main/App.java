@@ -1,13 +1,13 @@
 package main;
 
-import algorithms.FMRunner;
-import configs.Config;
-import configs.DefaultValues;
+import algorithm.FMRunner;
+import config.Config;
+import config.DefaultValues;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.SparkSession;
-import utils.TreeHandler;
-import utils.WQGenerator;
+import util.TreeHandler;
+import util.WQGenerator;
 
 /**
  * Hello world!

@@ -1,4 +1,4 @@
-package utils;
+package util;
 
 import legacy.configs.Config;
 import legacy.configs.DefaultValues;
