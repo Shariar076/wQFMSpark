@@ -1,6 +1,9 @@
 package structure;
 
+import org.apache.spark.sql.Row;
+
 import java.util.Arrays;
+import java.util.List;
 
 public class Quartet {
     public static int NUM_TAXA_PER_PARTITION = 2;
@@ -14,6 +17,18 @@ public class Quartet {
         this.weight = 1.0;
     }
 
+    int[] toIntArray(List<Integer> list){
+        int[] ret = new int[list.size()];
+        for(int i = 0;i < ret.length;i++)
+            ret[i] = list.get(i);
+        return ret;
+    }
+
+    public Quartet(Row quartetRow){
+        this.taxa_sisters_left = this.toIntArray(quartetRow.getList(0));
+        this.taxa_sisters_right = this.toIntArray(quartetRow.getList(1));
+        this.weight = quartetRow.getDouble(2);
+    }
 
     public Quartet(int a, int b, int c, int d, double w) {
         initialiseQuartet(a, b, c, d, w);

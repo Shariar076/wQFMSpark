@@ -1,7 +1,6 @@
-package bipartion;
+package bipartition;
 
 import config.DefaultValues;
-import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import structure.Quartet;
 
@@ -11,13 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InitialBipartition implements Serializable {
-    private final Map<Integer, Integer> partitionMap = new HashMap<>();
+    private Map<Integer, Integer> partitionMap;
     // private final Dataset<Quartet> quartetDataset;
     private int count_taxa_left_partition;
     private int count_taxa_right_partition;
 
-    public InitialBipartition(ArrayList<Integer> taxaList, Dataset<Quartet> quartetDataset){
-        // this.quartetDataset = quartetDataset;
+    public InitialBipartition(ArrayList<Integer> taxaList){
+        this.partitionMap = new HashMap<>();
         this.count_taxa_left_partition = 0;
         this.count_taxa_right_partition = 0;
         for (int tax : taxaList) { //initially assign all as 0/unassigned
@@ -26,11 +25,41 @@ public class InitialBipartition implements Serializable {
         // System.out.println(partitionMap);
     }
 
-    public String performPartitionBasedOnQuartet(Row quartet_under_consideration){
-        int q1 = (int) quartet_under_consideration.getList(0).get(0);
-        int q2 = (int) quartet_under_consideration.getList(0).get(1);
-        int q3 = (int) quartet_under_consideration.getList(1).get(0);
-        int q4 = (int) quartet_under_consideration.getList(1).get(1);
+    public Map<Integer, Integer> getPartitionMap() {
+        return partitionMap;
+    }
+
+    public void setPartitionMap(Map<Integer, Integer> partitionMap) {
+        this.partitionMap = partitionMap;
+    }
+
+    public int getCount_taxa_left_partition() {
+        return count_taxa_left_partition;
+    }
+
+    public void setCount_taxa_left_partition(int count_taxa_left_partition) {
+        this.count_taxa_left_partition = count_taxa_left_partition;
+    }
+
+    public int getCount_taxa_right_partition() {
+        return count_taxa_right_partition;
+    }
+
+    public void setCount_taxa_right_partition(int count_taxa_right_partition) {
+        this.count_taxa_right_partition = count_taxa_right_partition;
+    }
+
+    public InitialBipartition performPartitionBasedOnQuartet(Row quartetRow){
+        // int q1 = (int) quartet_under_consideration.getList(0).get(0);
+        // int q2 = (int) quartet_under_consideration.getList(0).get(1);
+        // int q3 = (int) quartet_under_consideration.getList(1).get(0);
+        // int q4 = (int) quartet_under_consideration.getList(1).get(1);
+
+        Quartet quartet_under_consideration = new Quartet(quartetRow);
+        int q1 = quartet_under_consideration.taxa_sisters_left[0];
+        int q2 = quartet_under_consideration.taxa_sisters_left[1];
+        int q3 = quartet_under_consideration.taxa_sisters_right[0];
+        int q4 = quartet_under_consideration.taxa_sisters_right[1];
 
         int status_q1, status_q2, status_q3, status_q4; //status of q1,q2,q3,q4 respectively
         status_q1 = partitionMap.get(q1);
@@ -138,9 +167,9 @@ public class InitialBipartition implements Serializable {
 
             }
         } //done going through all quartets
-        return partitionMap.toString();
+        return this;
     }
-    public Map<Integer, Integer> performPartitionRandomBalanced() {
+    public Map<Integer, Integer> performPartitionRandomBalanced(Map<Integer, Integer> partitionMap) {
 
         //this is not the way
         // List<Quartet> quartetList = quartetDataset.collectAsList();

@@ -72,7 +72,7 @@ public class FMRunner {
 
         InitialBipartition initialBip = new InitialBipartition();
         Map<Integer, Integer> mapInitialBipartition = initialBip.getInitialBipartitionMap(customDS_this_level);
-
+        System.out.println("initial bipartition map: "+ mapInitialBipartition);
         if (Config.DEBUG_MODE_PRINTING_GAINS_BIPARTITIONS) {
             System.out.println("L 84. FMComputer. Printing initialBipartition.");
             IOHandler.printPartition(mapInitialBipartition, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION, InitialTable.map_of_int_vs_str_tax_list);

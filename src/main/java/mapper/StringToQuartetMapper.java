@@ -5,7 +5,7 @@ import org.apache.spark.sql.Row;
 import structure.InitialTable;
 import structure.Quartet;
 
-public class QuartetStringMapper implements MapFunction<Row, Quartet> {
+public class StringToQuartetMapper implements MapFunction<Row, Quartet> {
     private static void updateInitialTableWithTaxon(String taxonOrg, int taxonMapped){
         InitialTable.TAXA_COUNT++;
         InitialTable.TAXA_LIST.add(taxonMapped);
