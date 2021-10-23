@@ -3,7 +3,7 @@ package legacy.bip;
 import legacy.configs.Config;
 import legacy.configs.DefaultValues;
 import legacy.ds.CustomDSPerLevel;
-import legacy.ds.Quartet;
+import legacy.ds.LegacyQuartet;
 import legacy.feat.FeatureComputer;
 import legacy.utils.TaxaUtils;
 
@@ -51,36 +51,36 @@ public class Bipartition8Values {
         //for feature computation
 
         for (int idx_quartet : customDS.quartet_indices_list_unsorted) {
-            Quartet quartet = customDS.initial_table1_of_list_of_quartets.get(idx_quartet);
+            LegacyQuartet legacyQuartet = customDS.initial_table1_of_list_of_quartets.get(idx_quartet);
 
             if (Config.PARTITION_SCORE_MODE == DefaultValues.PARTITION_SCORE_FULL_DYNAMIC) {
-                FeatureComputer.makeDictionary(quartet, map_four_tax_seq_weights_list);
+                FeatureComputer.makeDictionary(legacyQuartet, map_four_tax_seq_weights_list);
             }
 
-            //obtain the quartet's taxa's bipartitions
-            int left_sis_1_bip_val = map_bipartitions.get(quartet.taxa_sisters_left[0]);
-            int left_sis_2_bip_val = map_bipartitions.get(quartet.taxa_sisters_left[1]);
-            int right_sis_1_bip_val = map_bipartitions.get(quartet.taxa_sisters_right[0]);
-            int right_sis_2_bip_val = map_bipartitions.get(quartet.taxa_sisters_right[1]);
+            //obtain the legacyQuartet's taxa's bipartitions
+            int left_sis_1_bip_val = map_bipartitions.get(legacyQuartet.taxa_sisters_left[0]);
+            int left_sis_2_bip_val = map_bipartitions.get(legacyQuartet.taxa_sisters_left[1]);
+            int right_sis_1_bip_val = map_bipartitions.get(legacyQuartet.taxa_sisters_right[0]);
+            int right_sis_2_bip_val = map_bipartitions.get(legacyQuartet.taxa_sisters_right[1]);
 
-            int status_quartet = TaxaUtils.findQuartetStatus(left_sis_1_bip_val, left_sis_2_bip_val, right_sis_1_bip_val, right_sis_2_bip_val); //obtain quartet status
+            int status_quartet = TaxaUtils.findQuartetStatus(left_sis_1_bip_val, left_sis_2_bip_val, right_sis_1_bip_val, right_sis_2_bip_val); //obtain legacyQuartet status
             //compute scores according to status.
             switch (status_quartet) {
                 case DefaultValues.SATISFIED:
                     this.numSatisfied++;
-                    this.wtSatisfied += quartet.weight;
+                    this.wtSatisfied += legacyQuartet.weight;
                     break;
                 case DefaultValues.VIOLATED:
                     this.numViolated++;
-                    this.wtViolated += quartet.weight;
+                    this.wtViolated += legacyQuartet.weight;
                     break;
                 case DefaultValues.DEFERRED:
                     this.numDeferred++;
-                    this.wtDeferred += quartet.weight;
+                    this.wtDeferred += legacyQuartet.weight;
                     break;
                 case DefaultValues.BLANK:
                     this.numBlank++;
-                    this.wtBlank += quartet.weight;
+                    this.wtBlank += legacyQuartet.weight;
                     break;
                 default:
                     break;

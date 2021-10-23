@@ -5,7 +5,7 @@ import legacy.bip.WeightedPartitionScores;
 import legacy.configs.Config;
 import legacy.configs.DefaultValues;
 import legacy.ds.CustomDSPerLevel;
-import legacy.ds.Quartet;
+import legacy.ds.LegacyQuartet;
 import legacy.ds.StatsPerPass;
 import legacy.utils.IOHandler;
 import legacy.utils.TaxaUtils;
@@ -81,18 +81,18 @@ public class FMComputer {
             for (int itr = 0; itr < relevantQuartetsBeforeHypoMoving.size(); itr++) {
                 int idx_relevant_qrt = relevantQuartetsBeforeHypoMoving.get(itr);
                 //No need explicit checking as customDS will be changed after every level
-                Quartet quartet = customDS.initial_table1_of_list_of_quartets.get(idx_relevant_qrt);
+                LegacyQuartet legacyQuartet = customDS.initial_table1_of_list_of_quartets.get(idx_relevant_qrt);
 
                 int statusQuartetBeforeHypoSwap = TaxaUtils.findQuartetStatus(
-                        bipartitionMap.get(quartet.taxa_sisters_left[0]),
-                        bipartitionMap.get(quartet.taxa_sisters_left[1]),
-                        bipartitionMap.get(quartet.taxa_sisters_right[0]),
-                        bipartitionMap.get(quartet.taxa_sisters_right[1]));
+                        bipartitionMap.get(legacyQuartet.taxa_sisters_left[0]),
+                        bipartitionMap.get(legacyQuartet.taxa_sisters_left[1]),
+                        bipartitionMap.get(legacyQuartet.taxa_sisters_right[0]),
+                        bipartitionMap.get(legacyQuartet.taxa_sisters_right[1]));
 
                 int statusQuartetAfterHypoSwap = TaxaUtils.findQuartetStatusUsingShortcut(statusQuartetBeforeHypoSwap); //_8values include ns, nv, nd, nb, ws, wv, wd, wb
 
-                _8_vals_THIS_TAX_before_hypo_swap.addRespectiveValue(quartet.weight, statusQuartetBeforeHypoSwap); //_8values include ns, nv, nd, nb, ws, wv, wd, wb
-                _8_vals_THIS_TAX_after_hypo_swap.addRespectiveValue(quartet.weight, statusQuartetAfterHypoSwap); //If status.UNKNOWN, then don't add anything.
+                _8_vals_THIS_TAX_before_hypo_swap.addRespectiveValue(legacyQuartet.weight, statusQuartetBeforeHypoSwap); //_8values include ns, nv, nd, nb, ws, wv, wd, wb
+                _8_vals_THIS_TAX_after_hypo_swap.addRespectiveValue(legacyQuartet.weight, statusQuartetAfterHypoSwap); //If status.UNKNOWN, then don't add anything.
 
                 if (statusQuartetBeforeHypoSwap == DefaultValues.DEFERRED) {
                     deferredQuartetsBeforeHypoMoving.add(idx_relevant_qrt);
@@ -101,10 +101,10 @@ public class FMComputer {
             } // end for [relevant-quartets-iteration]
             for (int itr_deferred_qrts = 0; itr_deferred_qrts < deferredQuartetsBeforeHypoMoving.size(); itr_deferred_qrts++) {
                 int qrt_idx_deferred_relevant_quartets_after_hypo_swap = deferredQuartetsBeforeHypoMoving.get(itr_deferred_qrts);
-                Quartet quartet = customDS.initial_table1_of_list_of_quartets.get(qrt_idx_deferred_relevant_quartets_after_hypo_swap);
-                int status_after_hypothetical_swap = TaxaUtils.findQuartetStatus(newMap.get(quartet.taxa_sisters_left[0]),
-                        newMap.get(quartet.taxa_sisters_left[1]), newMap.get(quartet.taxa_sisters_right[0]), newMap.get(quartet.taxa_sisters_right[1]));
-                _8_vals_THIS_TAX_after_hypo_swap.addRespectiveValue(quartet.weight, status_after_hypothetical_swap);
+                LegacyQuartet legacyQuartet = customDS.initial_table1_of_list_of_quartets.get(qrt_idx_deferred_relevant_quartets_after_hypo_swap);
+                int status_after_hypothetical_swap = TaxaUtils.findQuartetStatus(newMap.get(legacyQuartet.taxa_sisters_left[0]),
+                        newMap.get(legacyQuartet.taxa_sisters_left[1]), newMap.get(legacyQuartet.taxa_sisters_right[0]), newMap.get(legacyQuartet.taxa_sisters_right[1]));
+                _8_vals_THIS_TAX_after_hypo_swap.addRespectiveValue(legacyQuartet.weight, status_after_hypothetical_swap);
             }
             double ps_before_reduced = WeightedPartitionScores.calculatePartitionScoreReduced(_8_vals_THIS_TAX_before_hypo_swap);
             double ps_after_reduced = WeightedPartitionScores.calculatePartitionScoreReduced(_8_vals_THIS_TAX_after_hypo_swap);
@@ -248,7 +248,7 @@ public class FMComputer {
                 + Helper.getPartition(statOfMaxCumulativeGainBox.map_final_bipartition,
                         DefaultValues.LEFT_PARTITION,
                         DefaultValues.RIGHT_PARTITION,
-                        InitialTable.map_of_int_vs_str_tax_list));
+                        LegacyInitialTable.map_of_int_vs_str_tax_list));
          */
         //Only when max-cumulative-gain is GREATER than zero, we will change, otherwise return the initial bipartition of this iteration
         if (max_cumulative_gain_of_current_iteration > Config.SMALLEPSILON) {
@@ -287,7 +287,7 @@ public class FMComputer {
 
         /*        System.out.println("L 376. level = " + this.level + " , max_cumulative_gain_of_current_iteration = "
                 + max_cumulative_gain_of_current_iteration + ", this.bipartitionMap = \n"
-                + Helper.getPartition(bipartitionMap, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION, InitialTable.map_of_int_vs_str_tax_list)
+                + Helper.getPartition(bipartitionMap, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION, LegacyInitialTable.map_of_int_vs_str_tax_list)
                 + " , small_epsilon = " + Config.SMALLEPSILON + " , return false.");
          */
         return false;

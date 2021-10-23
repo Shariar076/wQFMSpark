@@ -2,7 +2,7 @@ package legacy.ds;
 
 import java.util.Arrays;
 
-public class Quartet {
+public class LegacyQuartet {
     public static int NUM_TAXA_PER_PARTITION = 2;
     public static int TEMP_TAX_TO_SWAP;
 
@@ -10,17 +10,17 @@ public class Quartet {
     public int[] taxa_sisters_right;// = new String[NUM_TAXA_PER_PARTITION];
     public double weight;
 
-    public Quartet() {
+    public LegacyQuartet() {
         this.weight = 1.0;
     }
-    public Quartet(int a, int b, int c, int d, double w) {
+    public LegacyQuartet(int a, int b, int c, int d, double w) {
         initialiseQuartet(a, b, c, d, w);
     }
-    public Quartet(Quartet q) {
+    public LegacyQuartet(LegacyQuartet q) {
         initialiseQuartet(q.taxa_sisters_left[0], q.taxa_sisters_left[1],
                 q.taxa_sisters_right[0], q.taxa_sisters_right[1], q.weight);
     }
-    public Quartet(String s) {
+    public LegacyQuartet(String s) {
         //ADDITIONALLY append to the map and reverse map.
         s = s.replace(" ", "");
         s = s.replace(";", ",");
@@ -28,38 +28,38 @@ public class Quartet {
         s = s.replace(")", ""); // Finally end up with A,B,C,D,41.0
         String[] arr = s.split(",");
         int a, b, c, d;
-        if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[0]) == true) {
-            a = InitialTable.map_of_str_vs_int_tax_list.get(arr[0]);
+        if (LegacyInitialTable.map_of_str_vs_int_tax_list.containsKey(arr[0]) == true) {
+            a = LegacyInitialTable.map_of_str_vs_int_tax_list.get(arr[0]);
         } else { //THIS taxon doesn't exist.
-            a = InitialTable.TAXA_COUNTER;
-            InitialTable.TAXA_COUNTER++;
-            InitialTable.map_of_str_vs_int_tax_list.put(arr[0], a);
-            InitialTable.map_of_int_vs_str_tax_list.put(a, arr[0]);
+            a = LegacyInitialTable.TAXA_COUNTER;
+            LegacyInitialTable.TAXA_COUNTER++;
+            LegacyInitialTable.map_of_str_vs_int_tax_list.put(arr[0], a);
+            LegacyInitialTable.map_of_int_vs_str_tax_list.put(a, arr[0]);
         }
 
-        if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[1]) == true) {
-            b = InitialTable.map_of_str_vs_int_tax_list.get(arr[1]);
+        if (LegacyInitialTable.map_of_str_vs_int_tax_list.containsKey(arr[1]) == true) {
+            b = LegacyInitialTable.map_of_str_vs_int_tax_list.get(arr[1]);
         } else { //THIS taxon doesn't exist.
-            b = InitialTable.TAXA_COUNTER;
-            InitialTable.TAXA_COUNTER++;
-            InitialTable.map_of_str_vs_int_tax_list.put(arr[1], b);
-            InitialTable.map_of_int_vs_str_tax_list.put(b, arr[1]);
+            b = LegacyInitialTable.TAXA_COUNTER;
+            LegacyInitialTable.TAXA_COUNTER++;
+            LegacyInitialTable.map_of_str_vs_int_tax_list.put(arr[1], b);
+            LegacyInitialTable.map_of_int_vs_str_tax_list.put(b, arr[1]);
         }
-        if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[2]) == true) {
-            c = InitialTable.map_of_str_vs_int_tax_list.get(arr[2]);
+        if (LegacyInitialTable.map_of_str_vs_int_tax_list.containsKey(arr[2]) == true) {
+            c = LegacyInitialTable.map_of_str_vs_int_tax_list.get(arr[2]);
         } else { //THIS taxon doesn't exist.
-            c = InitialTable.TAXA_COUNTER;
-            InitialTable.TAXA_COUNTER++;
-            InitialTable.map_of_str_vs_int_tax_list.put(arr[2], c);
-            InitialTable.map_of_int_vs_str_tax_list.put(c, arr[2]);
+            c = LegacyInitialTable.TAXA_COUNTER;
+            LegacyInitialTable.TAXA_COUNTER++;
+            LegacyInitialTable.map_of_str_vs_int_tax_list.put(arr[2], c);
+            LegacyInitialTable.map_of_int_vs_str_tax_list.put(c, arr[2]);
         }
-        if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[3]) == true) {
-            d = InitialTable.map_of_str_vs_int_tax_list.get(arr[3]);
+        if (LegacyInitialTable.map_of_str_vs_int_tax_list.containsKey(arr[3]) == true) {
+            d = LegacyInitialTable.map_of_str_vs_int_tax_list.get(arr[3]);
         } else { //THIS taxon doesn't exist.
-            d = InitialTable.TAXA_COUNTER;
-            InitialTable.TAXA_COUNTER++;
-            InitialTable.map_of_str_vs_int_tax_list.put(arr[3], d);
-            InitialTable.map_of_int_vs_str_tax_list.put(d, arr[3]);
+            d = LegacyInitialTable.TAXA_COUNTER;
+            LegacyInitialTable.TAXA_COUNTER++;
+            LegacyInitialTable.map_of_str_vs_int_tax_list.put(arr[3], d);
+            LegacyInitialTable.map_of_int_vs_str_tax_list.put(d, arr[3]);
         }
 
         initialiseQuartet(a, b, c, d, Double.parseDouble(arr[4]));
@@ -77,10 +77,10 @@ public class Quartet {
         if (this.taxa_sisters_left[0] < this.taxa_sisters_right[0]) { //don't swap two sides
             //no need to swap
         } else {  // swap two sides
-            for (int i = 0; i < Quartet.NUM_TAXA_PER_PARTITION; i++) {
-                Quartet.TEMP_TAX_TO_SWAP = this.taxa_sisters_left[i];
+            for (int i = 0; i < LegacyQuartet.NUM_TAXA_PER_PARTITION; i++) {
+                LegacyQuartet.TEMP_TAX_TO_SWAP = this.taxa_sisters_left[i];
                 this.taxa_sisters_left[i] = this.taxa_sisters_right[i];
-                this.taxa_sisters_right[i] = Quartet.TEMP_TAX_TO_SWAP;
+                this.taxa_sisters_right[i] = LegacyQuartet.TEMP_TAX_TO_SWAP;
             }
         }
     }
@@ -126,7 +126,7 @@ public class Quartet {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        Quartet other = (Quartet) obj;
+        LegacyQuartet other = (LegacyQuartet) obj;
         other.sort_quartet_taxa_names();
 
         if (!Arrays.equals(this.taxa_sisters_left, other.taxa_sisters_left)) {

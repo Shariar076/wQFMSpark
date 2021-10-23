@@ -8,7 +8,6 @@ import structure.Quartet;
 import util.TaxaUtils;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +24,9 @@ public class Bipartition8Values implements Serializable {
     public double wtBlank;
     public Map<List<Integer>, List<Double>> map_four_tax_seq_weights_list;
     public Map<Integer, Integer> initialBipartitionMap;
+
+    public Bipartition8Values() {
+    }
 
     public Bipartition8Values(Map<Integer, Integer> initialBipartitionMap) {
         this.numSatisfied = 0;
@@ -53,12 +55,22 @@ public class Bipartition8Values implements Serializable {
         this.initialBipartitionMap = obj.initialBipartitionMap;
     }
 
-
-    public String getScoresAsString(){
-        List<Integer> scoresNumbered = Arrays.asList(numSatisfied, numViolated, numDeferred, numBlank);
-        List<Double> scoresWeighted = Arrays.asList(wtSatisfied, wtViolated, wtDeferred, wtBlank);
-        return scoresNumbered +" "+ scoresWeighted;
+    @Override
+    public String toString() {
+        return "Bipartition8Values{" +
+                "numSatisfied=" + numSatisfied +
+                ",\n numViolated=" + numViolated +
+                ",\n numDeferred=" + numDeferred +
+                ",\n numBlank=" + numBlank +
+                ",\n wtSatisfied=" + wtSatisfied +
+                ",\n wtViolated=" + wtViolated +
+                ",\n wtDeferred=" + wtDeferred +
+                ",\n wtBlank=" + wtBlank +
+                ",\n map_four_tax_seq_weights_list=" + map_four_tax_seq_weights_list +
+                ",\n initialBipartitionMap=" + initialBipartitionMap +
+                '}';
     }
+
     public Bipartition8Values compute8ValuesUsingAllQuartets_this_level(Row quartetRow) {
         Quartet quartet = new Quartet(quartetRow);
 
@@ -98,7 +110,7 @@ public class Bipartition8Values implements Serializable {
 
     }
 
-    public void calculateDynamicScore(int level) {
+    public void calculateDynamicScore(int level, Map<List<Integer>, List<Double>> map_four_tax_seq_weights_list) {
         if (Config.PARTITION_SCORE_MODE == DefaultValues.PARTITION_SCORE_FULL_DYNAMIC) {
             FeatureComputer.computeBinningFeature(map_four_tax_seq_weights_list, level);
         }

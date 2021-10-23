@@ -3,7 +3,7 @@ package legacy.ds;
 import java.util.*;
 
 public class CustomDSPerLevel {
-    public InitialTable initial_table1_of_list_of_quartets; //immutable [doesn't change, only as reference, is passed]
+    public LegacyInitialTable initial_table1_of_list_of_quartets; //immutable [doesn't change, only as reference, is passed]
 
     public int level;
 
@@ -14,7 +14,7 @@ public class CustomDSPerLevel {
 
     public List<Integer> taxa_list_int;
 
-    public void setInitialTableReference(InitialTable initTable) {
+    public void setInitialTableReference(LegacyInitialTable initTable) {
         this.initial_table1_of_list_of_quartets = initTable;
     }
 
@@ -28,7 +28,7 @@ public class CustomDSPerLevel {
     public void sortQuartetIndicesMap() {
         for (int i = 0; i < this.quartet_indices_list_unsorted.size(); i++) {
             int qrt_index = this.quartet_indices_list_unsorted.get(i);
-            Quartet q = this.initial_table1_of_list_of_quartets.get(qrt_index);
+            LegacyQuartet q = this.initial_table1_of_list_of_quartets.get(qrt_index);
             if (this.sorted_quartets_weight_list_indices_map.containsKey(q.weight) == false) { //initialize the list [this weight doesn't exist]
                 this.sorted_quartets_weight_list_indices_map.put(q.weight, new ArrayList<>());
             }
@@ -40,15 +40,15 @@ public class CustomDSPerLevel {
         //For each quartet
         for (int itr = 0; itr < this.quartet_indices_list_unsorted.size(); itr++) {
             int index_qrt = this.quartet_indices_list_unsorted.get(itr);
-            Quartet q = this.initial_table1_of_list_of_quartets.get(index_qrt);
-            for (int i = 0; i < Quartet.NUM_TAXA_PER_PARTITION; i++) { // Do for left-sisters ... push to map THIS quartet's row,col
+            LegacyQuartet q = this.initial_table1_of_list_of_quartets.get(index_qrt);
+            for (int i = 0; i < LegacyQuartet.NUM_TAXA_PER_PARTITION; i++) { // Do for left-sisters ... push to map THIS quartet's row,col
                 int taxon = q.taxa_sisters_left[i];
                 if (this.map_taxa_relevant_quartet_indices.containsKey(taxon) == false) { //map doesn't have an entry yet for THIS taxon
                     this.map_taxa_relevant_quartet_indices.put(taxon, new ArrayList<>()); // initialize for THIS taxon
                 }
                 this.map_taxa_relevant_quartet_indices.get(taxon).add(index_qrt);
             }
-            for (int i = 0; i < Quartet.NUM_TAXA_PER_PARTITION; i++) { // Repeat the same for right-sisters
+            for (int i = 0; i < LegacyQuartet.NUM_TAXA_PER_PARTITION; i++) { // Repeat the same for right-sisters
                 int taxon = q.taxa_sisters_right[i];
                 if (this.map_taxa_relevant_quartet_indices.containsKey(taxon) == false) { //map doesn't have an entry yet for THIS taxon
                     this.map_taxa_relevant_quartet_indices.put(taxon, new ArrayList<>()); // initialize for THIS taxon

@@ -1,7 +1,7 @@
 package legacy.utils;
 
 import legacy.configs.DefaultValues;
-import legacy.ds.InitialTable;
+import legacy.ds.LegacyInitialTable;
 
 import java.util.Map;
 
@@ -28,7 +28,7 @@ public class TaxaUtils {
         return DefaultValues.VIOLATED;
     }
     public static int getDummyTaxonName(int level) {
-        return (InitialTable.TAXA_COUNTER + level); //0->47 [original tax], then 48 and above ar DUMMY taxa
+        return (LegacyInitialTable.TAXA_COUNTER + level); //0->47 [original tax], then 48 and above ar DUMMY taxa
     }
 
     public static int getOppositePartition(int partition) {

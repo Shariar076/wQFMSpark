@@ -3,7 +3,7 @@ package legacy.feat;
 import legacy.bip.WeightedPartitionScores;
 import legacy.configs.Config;
 import legacy.configs.DefaultValues;
-import legacy.ds.Quartet;
+import legacy.ds.LegacyQuartet;
 
 import java.util.*;
 
@@ -14,7 +14,7 @@ public class FeatureComputer {
         Collections.sort(list);
         return list;
     }
-    public static void makeDictionary(Quartet q, Map<List<Integer>, List<Double>> map_weights_four_tax_seq) {
+    public static void makeDictionary(LegacyQuartet q, Map<List<Integer>, List<Double>> map_weights_four_tax_seq) {
         List<Integer> four_tax_sequence = sortTaxaWithinQuartets(q.taxa_sisters_left[0], q.taxa_sisters_left[1],
                 q.taxa_sisters_right[0], q.taxa_sisters_right[1]);
 

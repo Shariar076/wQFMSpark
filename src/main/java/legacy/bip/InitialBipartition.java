@@ -2,7 +2,7 @@ package legacy.bip;
 
 import legacy.configs.DefaultValues;
 import legacy.ds.CustomDSPerLevel;
-import legacy.ds.Quartet;
+import legacy.ds.LegacyQuartet;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,12 +24,12 @@ public class InitialBipartition {
             List<Integer> list_quartets_with_this_weight = customDS.sorted_quartets_weight_list_indices_map.get(weight_key); //Mahim
             for (int j = 0; j < list_quartets_with_this_weight.size(); j++) { //Mahim
                 int quartet_index = list_quartets_with_this_weight.get(j);//Mahim
-                Quartet quartet_under_consideration = customDS.initial_table1_of_list_of_quartets.get(quartet_index);//Mahim
+                LegacyQuartet legacyQuartet_under_consideration = customDS.initial_table1_of_list_of_quartets.get(quartet_index);//Mahim
 
-                int q1 = quartet_under_consideration.taxa_sisters_left[0];
-                int q2 = quartet_under_consideration.taxa_sisters_left[1];
-                int q3 = quartet_under_consideration.taxa_sisters_right[0];
-                int q4 = quartet_under_consideration.taxa_sisters_right[1];
+                int q1 = legacyQuartet_under_consideration.taxa_sisters_left[0];
+                int q2 = legacyQuartet_under_consideration.taxa_sisters_left[1];
+                int q3 = legacyQuartet_under_consideration.taxa_sisters_right[0];
+                int q4 = legacyQuartet_under_consideration.taxa_sisters_right[1];
 
                 int status_q1, status_q2, status_q3, status_q4; //status of q1,q2,q3,q4 respectively
                 status_q1 = map_partition.get(q1);

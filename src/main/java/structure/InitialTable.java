@@ -17,8 +17,8 @@ public class InitialTable {
     }
     // public int getTableSize() { return  (int) quartetsTable.count();}
     //
-    // public void initializeQuartetsTable(Dataset<Quartet> quartetsTable){
-    //     InitialTable.quartetsTable = quartetsTable;
+    // public void initializeQuartetsTable(Dataset<LegacyQuartet> quartetsTable){
+    //     LegacyInitialTable.quartetsTable = quartetsTable;
     // }
     // public void showQuartetsTable(){
     //     // System.out.println(this.quartetsTable.select("weight").collectAsList());
@@ -31,20 +31,20 @@ public class InitialTable {
 
     @Override
     public String toString() {
-        return "InitialTable{" + "list_quartets=" + quartetsTable + '}';
+        return "LegacyInitialTable{" + "list_quartets=" + quartetsTable + '}';
     }
 
-    // public Quartet get(int idx) {
+    // public LegacyQuartet get(int idx) {
     //     Dataset<Row> indexedQuartetsTable = quartetsTable.toDF().withColumn("id",monotonically_increasing_id());
     //     indexedQuartetsTable.show();
     //
     //
     //     //This mapper wont work
-    //     Dataset<Quartet> quartets = indexedQuartetsTable.select(indexedQuartetsTable.col("id").equalTo(idx)).map(new QuartetMapper(), Encoders.bean(Quartet.class));
+    //     Dataset<LegacyQuartet> quartets = indexedQuartetsTable.select(indexedQuartetsTable.col("id").equalTo(idx)).map(new QuartetMapper(), Encoders.bean(LegacyQuartet.class));
     //     quartets.show();
     //     return quartets.first();
     // }
-    // public void assignByReference(InitialTable initialTable) {
+    // public void assignByReference(LegacyInitialTable initialTable) {
     //     this.list_quartets = initialTable.list_quartets; //assign by reference
     // }
 }

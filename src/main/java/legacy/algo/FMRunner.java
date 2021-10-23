@@ -4,9 +4,9 @@ import legacy.bip.Bipartition8Values;
 import legacy.bip.InitialBipartition;
 import legacy.bip.WeightedPartitionScores;
 import legacy.configs.Config;
-import legacy.ds.InitialTable;
+import legacy.ds.LegacyInitialTable;
 import legacy.ds.CustomDSPerLevel;
-import legacy.ds.Quartet;
+import legacy.ds.LegacyQuartet;
 import legacy.utils.IOHandler;
 import legacy.utils.TreeHandler;
 import legacy.configs.DefaultValues;
@@ -21,25 +21,25 @@ import java.util.Map;
 public class FMRunner {
     public static String runFunctions(String INPUT_FILE_NAME, String OUTPUT_FILE_NAME) {
         FMRunner runner = new FMRunner();
-        InitialTable initialTable = new InitialTable();
+        LegacyInitialTable legacyInitialTable = new LegacyInitialTable();
         CustomDSPerLevel customDS = new CustomDSPerLevel();
-        runner.readFileAndPopulateInitialTables(INPUT_FILE_NAME, customDS, initialTable);
+        runner.readFileAndPopulateInitialTables(INPUT_FILE_NAME, customDS, legacyInitialTable);
         System.out.println("Reading from file <" + INPUT_FILE_NAME + "> done."
-                + "\nInitial-Num-Quartets = " + initialTable.sizeTable());
+                + "\nInitial-Num-Quartets = " + legacyInitialTable.sizeTable());
         System.out.println("Running with partition score " + WeightedPartitionScores.GET_PARTITION_SCORE_PRINT());
         int level = 0;
         customDS.level = level; //for debugging issues.
 
-        System.out.println(InitialTable.TAXA_COUNTER);
+        System.out.println(LegacyInitialTable.TAXA_COUNTER);
 
-        System.out.println(InitialTable.map_of_str_vs_int_tax_list);
-        System.out.println(InitialTable.map_of_int_vs_str_tax_list);
+        System.out.println(LegacyInitialTable.map_of_str_vs_int_tax_list);
+        System.out.println(LegacyInitialTable.map_of_int_vs_str_tax_list);
 
-        String final_tree = runner.recursiveDivideAndConquer(customDS, level, initialTable); //customDS will have (P, Q, Q_relevant etc) all the params needed.
+        String final_tree = runner.recursiveDivideAndConquer(customDS, level, legacyInitialTable); //customDS will have (P, Q, Q_relevant etc) all the params needed.
         System.out.println("\n\n[L 49.] FMRunner: final tree return");
 
 //        System.out.println(final_tree);
-        String final_tree_decoded = IOHandler.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);
+        String final_tree_decoded = IOHandler.getFinalTreeFromMap(final_tree, LegacyInitialTable.map_of_int_vs_str_tax_list);
         System.out.println(final_tree_decoded);
         IOHandler.writeToFile(final_tree_decoded, OUTPUT_FILE_NAME);
 
@@ -47,10 +47,10 @@ public class FMRunner {
     }
 
     // ------>>>> Main RECURSIVE function ....
-    private String recursiveDivideAndConquer(CustomDSPerLevel customDS_this_level, int level, InitialTable initialTable) {
+    private String recursiveDivideAndConquer(CustomDSPerLevel customDS_this_level, int level, LegacyInitialTable legacyInitialTable) {
         /*So that when customDS is passed subsequently, automatic sorting will be done. No need to do it somewhere else*/
         if (level == 0) { //only do this during level 0 [at the START]
-            customDS_this_level.setInitialTableReference(initialTable); //change reference of initial table.
+            customDS_this_level.setInitialTableReference(legacyInitialTable); //change reference of initial table.
         }
         customDS_this_level.sortQuartetIndicesMap(); //sort the quartet-index map for initial-bipartition-computation [NOT set of quartets]
         customDS_this_level.fillRelevantQuartetsMap(); //fill-up the relevant quartets per taxa map
@@ -75,7 +75,7 @@ public class FMRunner {
         System.out.println("initial bipartition map: "+ mapInitialBipartition);
         if (Config.DEBUG_MODE_PRINTING_GAINS_BIPARTITIONS) {
             System.out.println("L 84. FMComputer. Printing initialBipartition.");
-            IOHandler.printPartition(mapInitialBipartition, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION, InitialTable.map_of_int_vs_str_tax_list);
+            IOHandler.printPartition(mapInitialBipartition, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION, LegacyInitialTable.map_of_int_vs_str_tax_list);
         }
 
         Bipartition8Values initialBip_8_vals = new Bipartition8Values();
@@ -93,8 +93,8 @@ public class FMRunner {
 
         /////////////////// Beginning of Recursion \\\\\\\\\\\\\\\\\\\\\\\\\\\
         int dummyTaxon = fmResultObject.dummyTaxonThisLevel;
-        String left_tree_unrooted = recursiveDivideAndConquer(customDS_left, level, initialTable);
-        String right_tree_unrooted = recursiveDivideAndConquer(customDS_right, level, initialTable);
+        String left_tree_unrooted = recursiveDivideAndConquer(customDS_left, level, legacyInitialTable);
+        String right_tree_unrooted = recursiveDivideAndConquer(customDS_right, level, legacyInitialTable);
         String merged_tree = TreeHandler.mergeUnrootedTrees(left_tree_unrooted, right_tree_unrooted, String.valueOf(dummyTaxon));
         return merged_tree;
     }
@@ -111,7 +111,7 @@ public class FMRunner {
     }
 
     //------------------Initial Bipartition --------------------
-    private void populatePerInputLine(CustomDSPerLevel customDS, InitialTable initialTable, String line, int line_cnt) {
+    private void populatePerInputLine(CustomDSPerLevel customDS, LegacyInitialTable legacyInitialTable, String line, int line_cnt) {
         // Check if STAR is present
         // ((1,2,49,57)); 6     is a STAR
         // ((0,1),(10,9)); 343  is normal // should have 3 right brackets and 3 left brackets
@@ -126,14 +126,14 @@ public class FMRunner {
         }
 
         // No issues with STAR.
-        Quartet quartet = new Quartet(line);
-        initialTable.addToListOfQuartets(quartet); //add to initial-quartets-single-list
-        int idx_qrt_in_table_1 = initialTable.sizeTable() - 1; //size - 1 is the last index
+        LegacyQuartet legacyQuartet = new LegacyQuartet(line);
+        legacyInitialTable.addToListOfQuartets(legacyQuartet); //add to initial-quartets-single-list
+        int idx_qrt_in_table_1 = legacyInitialTable.sizeTable() - 1; //size - 1 is the last index
         customDS.quartet_indices_list_unsorted.add(idx_qrt_in_table_1);
     }
 
     //BufferedReader is used here since BufferedReader is faster than Scanner.readLine
-    public void readFileAndPopulateInitialTables(String inputFileName, CustomDSPerLevel customDS, InitialTable initialTable) {
+    public void readFileAndPopulateInitialTables(String inputFileName, CustomDSPerLevel customDS, LegacyInitialTable legacyInitialTable) {
         FileInputStream fileInputStream = null;
         try {
             fileInputStream = new FileInputStream(inputFileName);
@@ -142,7 +142,7 @@ public class FMRunner {
                 String line;
                 int line_cnt = 1;
                 while ((line = bufferedReader.readLine()) != null && !line.isEmpty()) {
-                    populatePerInputLine(customDS, initialTable, line, line_cnt);
+                    populatePerInputLine(customDS, legacyInitialTable, line, line_cnt);
                     line_cnt++;
                 }
             }
@@ -158,7 +158,7 @@ public class FMRunner {
                 System.exit(-1);
             }
         }
-        //FeatureComputer.Compute_Feature(initialTable.get_QuartetList());
+        //FeatureComputer.Compute_Feature(legacyInitialTable.get_QuartetList());
 
     }
 }

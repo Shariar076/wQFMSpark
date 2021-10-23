@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class InitialBipartition implements Serializable {
     private Map<Integer, Integer> partitionMap;
-    // private final Dataset<Quartet> quartetDataset;
+    // private final Dataset<LegacyQuartet> quartetDataset;
     private int count_taxa_left_partition;
     private int count_taxa_right_partition;
 
@@ -172,9 +172,9 @@ public class InitialBipartition implements Serializable {
     public Map<Integer, Integer> performPartitionRandomBalanced(Map<Integer, Integer> partitionMap) {
 
         //this is not the way
-        // List<Quartet> quartetList = quartetDataset.collectAsList();
+        // List<LegacyQuartet> quartetList = quartetDataset.collectAsList();
 
-        // for (Quartet quartet_under_consideration : quartetList) {
+        // for (LegacyQuartet quartet_under_consideration : quartetList) {
         //     performPartitionBasedOnQuartet(quartet_under_consideration);
         // }
 
