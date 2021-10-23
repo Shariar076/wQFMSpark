@@ -24,6 +24,7 @@ public class Bipartition8Values implements Serializable {
     public double wtBlank;
     public Map<List<Integer>, List<Double>> map_four_tax_seq_weights_list;
     public Map<Integer, Integer> initialBipartitionMap;
+    public Quartet curresponding_quartet;
 
     public Bipartition8Values() {
     }
@@ -39,7 +40,6 @@ public class Bipartition8Values implements Serializable {
         this.wtBlank = 0.0;
         this.map_four_tax_seq_weights_list = new HashMap<>();
         this.initialBipartitionMap =initialBipartitionMap;
-
     }
 
     public Bipartition8Values(Bipartition8Values obj) {
@@ -73,7 +73,7 @@ public class Bipartition8Values implements Serializable {
 
     public Bipartition8Values compute8ValuesUsingAllQuartets_this_level(Row quartetRow) {
         Quartet quartet = new Quartet(quartetRow);
-
+        this.setCurresponding_quartet(quartet);
         if (Config.PARTITION_SCORE_MODE == DefaultValues.PARTITION_SCORE_FULL_DYNAMIC) {
             FeatureComputer.makeDictionary(quartet, map_four_tax_seq_weights_list);
         }
@@ -111,9 +111,7 @@ public class Bipartition8Values implements Serializable {
     }
 
     public void calculateDynamicScore(int level, Map<List<Integer>, List<Double>> map_four_tax_seq_weights_list) {
-        if (Config.PARTITION_SCORE_MODE == DefaultValues.PARTITION_SCORE_FULL_DYNAMIC) {
-            FeatureComputer.computeBinningFeature(map_four_tax_seq_weights_list, level);
-        }
+        FeatureComputer.computeBinningFeature(map_four_tax_seq_weights_list, level);
     }
 
     public void addRespectiveValue(double weight, int status) {
@@ -241,5 +239,13 @@ public class Bipartition8Values implements Serializable {
 
     public void setInitialBipartitionMap(Map<Integer, Integer> initialBipartitionMap) {
         this.initialBipartitionMap = initialBipartitionMap;
+    }
+
+    public Quartet getCurresponding_quartet() {
+        return curresponding_quartet;
+    }
+
+    public void setCurresponding_quartet(Quartet curresponding_quartet) {
+        this.curresponding_quartet = curresponding_quartet;
     }
 }

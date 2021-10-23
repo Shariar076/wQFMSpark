@@ -47,7 +47,7 @@ public class FMRunner {
     }
 
     // ------>>>> Main RECURSIVE function ....
-    private String recursiveDivideAndConquer(CustomDSPerLevel customDS_this_level, int level, LegacyInitialTable legacyInitialTable) {
+    public String recursiveDivideAndConquer(CustomDSPerLevel customDS_this_level, int level, LegacyInitialTable legacyInitialTable) {
         /*So that when customDS is passed subsequently, automatic sorting will be done. No need to do it somewhere else*/
         if (level == 0) { //only do this during level 0 [at the START]
             customDS_this_level.setInitialTableReference(legacyInitialTable); //change reference of initial table.
