@@ -2,22 +2,22 @@ package mapper;
 
 import org.apache.spark.api.java.function.MapFunction;
 import org.apache.spark.sql.Row;
-import structure.InitialTable;
-import structure.Quartet;
+import structure.InitialTableSpark;
+import structure.SerialQuartet;
 
-public class StringToQuartetMapper implements MapFunction<Row, Quartet> {
+public class StringToQuartetMapper implements MapFunction<Row, SerialQuartet> {
     private static void updateInitialTableWithTaxon(String taxonOrg, int taxonMapped){
-        InitialTable.TAXA_COUNT++;
-        InitialTable.TAXA_LIST.add(taxonMapped);
-        InitialTable.map_of_str_vs_int_tax_list.put(taxonOrg, taxonMapped);
-        InitialTable.map_of_int_vs_str_tax_list.put(taxonMapped, taxonOrg);
+        InitialTableSpark.TAXA_COUNT++;
+        InitialTableSpark.TAXA_LIST.add(taxonMapped);
+        InitialTableSpark.map_of_str_vs_int_tax_list.put(taxonOrg, taxonMapped);
+        InitialTableSpark.map_of_int_vs_str_tax_list.put(taxonMapped, taxonOrg);
     }
     @Override
-    public Quartet call(Row row) throws Exception {
+    public SerialQuartet call(Row row) throws Exception {
         // String quartetString = row.getAs("value");
         // String count = row.getAs("count"); //String.valueOf(row.getAs("value"));
         String s = row.getAs("value")+" "+row.getAs("count");
-        Quartet quartet= new Quartet();
+        SerialQuartet quartet= new SerialQuartet();
         s = s.replace(" ", "");
         s = s.replace(";", ",");
         s = s.replace("(", "");
@@ -25,29 +25,29 @@ public class StringToQuartetMapper implements MapFunction<Row, Quartet> {
         String[] arr = s.split(",");
 
         int a, b, c, d;
-        if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[0])) {
-            a = InitialTable.map_of_str_vs_int_tax_list.get(arr[0]);
+        if (InitialTableSpark.map_of_str_vs_int_tax_list.containsKey(arr[0])) {
+            a = InitialTableSpark.map_of_str_vs_int_tax_list.get(arr[0]);
         } else { //THIS taxon doesn't exist.
-            a = InitialTable.TAXA_COUNT;
+            a = InitialTableSpark.TAXA_COUNT;
             updateInitialTableWithTaxon(arr[0], a);
         }
 
-        if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[1])) {
-            b = InitialTable.map_of_str_vs_int_tax_list.get(arr[1]);
+        if (InitialTableSpark.map_of_str_vs_int_tax_list.containsKey(arr[1])) {
+            b = InitialTableSpark.map_of_str_vs_int_tax_list.get(arr[1]);
         } else { //THIS taxon doesn't exist.
-            b = InitialTable.TAXA_COUNT;
+            b = InitialTableSpark.TAXA_COUNT;
             updateInitialTableWithTaxon(arr[1], b);
         }
-        if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[2])) {
-            c = InitialTable.map_of_str_vs_int_tax_list.get(arr[2]);
+        if (InitialTableSpark.map_of_str_vs_int_tax_list.containsKey(arr[2])) {
+            c = InitialTableSpark.map_of_str_vs_int_tax_list.get(arr[2]);
         } else { //THIS taxon doesn't exist.
-            c = InitialTable.TAXA_COUNT;
+            c = InitialTableSpark.TAXA_COUNT;
             updateInitialTableWithTaxon(arr[2], c);
         }
-        if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[3])) {
-            d = InitialTable.map_of_str_vs_int_tax_list.get(arr[3]);
+        if (InitialTableSpark.map_of_str_vs_int_tax_list.containsKey(arr[3])) {
+            d = InitialTableSpark.map_of_str_vs_int_tax_list.get(arr[3]);
         } else { //THIS taxon doesn't exist.
-            d = InitialTable.TAXA_COUNT;
+            d = InitialTableSpark.TAXA_COUNT;
             updateInitialTableWithTaxon(arr[3], d);
         }
 

@@ -1,29 +1,18 @@
 package main;
 
 import algorithm.FMRunner;
-import config.Config;
+import config.Properties;
 import config.DefaultValues;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.SparkSession;
-import util.TreeHandler;
 import util.WQGenerator;
 
 /**
  * Hello world!
  */
 public class App {
-    private static void testIfRerootWorks() {
-        try {
-            //Test a dummy reroot function. To check if "lib" is in correct folder.
-            String newickTree = "((3,(1,2)),((6,5),4));";
-            String outGroupNode = "5";
-            TreeHandler.rerootTree(newickTree, outGroupNode);
-        } catch (Exception e) {
-            System.out.println("Reroot not working, check if lib is in correct folder. Exiting.");
-            System.exit(-1);
-        }
-    }
+
 
     public static String runwQFMSpark(String inputFilename, String outputFileName) {
         // Call wQFM runner here. ?
@@ -31,7 +20,6 @@ public class App {
 
         long time_1 = System.currentTimeMillis(); //calculate starting time
 
-        App.testIfRerootWorks(); // test to check if phylonet jar is attached correctly.
 
         String tree = FMRunner.runFunctions(inputFilename, outputFileName); //main functions for wQFM
 
@@ -45,18 +33,18 @@ public class App {
     }
 
     public static void initializeAndRun(SparkSession spark){
-        Config.SPARK = spark;
+        Properties.SPARK = spark;
 
         System.out.println("Input file consists of gene trees ... generating weighted quartets to file: " + DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT);
-        // IOHandler.generateWeightedQuartets(Config.INPUT_FILE_NAME, Config.OUTPUT_FILE_NAME);
-        WQGenerator.generateWQ(Config.INPUT_FILE_NAME, DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT);
+        // IOHandler.generateWeightedQuartets(Properties.INPUT_FILE_NAME, Properties.OUTPUT_FILE_NAME);
+        WQGenerator.generateWQ(Properties.INPUT_FILE_NAME, DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT);
         System.out.println("Generation of weighted quartets completed.");
         // then switch to input file name as default weighted quartets name.
 
-        String treeOutput = App.runwQFMSpark(DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT, Config.OUTPUT_FILE_NAME); // run wQFM
+        String treeOutput = App.runwQFMSpark(DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT, Properties.OUTPUT_FILE_NAME); // run wQFM
     }
     public static void main(String[] args) {
-        // LegacyRun.minimalCall();
+        // wQFMRun.minimalCall();
 
         SparkConf conf = new SparkConf().setAppName("test DF")
                 // .setJars(new String[]{System.getProperty("user.dir") + "/target/wQFMSpark-1.0-SNAPSHOT-jar-with-dependencies.jar"})
