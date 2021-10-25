@@ -49,7 +49,7 @@ public class App {
 
         System.out.println("Input file consists of gene trees ... generating weighted quartets to file: " + DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT);
         // IOHandler.generateWeightedQuartets(Config.INPUT_FILE_NAME, Config.OUTPUT_FILE_NAME);
-        // WQGenerator.generateWQ(Config.INPUT_FILE_NAME, DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT);
+        WQGenerator.generateWQ(Config.INPUT_FILE_NAME, DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT);
         System.out.println("Generation of weighted quartets completed.");
         // then switch to input file name as default weighted quartets name.
 

@@ -14,10 +14,12 @@ import structure.Quartet;
 import util.IOHandler;
 import util.TreeHandler;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class LegacyBipartition {
+public class LegacyBipartition  implements Serializable {
     //Temp
     public static Map<Integer, Integer> stringToMap(String mapString){
         Map<Integer, Integer> retMap = new HashMap<Integer, Integer>();
@@ -31,9 +33,9 @@ public class LegacyBipartition {
     }
 
     //Temp
-    public LegacyInitialTable setLegacyInitialTable(Dataset<Quartet> quartetsTable, CustomDSPerLevel customDS){
+    public LegacyInitialTable setLegacyInitialTable(List<Quartet> quartetsList, CustomDSPerLevel customDS){
         LegacyInitialTable legacyInitialTable = new LegacyInitialTable();
-        for(Quartet quartet: quartetsTable.collectAsList()){
+        for(Quartet quartet: quartetsList){
             LegacyQuartet quartet1 = new LegacyQuartet(quartet.toString());
             legacyInitialTable.addToListOfQuartets(quartet1);
             int idx_qrt_in_table_1 = legacyInitialTable.sizeTable() - 1; //size - 1 is the last index
@@ -45,7 +47,7 @@ public class LegacyBipartition {
     //Temp
     public void performInitialBipartition(Dataset<Quartet> quartetsTable, int level){
         CustomDSPerLevel customDS_this_level = new CustomDSPerLevel();
-        LegacyInitialTable legacyInitialTable = this.setLegacyInitialTable(quartetsTable, customDS_this_level);
+        LegacyInitialTable legacyInitialTable = this.setLegacyInitialTable(quartetsTable.collectAsList(), customDS_this_level);
 
         if (level == 0) { //only do this during level 0 [at the START]
             customDS_this_level.setInitialTableReference(legacyInitialTable); //change reference of initial table.
@@ -85,7 +87,7 @@ public class LegacyBipartition {
 
     public void doBipartition8ValuesCalculation(Dataset<Quartet> quartetsTable,Map<Integer, Integer> mapInitialBipartition, int level){
         CustomDSPerLevel customDS_this_level = new CustomDSPerLevel();
-        LegacyInitialTable legacyInitialTable = this.setLegacyInitialTable(quartetsTable, customDS_this_level);
+        LegacyInitialTable legacyInitialTable = this.setLegacyInitialTable(quartetsTable.collectAsList(), customDS_this_level);
 
         if (level == 0) { //only do this during level 0 [at the START]
             customDS_this_level.setInitialTableReference(legacyInitialTable); //change reference of initial table.
@@ -113,10 +115,10 @@ public class LegacyBipartition {
         //**************************************************
         initialBip_8_vals.compute8ValuesUsingAllQuartets_this_level(customDS_this_level, mapInitialBipartition);
     }
-    public String runDevideNConquer(Dataset<Quartet> quartetsTable){
+    public String runDevideNConquer(List<Quartet> quartetsList){
         FMRunner runner = new FMRunner();
         CustomDSPerLevel customDS = new CustomDSPerLevel();
-        LegacyInitialTable legacyInitialTable = this.setLegacyInitialTable(quartetsTable, customDS);
+        LegacyInitialTable legacyInitialTable = this.setLegacyInitialTable(quartetsList, customDS);
         // runner.readFileAndPopulateInitialTables(INPUT_FILE_NAME, customDS, legacyInitialTable);
         // System.out.println("Reading from file <" + INPUT_FILE_NAME + "> done."
         //         + "\nInitial-Num-Quartets = " + legacyInitialTable.sizeTable());
