@@ -38,7 +38,7 @@ public class wQFMRunner implements Serializable {
     }
 
     //Temp
-    // public void performInitialBipartition(Dataset<SerialQuartet> quartetsTable, int level){
+    // public void performInitialBipartition(Dataset<SerializedQuartet> quartetsTable, int level){
     //     CustomDSPerLevel customDS_this_level = new CustomDSPerLevel();
     //     InitialTable legacyInitialTable = this.setLegacyInitialTable(quartetsTable.collectAsList(), customDS_this_level);
     //
@@ -78,7 +78,7 @@ public class wQFMRunner implements Serializable {
     //
     // }
 
-    // public void doBipartition8ValuesCalculation(Dataset<SerialQuartet> quartetsTable,Map<Integer, Integer> mapInitialBipartition, int level){
+    // public void doBipartition8ValuesCalculation(Dataset<SerializedQuartet> quartetsTable,Map<Integer, Integer> mapInitialBipartition, int level){
     //     CustomDSPerLevel customDS_this_level = new CustomDSPerLevel();
     //     InitialTable legacyInitialTable = this.setLegacyInitialTable(quartetsTable.collectAsList(), customDS_this_level);
     //
@@ -125,7 +125,7 @@ public class wQFMRunner implements Serializable {
         System.out.println(InitialTable.map_of_int_vs_str_tax_list);
 
         String final_tree = runner.recursiveDivideAndConquer(customDS, level, initialTable); //customDS will have (P, Q, Q_relevant etc) all the params needed.
-        System.out.println("\n\n[L 49.] FMRunner: final tree return");
+        System.out.println("\n\n[L 49.] Distributer: final tree return");
 
 //        System.out.println(final_tree);
         String final_tree_decoded = wqfm.utils.IOHandler.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);

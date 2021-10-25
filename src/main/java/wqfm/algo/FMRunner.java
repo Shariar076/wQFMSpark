@@ -36,7 +36,7 @@ public class FMRunner {
         System.out.println(InitialTable.map_of_int_vs_str_tax_list);
 
         String final_tree = runner.recursiveDivideAndConquer(customDS, level, initialTable); //customDS will have (P, Q, Q_relevant etc) all the params needed.
-        System.out.println("\n\n[L 49.] FMRunner: final tree return");
+        System.out.println("\n\n[L 49.] Distributer: final tree return");
 
 //        System.out.println(final_tree);
         String final_tree_decoded = IOHandler.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);

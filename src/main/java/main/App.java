@@ -1,6 +1,6 @@
 package main;
 
-import algorithm.FMRunner;
+import algorithm.Distributer;
 import config.Properties;
 import config.DefaultValues;
 import org.apache.spark.SparkConf;
@@ -21,7 +21,7 @@ public class App {
         long time_1 = System.currentTimeMillis(); //calculate starting time
 
 
-        String tree = FMRunner.runFunctions(inputFilename, outputFileName); //main functions for wQFM
+        String tree = Distributer.runFunctions(inputFilename, outputFileName); //main functions for wQFM
 
         long time_del = System.currentTimeMillis() - time_1;
         long minutes = (time_del / 1000) / 60;

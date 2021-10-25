@@ -5,7 +5,7 @@ import org.apache.spark.sql.Row;
 import java.util.Arrays;
 import java.util.List;
 
-public class SerialQuartet {
+public class SerializedQuartet {
     public static int NUM_TAXA_PER_PARTITION = 2;
     public static int TEMP_TAX_TO_SWAP;
 
@@ -13,7 +13,7 @@ public class SerialQuartet {
     public int[] taxa_sisters_right;// = new String[NUM_TAXA_PER_PARTITION];
     public double weight;
 
-    public SerialQuartet() {
+    public SerializedQuartet() {
         this.weight = 1.0;
     }
 
@@ -24,16 +24,16 @@ public class SerialQuartet {
         return ret;
     }
 
-    public SerialQuartet(Row quartetRow){
+    public SerializedQuartet(Row quartetRow){
         this.taxa_sisters_left = this.toIntArray(quartetRow.getList(0));
         this.taxa_sisters_right = this.toIntArray(quartetRow.getList(1));
         this.weight = quartetRow.getDouble(2);
     }
 
-    public SerialQuartet(int a, int b, int c, int d, double w) {
+    public SerializedQuartet(int a, int b, int c, int d, double w) {
         initialiseQuartet(a, b, c, d, w);
     }
-    public SerialQuartet(SerialQuartet q) {
+    public SerializedQuartet(SerializedQuartet q) {
         initialiseQuartet(q.taxa_sisters_left[0], q.taxa_sisters_left[1],
                 q.taxa_sisters_right[0], q.taxa_sisters_right[1], q.weight);
     }
@@ -47,10 +47,10 @@ public class SerialQuartet {
         if (this.taxa_sisters_left[0] < this.taxa_sisters_right[0]) { //don't swap two sides
             //no need to swap
         } else {  // swap two sides
-            for (int i = 0; i < SerialQuartet.NUM_TAXA_PER_PARTITION; i++) {
-                SerialQuartet.TEMP_TAX_TO_SWAP = this.taxa_sisters_left[i];
+            for (int i = 0; i < SerializedQuartet.NUM_TAXA_PER_PARTITION; i++) {
+                SerializedQuartet.TEMP_TAX_TO_SWAP = this.taxa_sisters_left[i];
                 this.taxa_sisters_left[i] = this.taxa_sisters_right[i];
-                this.taxa_sisters_right[i] = SerialQuartet.TEMP_TAX_TO_SWAP;
+                this.taxa_sisters_right[i] = SerializedQuartet.TEMP_TAX_TO_SWAP;
             }
         }
     }
@@ -131,7 +131,7 @@ public class SerialQuartet {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        SerialQuartet other = (SerialQuartet) obj;
+        SerializedQuartet other = (SerializedQuartet) obj;
         other.sort_quartet_taxa_names();
 
         if (!Arrays.equals(this.taxa_sisters_left, other.taxa_sisters_left)) {

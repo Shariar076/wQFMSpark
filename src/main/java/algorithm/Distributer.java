@@ -11,7 +11,7 @@ import java.util.List;
 import static org.apache.spark.sql.functions.*;
 
 
-public class FMRunner {
+public class Distributer {
     public static String runFunctions(String inputFileName, String outputFileName) {
         readFileAndPopulateInitialTable(inputFileName);
 
@@ -30,7 +30,7 @@ public class FMRunner {
         // can recursive func be static?
         // String final_tree = recursiveDivideAndConquer(level); //customDS will have (P, Q, Q_relevant etc) all the params needed.
 
-        // System.out.println("\n\n[L 49.] FMRunner: final tree return");
+        // System.out.println("\n\n[L 49.] Distributer: final tree return");
         //
         // System.out.println(final_tree);
         // String final_tree_decoded = IOHandler.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);
@@ -52,7 +52,7 @@ public class FMRunner {
         List<String> qtList = sortedWqDf.select("weightedQuartet").as(Encoders.STRING()).collectAsList();
         System.out.println(new wQFMRunner().runDevideNConquer(qtList));
         // sortedWqDf.write().partitionBy("count").mode("overwrite").option("header", "true").csv("output/example.csv");
-        // InitialTableSpark.quartetsTable = sortedWqDf.map(new StringToQuartetMapper(), Encoders.bean(SerialQuartet.class));
+        // InitialTableSpark.quartetsTable = sortedWqDf.map(new StringToQuartetMapper(), Encoders.bean(SerializedQuartet.class));
 
         //this will enforce spark to perform the jobs accumulated so far
         //thus ensuring initialization of variables dependent on them
@@ -64,7 +64,7 @@ public class FMRunner {
     //     wQFMRunner legBip = new wQFMRunner();
     //     // legBip.runDevideNConquer(InitialTableSpark.quartetsTable.collectAsList());
     //     JavaRDD<String> treeJavaRDD =InitialTableSpark.quartetsTable.toJavaRDD().mapPartitions(iterator -> {
-    //         ArrayList<SerialQuartet> arrayList = new ArrayList<>();
+    //         ArrayList<SerializedQuartet> arrayList = new ArrayList<>();
     //         // if(iterator.hasNext())arrayList.add(iterator.next());
     //         while (iterator.hasNext()){
     //             arrayList.add(iterator.next());

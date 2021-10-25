@@ -11,7 +11,7 @@ public class InitialTableSpark {
     public static Map<Integer, String> map_of_int_vs_str_tax_list = new HashMap<>(); //for back conversion
     public static int TAXA_COUNT = 0;
     public static ArrayList<Integer> TAXA_LIST = new ArrayList<Integer>();
-    public static Dataset<SerialQuartet> quartetsTable;
+    public static Dataset<SerializedQuartet> quartetsTable;
 
     public InitialTableSpark(boolean flag) {
     }

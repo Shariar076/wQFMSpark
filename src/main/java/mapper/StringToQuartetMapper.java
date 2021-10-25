@@ -3,9 +3,9 @@ package mapper;
 import org.apache.spark.api.java.function.MapFunction;
 import org.apache.spark.sql.Row;
 import structure.InitialTableSpark;
-import structure.SerialQuartet;
+import structure.SerializedQuartet;
 
-public class StringToQuartetMapper implements MapFunction<Row, SerialQuartet> {
+public class StringToQuartetMapper implements MapFunction<Row, SerializedQuartet> {
     private static void updateInitialTableWithTaxon(String taxonOrg, int taxonMapped){
         InitialTableSpark.TAXA_COUNT++;
         InitialTableSpark.TAXA_LIST.add(taxonMapped);
@@ -13,11 +13,11 @@ public class StringToQuartetMapper implements MapFunction<Row, SerialQuartet> {
         InitialTableSpark.map_of_int_vs_str_tax_list.put(taxonMapped, taxonOrg);
     }
     @Override
-    public SerialQuartet call(Row row) throws Exception {
+    public SerializedQuartet call(Row row) throws Exception {
         // String quartetString = row.getAs("value");
         // String count = row.getAs("count"); //String.valueOf(row.getAs("value"));
         String s = row.getAs("value")+" "+row.getAs("count");
-        SerialQuartet quartet= new SerialQuartet();
+        SerializedQuartet quartet= new SerializedQuartet();
         s = s.replace(" ", "");
         s = s.replace(";", ",");
         s = s.replace("(", "");
