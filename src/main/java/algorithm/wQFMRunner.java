@@ -28,7 +28,6 @@ public class wQFMRunner implements Serializable {
     public InitialTable setLegacyInitialTable(List<String> quartetsList, CustomDSPerLevel customDS){
         InitialTable initialTable = new InitialTable();
         for(String quartet: quartetsList){
-            System.out.println(quartet);
             Quartet quartet1 = new Quartet(quartet);
             initialTable.addToListOfQuartets(quartet1);
             int idx_qrt_in_table_1 = initialTable.sizeTable() - 1; //size - 1 is the last index
@@ -109,6 +108,7 @@ public class wQFMRunner implements Serializable {
     //     initialBip_8_vals.compute8ValuesUsingAllQuartets_this_level(customDS_this_level, mapInitialBipartition);
     // }
     public String runDevideNConquer(List<String> quartetsList){
+        System.out.println("Partition List: " + quartetsList + "\n"+"Count: "+ quartetsList.stream().count());
         FMRunner runner = new FMRunner();
         CustomDSPerLevel customDS = new CustomDSPerLevel();
         InitialTable initialTable = this.setLegacyInitialTable(quartetsList, customDS);

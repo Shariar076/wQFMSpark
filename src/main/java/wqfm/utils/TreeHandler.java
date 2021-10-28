@@ -22,7 +22,7 @@ public class TreeHandler {
                 return "NULL";
         }
     }
-    private static String rerootTree_JAR(String newickTree, String outGroupNode) {
+    public static String rerootTree_JAR(String newickTree, String outGroupNode) {
 //        String newickTree = "((3,(1,2)),((6,5),4));";
 //        String outGroupNode = "5";
         STITree tree = null;

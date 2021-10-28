@@ -9,37 +9,37 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoder;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
-import structure.InitialTableSpark;
+import structure.TaxaTable;
 
 import java.util.*;
 
 public class Sample {
     public static void testMapReduce() {
         System.out.println("Testing Map Reduce");
-        // System.out.println("Num Partitions: " + InitialTableSpark.quartetsTable.toJavaRDD().getNumPartitions());
+        // System.out.println("Num Partitions: " + TaxaTable.quartetsTable.toJavaRDD().getNumPartitions());
         SampleMapper sampleMapper = new SampleMapper();
         SampleReducer sampleReducer = new SampleReducer();
-        Dataset<SampleMapper> df = InitialTableSpark.quartetsTable
-                .toDF()
-                // .coalesce(1)
-                .map
-                        (
-                                (MapFunction<Row, SampleMapper>) sampleMapper::incrementCount,
-                                Encoders.bean(SampleMapper.class)
-                        )
-                // .toDF()
-                ;
+        // Dataset<SampleMapper> df = TaxaTable.quartetsTable
+        //         .toDF()
+        //         // .coalesce(1)
+        //         .map
+        //                 (
+        //                         (MapFunction<Row, SampleMapper>) sampleMapper::incrementCount,
+        //                         Encoders.bean(SampleMapper.class)
+        //                 )
+        //         // .toDF()
+        //         ;
+        //
 
-
-        // ArrayList<SampleReducer> sampleReducers = new ArrayList<>();
-        // for (int i = 1; i < 556; i++) {
-        //     SampleReducer mr = new SampleReducer();
-        //     mr.count=i;
-        //     sampleReducers.add(mr);
-        // }
-        // Dataset<SampleReducer> df = Properties.SPARK.createDataset(sampleReducers, Encoders.bean(SampleReducer.class)).repartition(6);
+        ArrayList<SampleMapper> sampleMappers = new ArrayList<>();
+        for (int i = 1; i < 556; i++) {
+            SampleMapper mr = new SampleMapper();
+            mr.count=i;
+            sampleMappers.add(mr);
+        }
+        Dataset<SampleMapper> df = Properties.SPARK.createDataset(sampleMappers, Encoders.bean(SampleMapper.class)).repartition(6);
         df.show((int) df.count());
-        // System.out.println(df.javaRDD().getNumPartitions());
+        System.out.println(df.javaRDD().getNumPartitions());
 
         Encoder<SampleReducer> reducerEncoder = Encoders.bean(SampleReducer.class);
         Dataset<SampleReducer> df2 = df.as(reducerEncoder);
@@ -61,16 +61,26 @@ public class Sample {
     public static void mapPartitionExample(){
         SampleMapper sampleMapper = new SampleMapper();
         SampleReducer sampleReducer = new SampleReducer();
-        Dataset<SampleMapper> df = InitialTableSpark.quartetsTable
-                .toDF()
-                // .coalesce(1)
-                .map
-                        (
-                                (MapFunction<Row, SampleMapper>) sampleMapper::incrementCount,
-                                Encoders.bean(SampleMapper.class)
-                        )
-                // .toDF()
-                ;
+        // Dataset<SampleMapper> df = TaxaTable.quartetsTable
+        //         .toDF()
+        //         // .coalesce(1)
+        //         .map
+        //                 (
+        //                         (MapFunction<Row, SampleMapper>) sampleMapper::incrementCount,
+        //                         Encoders.bean(SampleMapper.class)
+        //                 )
+        //         // .toDF()
+        //         ;
+        ArrayList<SampleMapper> sampleMappers = new ArrayList<>();
+        for (int i = 1; i < 556; i++) {
+            SampleMapper mr = new SampleMapper();
+            mr.count=i;
+            sampleMappers.add(mr);
+        }
+        Dataset<SampleMapper> df = Properties.SPARK.createDataset(sampleMappers, Encoders.bean(SampleMapper.class)).repartition(6);
+
+        df.show((int) df.count());
+
         Dataset<Integer> df1 = df.as(Encoders.INT());
         JavaRDD<Integer> objectJavaRDD = df1.toJavaRDD().mapPartitions(iterator -> {
             int size =0;
@@ -93,13 +103,13 @@ public class Sample {
         // System.out.println(broadCast.getValue());
         String finalTree = "NONE";
         wQFMRunner legBip = new wQFMRunner();
-        // legBip.runDevideNConquer(InitialTableSpark.quartetsTable.collectAsList());
+        // legBip.runDevideNConquer(TaxaTable.quartetsTable.collectAsList());
 
         // Initial Bipartition
-        // InitialBipartition initialBipartition = new InitialBipartition(InitialTableSpark.TAXA_LIST);
+        // InitialBipartition initialBipartition = new InitialBipartition(TaxaTable.TAXA_LIST);
         // //monotonically_increasing_id Doesn't ensure sequenciallity but ensures increasing values; good enough
         // // should be #breaks=#partitions
-        // Dataset<Row> allPartitionDs = InitialTableSpark.quartetsTable
+        // Dataset<Row> allPartitionDs = TaxaTable.quartetsTable
         //         .toDF()
         //         .map((MapFunction<Row, InitialBipartition>) initialBipartition::performPartitionBasedOnQuartet, Encoders.bean(InitialBipartition.class))
         //         .toDF()
@@ -111,13 +121,13 @@ public class Sample {
         // Map<Integer, Integer> initialBipartitionMap = initialBipartition.performPartitionRandomBalanced(latestPartition);
         // System.out.println("initial bipartition after performPartitionRandomBalanced: " + initialBipartitionMap);
         //
-        // // legBip.doBipartition8ValuesCalculation(InitialTableSpark.quartetsTable,initialBipartitionMap, level);
+        // // legBip.doBipartition8ValuesCalculation(TaxaTable.quartetsTable,initialBipartitionMap, level);
         // // Bipartition scores
         // Bipartition8Values initialBip_8_vals = new Bipartition8Values(initialBipartitionMap);
         //
         // Encoder<Bipartition8Values> bipartition8ValuesEncoder = Encoders.bean(Bipartition8Values.class);
         //
-        // initialBip_8_vals = InitialTableSpark.quartetsTable
+        // initialBip_8_vals = TaxaTable.quartetsTable
         //         .toDF()
         //         .map((MapFunction<Row, Bipartition8Values>) initialBip_8_vals::compute8ValuesUsingAllQuartets_this_level, Encoders.bean(Bipartition8Values.class))
         //         .toDF()
