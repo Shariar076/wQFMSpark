@@ -1,6 +1,6 @@
 package util;
 
-import config.DefaultValues;
+import properties.DefaultValues;
 import structure.InitialTable;
 
 import java.util.Map;

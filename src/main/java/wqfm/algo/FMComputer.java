@@ -288,7 +288,7 @@ public class FMComputer {
         /*        System.out.println("L 376. level = " + this.level + " , max_cumulative_gain_of_current_iteration = "
                 + max_cumulative_gain_of_current_iteration + ", this.bipartitionMap = \n"
                 + Helper.getPartition(bipartitionMap, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION, InitialTable.map_of_int_vs_str_tax_list)
-                + " , small_epsilon = " + Properties.SMALLEPSILON + " , return false.");
+                + " , small_epsilon = " + Configs.SMALLEPSILON + " , return false.");
          */
         return false;
     }

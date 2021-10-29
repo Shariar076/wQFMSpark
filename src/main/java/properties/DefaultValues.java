@@ -1,4 +1,4 @@
-package config;
+package properties;
 
 public interface DefaultValues {
     String INPUT_MODE_WEIGHTED_QUARTETS = "weighted-quartets";

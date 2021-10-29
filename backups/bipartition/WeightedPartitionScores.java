@@ -1,7 +1,7 @@
 package bipartition;
 
-import config.Config;
-import config.DefaultValues;
+import properties.Config;
+import properties.DefaultValues;
 
 public class WeightedPartitionScores {
     public static double ALPHA_PARTITION_SCORE = 1;

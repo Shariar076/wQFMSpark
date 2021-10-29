@@ -1,7 +1,7 @@
 package bipartition;
 
-import config.Config;
-import config.DefaultValues;
+import properties.Config;
+import properties.DefaultValues;
 import feature.FeatureComputer;
 import org.apache.spark.sql.Row;
 import structure.Quartet;

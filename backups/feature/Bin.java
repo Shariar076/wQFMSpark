@@ -1,7 +1,7 @@
 package feature;
 
-import config.Config;
-import config.DefaultValues;
+import properties.Config;
+import properties.DefaultValues;
 
 import java.util.ArrayList;
 import java.util.List;

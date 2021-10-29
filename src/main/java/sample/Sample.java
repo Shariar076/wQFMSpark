@@ -1,15 +1,13 @@
 package sample;
 
 import algorithm.wQFMRunner;
-import config.Properties;
+import properties.Configs;
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.MapFunction;
 import org.apache.spark.api.java.function.ReduceFunction;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoder;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
-import structure.TaxaTable;
 
 import java.util.*;
 
@@ -37,7 +35,7 @@ public class Sample {
             mr.count=i;
             sampleMappers.add(mr);
         }
-        Dataset<SampleMapper> df = Properties.SPARK.createDataset(sampleMappers, Encoders.bean(SampleMapper.class)).repartition(6);
+        Dataset<SampleMapper> df = Configs.SPARK.createDataset(sampleMappers, Encoders.bean(SampleMapper.class)).repartition(6);
         df.show((int) df.count());
         System.out.println(df.javaRDD().getNumPartitions());
 
@@ -77,7 +75,7 @@ public class Sample {
             mr.count=i;
             sampleMappers.add(mr);
         }
-        Dataset<SampleMapper> df = Properties.SPARK.createDataset(sampleMappers, Encoders.bean(SampleMapper.class)).repartition(6);
+        Dataset<SampleMapper> df = Configs.SPARK.createDataset(sampleMappers, Encoders.bean(SampleMapper.class)).repartition(6);
 
         df.show((int) df.count());
 
@@ -91,14 +89,14 @@ public class Sample {
             return Collections.singletonList(size).iterator();
         });
         System.out.println(objectJavaRDD.collect());
-        Dataset<Integer> objectDataset = Properties.SPARK.createDataset(objectJavaRDD.rdd(), Encoders.INT());
+        Dataset<Integer> objectDataset = Configs.SPARK.createDataset(objectJavaRDD.rdd(), Encoders.INT());
         objectDataset.show();
 
-        Dataset<Row> objectDataframe = objectDataset.toDF(); //Properties.SPARK.createDataFrame(objectJavaRDD.rdd(), Integer.class); this only work with user defined class apparently
+        Dataset<Row> objectDataframe = objectDataset.toDF(); //Configs.SPARK.createDataFrame(objectJavaRDD.rdd(), Integer.class); this only work with user defined class apparently
         objectDataframe.show();
     }
     public static String recursiveDivideAndConquer(int level) {
-        // Broadcast<String> broadCast = Properties.SPARK.sparkContext()
+        // Broadcast<String> broadCast = Configs.SPARK.sparkContext()
         //         .broadcast("Broadcasted", scala.reflect.ClassManifestFactory.fromClass(String.class));
         // System.out.println(broadCast.getValue());
         String finalTree = "NONE";
@@ -136,7 +134,7 @@ public class Sample {
         //         .head();
         // // System.out.println(initialBip_8_vals);
         // System.out.println(initialBip_8_vals.map_four_tax_seq_weights_list);
-        // if (Properties.PARTITION_SCORE_MODE == DefaultValues.PARTITION_SCORE_FULL_DYNAMIC) {
+        // if (Configs.PARTITION_SCORE_MODE == DefaultValues.PARTITION_SCORE_FULL_DYNAMIC) {
         //     initialBip_8_vals.calculateDynamicScore(level, initialBip_8_vals.getMap_four_tax_seq_weights_list());
         // }
 

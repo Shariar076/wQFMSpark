@@ -1,6 +1,6 @@
 package algorithm;
 
-import config.Properties;
+import properties.Configs;
 import wqfm.algo.FMRunner;
 import wqfm.ds.CustomDSPerLevel;
 import wqfm.ds.InitialTable;
@@ -66,7 +66,7 @@ public class wQFMRunner implements Serializable {
     //     InitialBipartition initialBip = new InitialBipartition();
     //     Map<Integer, Integer> mapInitialBipartition = initialBip.getInitialBipartitionMap(customDS_this_level);
     //     System.out.println("initial bipartition map: "+ mapInitialBipartition);
-    //     if (legacy.configs.Properties.DEBUG_MODE_PRINTING_GAINS_BIPARTITIONS) {
+    //     if (legacy.configs.Configs.DEBUG_MODE_PRINTING_GAINS_BIPARTITIONS) {
     //         System.out.println("L 84. FMComputer. Printing initialBipartition.");
     //         IOHandler.printPartition(mapInitialBipartition, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION, InitialTable.map_of_int_vs_str_tax_list);
     //     }
@@ -130,7 +130,7 @@ public class wQFMRunner implements Serializable {
 //        System.out.println(final_tree);
         String final_tree_decoded = wqfm.utils.IOHandler.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);
         System.out.println(final_tree_decoded);
-        wqfm.utils.IOHandler.writeToFile(final_tree_decoded, Properties.OUTPUT_FILE_NAME);
+        wqfm.utils.IOHandler.writeToFile(final_tree_decoded, Configs.OUTPUT_FILE_NAME);
 
         return final_tree_decoded;
     }

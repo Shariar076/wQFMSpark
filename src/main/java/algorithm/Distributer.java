@@ -1,6 +1,6 @@
 package algorithm;
 
-import config.Properties;
+import properties.Configs;
 import mapper.QuartetToTreeTablePartitionMapper;
 import mapper.StringToTaxaTableMapper;
 import org.apache.spark.sql.Dataset;
@@ -16,7 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.spark.sql.functions.*;
+import static org.apache.spark.sql.functions.col;
+import static org.apache.spark.sql.functions.lit;
+import static org.apache.spark.sql.functions.concat;
+import static org.apache.spark.sql.functions.udf;
 
 
 public class Distributer {
@@ -36,9 +39,9 @@ public class Distributer {
     }
 
     public static Dataset<Row> readFileInDf(String inputFileName) {
-        return Properties.SPARK.read().option("header", "true")
-                .csv(Properties.HDFS_PATH + "/" + inputFileName)
-                .orderBy(desc("count"));
+        return Configs.SPARK.read().option("header", "true")
+                .csv(Configs.HDFS_PATH + "/" + inputFileName);
+                // .orderBy(desc("count"));
     }
 
     public static Dataset<Row> tagDataForPartition(Dataset<Row> sortedWqDf) {
@@ -49,8 +52,8 @@ public class Distributer {
 
         System.out.println("Final Taxa Table: " + taxaTable.toString());
 
-        // Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaListByCombination(taxaTable.TAXA_LIST);
-        Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaListByTaxaTable(taxaTable.TAXA_PARTITION_LIST);
+        Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaListByCombination(taxaTable.TAXA_LIST);
+        // Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaListByTaxaTable(taxaTable.TAXA_PARTITION_LIST);
         //Print partitionMap
         for (Map.Entry<String, ArrayList<String>> partition : taxaPartitionMap.entrySet()) {
             System.out.println(partition);

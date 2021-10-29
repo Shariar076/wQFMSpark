@@ -1,6 +1,6 @@
 package bipartition;
 
-import config.DefaultValues;
+import properties.DefaultValues;
 import org.apache.spark.sql.Row;
 import structure.Quartet;
 

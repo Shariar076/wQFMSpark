@@ -1,8 +1,8 @@
 package feature;
 
 import bipartition.WeightedPartitionScores;
-import config.Config;
-import config.DefaultValues;
+import properties.Config;
+import properties.DefaultValues;
 import structure.Quartet;
 
 import java.util.*;
