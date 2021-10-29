@@ -1,11 +1,8 @@
 package algorithm;
 
 import config.Properties;
-import mapper.SimplePartionMapper;
+import mapper.QuartetToTreeTablePartitionMaper;
 import mapper.StringToTaxaTableMapper;
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.MapFunction;
-import org.apache.spark.api.java.function.MapPartitionsFunction;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
@@ -13,11 +10,12 @@ import org.apache.spark.sql.expressions.UserDefinedFunction;
 import org.apache.spark.sql.types.DataTypes;
 import reducer.TaxaTableReducer;
 import structure.TaxaTable;
-import wqfm.utils.CombinationGenerator;
+import structure.TreeTable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import static java.util.stream.Collectors.toList;
 import static org.apache.spark.sql.functions.*;
 
 
@@ -27,23 +25,20 @@ public class Distributer {
         // runCentalized(sortedQtDf);
         Dataset<Row> taggedDf = tagDataForPartition(sortedQtDf);
         Dataset<Row> treeDf = partitionAndRun(taggedDf);
-        String final_tree_decoded = "tree";
-        return final_tree_decoded;
+        return "tree";
     }
 
 
     public static String runCentalized(Dataset<Row> sortedWqDf) {
         sortedWqDf = sortedWqDf.withColumn("weightedQuartet", concat(col("value"), lit(" "), col("count")));
         List<String> qtList = sortedWqDf.select("weightedQuartet").as(Encoders.STRING()).collectAsList();
-        String finalTree = new wQFMRunner().runDevideNConquer(qtList);
-        return finalTree;
+        return new wQFMRunner().runDevideNConquer(qtList);
     }
 
     public static Dataset<Row> readFileInDf(String inputFileName) {
-        Dataset<Row> sortedWqDf = config.Properties.SPARK.read().option("header", "true")
+        return Properties.SPARK.read().option("header", "true")
                 .csv(Properties.HDFS_PATH + "/" + inputFileName)
                 .orderBy(desc("count"));
-        return sortedWqDf;
     }
 
     public static Dataset<Row> tagDataForPartition(Dataset<Row> sortedWqDf) {
@@ -55,7 +50,10 @@ public class Distributer {
         System.out.println("Final Taxa Table: " + taxaTable.toString());
 
         Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaList(taxaTable.TAXA_LIST);
-        System.out.println(taxaPartitionMap);
+        //Print partitionMap
+        for(Map.Entry<String, ArrayList<String>> partition: taxaPartitionMap.entrySet()){
+            System.out.println(partition);
+        }
 
         //t's because, List returned by subList() method is an instance of 'RandomAccessSubList' which is not serializable.
         // Therefore, you need to create a new ArrayList object from the list returned by the subList().
@@ -63,7 +61,7 @@ public class Distributer {
                 (String qtStr) -> TaxaPartition.getTag(qtStr, taxaPartitionMap), DataTypes.StringType
         );
         Dataset<Row> taggedQtDf = sortedWqDf.withColumn("tag", tagger.apply(col("value")));
-        taggedQtDf.groupBy(col("tag")).count().show();
+        taggedQtDf.groupBy(col("tag")).count().show(false);
 
         return taggedQtDf;
     }
@@ -89,23 +87,15 @@ public class Distributer {
                 .withColumn("weightedQuartet", concat(col("value"), lit(" "), col("count")))
                 // .filter(col("tag").notEqual("UNDEFINED"))
                 .orderBy("tag"); // orderBy partitioned unique data to same partition
+
         // TaxaPartition.getPartitionDetail(partitionedDf);
         System.out.println("NumPartitions: " + partitionedDf.javaRDD().getNumPartitions());
 
-
-        Dataset<Row> treeDf = partitionedDf.select("weightedQuartet")
-                .mapPartitions((MapPartitionsFunction<Row, String>)  iterator -> {
-                    ArrayList<String> arrayList = new ArrayList<>();
-                    while (iterator.hasNext()) {
-                        arrayList.add(iterator.next().getString(0));
-                    }
-                    String tree = "<NULL>";
-                    if (arrayList.size() > 0) tree = new wQFMRunner().runDevideNConquer(arrayList);
-                    return Collections.singletonList(tree).iterator();
-                }, Encoders.STRING())
+        Dataset<Row> treeTableDf = partitionedDf.select("weightedQuartet", "tag")
+                .mapPartitions(new QuartetToTreeTablePartitionMaper(), Encoders.bean(TreeTable.class))
                 .toDF();
 
-        treeDf.filter(col("value").notEqual("<NULL>")).show(false);
-        return treeDf;
+        treeTableDf.filter(col("tree").notEqual("<NULL>")).show(false);
+        return treeTableDf;
     }
 }

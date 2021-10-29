@@ -12,23 +12,14 @@ import static java.util.stream.Collectors.toList;
 
 
 public class TaxaPartition {
-
-    public static ArrayList<List<String>> getAllPartition(ArrayList<String> taxaList) {
-        CombinationGenerator combinationGenerator = new CombinationGenerator();
-        List<int[]> combinations = combinationGenerator.generate(taxaList.size(), taxaList.size()-1);
-        ArrayList<List<String>> taxaPartitionList = new ArrayList<>();
-        for (int[] combination : combinations) {
-            // System.out.println(Arrays.toString(combination));
-            List<String> taxaPartition = Arrays.stream(combination).mapToObj(taxaList::get).collect(toList());
-            taxaPartitionList.add(taxaPartition);
-        }
-        return taxaPartitionList;
-    }
-
     public static Map<String, ArrayList<String>> partitionTaxaList(ArrayList<String> taxaList) {
         Map<String, ArrayList<String>> mapPartition = new HashMap<>();
-        ArrayList<List<String>> taxaPartitionList = getAllPartition(taxaList);
-        for (List<String> taxaPartition: taxaPartitionList){
+
+        CombinationGenerator combinationGenerator = new CombinationGenerator();
+        List<int[]> combinations = combinationGenerator.generate(taxaList.size(), taxaList.size()-1);
+
+        for (int[] combination : combinations) {
+            List<String> taxaPartition = Arrays.stream(combination).mapToObj(taxaList::get).collect(toList());
             ArrayList<String> list = new ArrayList<>(taxaPartition);
             String key = String.join("-", list);
             mapPartition.put(key, list);

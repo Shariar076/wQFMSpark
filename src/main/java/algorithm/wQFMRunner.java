@@ -108,7 +108,7 @@ public class wQFMRunner implements Serializable {
     //     initialBip_8_vals.compute8ValuesUsingAllQuartets_this_level(customDS_this_level, mapInitialBipartition);
     // }
     public String runDevideNConquer(List<String> quartetsList){
-        System.out.println("Partition List: " + quartetsList + "\n"+"Count: "+ quartetsList.stream().count());
+        System.out.println("Partition Quartets Count: "+ quartetsList.stream().count());
         FMRunner runner = new FMRunner();
         CustomDSPerLevel customDS = new CustomDSPerLevel();
         InitialTable initialTable = this.setLegacyInitialTable(quartetsList, customDS);
