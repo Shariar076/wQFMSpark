@@ -1,7 +1,7 @@
 package algorithm;
 
 import config.Properties;
-import mapper.QuartetToTreeTablePartitionMaper;
+import mapper.QuartetToTreeTablePartitionMapper;
 import mapper.StringToTaxaTableMapper;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
@@ -49,9 +49,10 @@ public class Distributer {
 
         System.out.println("Final Taxa Table: " + taxaTable.toString());
 
-        Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaList(taxaTable.TAXA_LIST);
+        // Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaListByCombination(taxaTable.TAXA_LIST);
+        Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaListByTaxaTable(taxaTable.TAXA_PARTITION_LIST);
         //Print partitionMap
-        for(Map.Entry<String, ArrayList<String>> partition: taxaPartitionMap.entrySet()){
+        for (Map.Entry<String, ArrayList<String>> partition : taxaPartitionMap.entrySet()) {
             System.out.println(partition);
         }
 
@@ -62,7 +63,6 @@ public class Distributer {
         );
         Dataset<Row> taggedQtDf = sortedWqDf.withColumn("tag", tagger.apply(col("value")));
         taggedQtDf.groupBy(col("tag")).count().show(false);
-
         return taggedQtDf;
     }
 
@@ -91,8 +91,8 @@ public class Distributer {
         // TaxaPartition.getPartitionDetail(partitionedDf);
         System.out.println("NumPartitions: " + partitionedDf.javaRDD().getNumPartitions());
 
-        Dataset<Row> treeTableDf = partitionedDf.select("weightedQuartet", "tag")
-                .mapPartitions(new QuartetToTreeTablePartitionMaper(), Encoders.bean(TreeTable.class))
+        Dataset<Row> treeTableDf = partitionedDf.select("weightedQuartet", "tag", "count")
+                .mapPartitions(new QuartetToTreeTablePartitionMapper(), Encoders.bean(TreeTable.class))
                 .toDF();
 
         treeTableDf.filter(col("tree").notEqual("<NULL>")).show(false);

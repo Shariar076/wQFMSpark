@@ -1,4 +1,4 @@
-package wqfm.utils;
+package util;
 
 import java.util.ArrayList;
 import java.util.List;

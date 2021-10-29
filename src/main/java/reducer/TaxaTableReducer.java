@@ -24,41 +24,42 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
     //     }
     // }
 
-    // private static boolean any3TaxonInPartition(ArrayList<String> taxalist, ArrayList<String> partition) {
-    //     int inPartitionCount =0;
-    //     for (String taxon : taxalist) {
-    //         if (partition.contains(taxon)) {
-    //             inPartitionCount++;
-    //             if(inPartitionCount == 2) return true;
-    //         }
-    //     }
-    //     return false;
-    // }
-    //
-    // private static void updatePartition(ArrayList<String> taxalist, ArrayList<String> partition) {
-    //     for (String taxon : taxalist) {
-    //         if (!partition.contains(taxon)) partition.add(taxon);
-    //     }
-    //     Collections.sort(partition);
-    // }
-    //
-    // private static ArrayList<String> createPartition(ArrayList<String> taxalist) {
-    //     Collections.sort(taxalist);
-    //     return taxalist;
-    // }
-    //
-    // private static void updateTaxaTablePartitions(ArrayList<String> taxaList, TaxaTable taxaTable) {
-    //     ArrayList<ArrayList<String>> newPartitions = new ArrayList<>();
-    //
-    //     if (taxaTable.TAXA_PARTITION_LIST.isEmpty()) newPartitions.add(createPartition(taxaList));
-    //
-    //     else for (ArrayList<String> partition : taxaTable.TAXA_PARTITION_LIST) {
-    //         if (any3TaxonInPartition(taxaList, partition)) updatePartition(taxaList, partition);
-    //         else newPartitions.add(createPartition(taxaList));
-    //     }
-    //
-    //     taxaTable.TAXA_PARTITION_LIST.addAll(newPartitions);
-    // }
+    private static boolean allTaxonInPartition(ArrayList<String> taxalist, ArrayList<String> partition) {
+        for (String taxon : taxalist) {
+            if (!partition.contains(taxon)) return false;
+        }
+        return true;
+    }
+
+    private static void updatePartition(ArrayList<String> taxalist, ArrayList<String> partition) {
+        for (String taxon : taxalist) {
+            if (!partition.contains(taxon)) partition.add(taxon);
+        }
+        Collections.sort(partition);
+    }
+
+    private static ArrayList<String> createPartition(ArrayList<String> taxalist) {
+        Collections.sort(taxalist);
+        return taxalist;
+    }
+
+    private static void updateTaxaTablePartitions(ArrayList<String> taxaList, TaxaTable taxaTable) {
+        ArrayList<ArrayList<String>> newPartitions = new ArrayList<>();
+        for (ArrayList<String> partition : taxaTable.TAXA_PARTITION_LIST) {
+            if(allTaxonInPartition(taxaList, partition)){
+                //taxaList already contained by some partition
+                return;
+            }
+            if (partition.size() < 8) { // either  8 or 12 or ...
+                updatePartition(taxaList, partition);
+                // no new partition needed
+                return;
+            }
+        }
+        // here means no update occurred
+        newPartitions.add(createPartition(taxaList));
+        taxaTable.TAXA_PARTITION_LIST.addAll(newPartitions);
+    }
 
     @Override
     public TaxaTable call(TaxaTable taxaTable, TaxaTable t1) throws Exception {
@@ -66,7 +67,7 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
             updateTaxaTableWithTaxon(taxon, taxaTable);
         }
         // updateTaxaTableWithTaxaList(taxaTable, t1);
-        // updateTaxaTablePartitions(t1.TAXA_LIST, taxaTable);
+        updateTaxaTablePartitions(t1.TAXA_LIST, taxaTable);
         return taxaTable;
     }
 }

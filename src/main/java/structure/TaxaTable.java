@@ -15,7 +15,7 @@ public class TaxaTable implements Serializable {
 
     // public Map<String,Integer> TAXA_GRP_COUNT = new HashMap<>();
 
-    // public ArrayList<ArrayList<String>> TAXA_PARTITION_LIST =  new ArrayList<>();
+    public ArrayList<ArrayList<String>> TAXA_PARTITION_LIST =  new ArrayList<>();
 
     public TaxaTable() {
     }
@@ -36,20 +36,20 @@ public class TaxaTable implements Serializable {
         this.TAXA_LIST = TAXA_LIST;
     }
 
-    // public ArrayList<ArrayList<String>> getTAXA_PARTITION_LIST() {
-    //     return TAXA_PARTITION_LIST;
-    // }
-    //
-    // public void setTAXA_PARTITION_LIST(ArrayList<ArrayList<String>> TAXA_PARTITION_LIST) {
-    //     this.TAXA_PARTITION_LIST = TAXA_PARTITION_LIST;
-    // }
+    public ArrayList<ArrayList<String>> getTAXA_PARTITION_LIST() {
+        return TAXA_PARTITION_LIST;
+    }
+
+    public void setTAXA_PARTITION_LIST(ArrayList<ArrayList<String>> TAXA_PARTITION_LIST) {
+        this.TAXA_PARTITION_LIST = TAXA_PARTITION_LIST;
+    }
 
     @Override
     public String toString() {
         return "TaxaTable{" +
                 "TAXA_COUNT=" + TAXA_COUNT +
                 ",\n TAXA_LIST=" + TAXA_LIST +
-                // ",\n TAXA_PARTITION_LIST=" + TAXA_PARTITION_LIST +
+                ",\n TAXA_PARTITION_LIST Size=" + TAXA_PARTITION_LIST.size()+
                 '}';
     }
 }

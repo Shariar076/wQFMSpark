@@ -4,7 +4,8 @@ import org.apache.spark.api.java.function.MapPartitionsFunction;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
-import wqfm.utils.CombinationGenerator;
+import structure.TaxaTable;
+import util.CombinationGenerator;
 
 import java.util.*;
 
@@ -12,7 +13,17 @@ import static java.util.stream.Collectors.toList;
 
 
 public class TaxaPartition {
-    public static Map<String, ArrayList<String>> partitionTaxaList(ArrayList<String> taxaList) {
+    public static Map<String, ArrayList<String>> partitionTaxaListByTaxaTable(ArrayList<ArrayList<String>> taxaPartitionList) {
+        Map<String, ArrayList<String>> mapPartition = new HashMap<>();
+
+        for (ArrayList<String> list: taxaPartitionList) {
+            String key = String.join("-", list);
+            mapPartition.put(key, list);
+        }
+        return mapPartition;
+    }
+
+    public static Map<String, ArrayList<String>> partitionTaxaListByCombination(ArrayList<String> taxaList) {
         Map<String, ArrayList<String>> mapPartition = new HashMap<>();
 
         CombinationGenerator combinationGenerator = new CombinationGenerator();

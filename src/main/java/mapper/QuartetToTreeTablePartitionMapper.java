@@ -9,17 +9,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-public class QuartetToTreeTablePartitionMaper implements MapPartitionsFunction<Row, TreeTable> {
+public class QuartetToTreeTablePartitionMapper implements MapPartitionsFunction<Row, TreeTable> {
     @Override
     public Iterator<TreeTable> call(Iterator<Row> iterator) throws Exception {
         TreeTable treeTable = new TreeTable();
         int qtCount = 0;
+        double qtWeightSum = 0;
         String qtTag = "";
         ArrayList<String> arrayList = new ArrayList<>();
         while (iterator.hasNext()) {
             Row row = iterator.next();
             arrayList.add(row.getString(0));
-            qtCount++;
+            // qtCount++;
+            qtWeightSum+=Double.parseDouble(row.getString(2)); //row.getDouble(2);
             if(qtTag.isEmpty()) qtTag = row.getString(1); // find this partition's tag
             else if (!qtTag.equals(row.getString(1))) throw new Exception("Tag mismatch within partition");
         }
@@ -28,7 +30,7 @@ public class QuartetToTreeTablePartitionMaper implements MapPartitionsFunction<R
 
         treeTable.setTree(tree);
         treeTable.setTag(qtTag);
-        treeTable.setSupport(qtCount);
+        treeTable.setSupport(qtWeightSum);
         return Collections.singletonList(treeTable).iterator();
 
     }

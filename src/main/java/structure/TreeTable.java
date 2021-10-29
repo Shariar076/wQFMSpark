@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class TreeTable {
     public String tree;
     public String tag;
-    public int support;
+    public double support;
 
     public TreeTable() {
     }
@@ -26,11 +26,11 @@ public class TreeTable {
         this.tag = tag;
     }
 
-    public int getSupport() {
+    public double getSupport() {
         return support;
     }
 
-    public void setSupport(int support) {
+    public void setSupport(double support) {
         this.support = support;
     }
 
