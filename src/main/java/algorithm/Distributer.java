@@ -1,6 +1,5 @@
 package algorithm;
 
-import newick.TestPhylonet;
 import properties.Configs;
 import mapper.QuartetToTreeTablePartitionMapper;
 import mapper.StringToTaxaTableMapper;
