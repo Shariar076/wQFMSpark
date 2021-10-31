@@ -1,4 +1,4 @@
-package util;
+package newick;
 
 import java.util.*;
 

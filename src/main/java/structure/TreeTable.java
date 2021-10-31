@@ -1,8 +1,8 @@
 package structure;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public class TreeTable {
+public class TreeTable implements Serializable {
     public String tree;
     public String tag;
     public double support;
