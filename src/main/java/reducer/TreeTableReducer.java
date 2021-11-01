@@ -52,12 +52,11 @@ public class TreeTableReducer implements ReduceFunction<TreeTable> {
 
 
         List<String> constrainedMainTreeLeaves = Arrays.asList(copyMainTree.getLeaves());
-        Collections.sort(constrainedMainTreeLeaves);
-        Collections.sort(updateLeaves);
-        // System.out.println("constrainedMainTreeLeaves: " + constrainedMainTreeLeaves);
-        // System.out.println("updateLeaves: " + updateLeaves);
-        if (!constrainedMainTreeLeaves.equals((updateLeaves)))
-            throw new Exception("Discordance: subtree mismatch with leaves" + updateLeaves);
+        // Collections.sort(constrainedMainTreeLeaves);
+        // Collections.sort(updateLeaves);
+        if (!updateLeaves.containsAll(constrainedMainTreeLeaves))
+            throw new Exception("Discordance: subtree mismatch between constrainedMainTreeLeaves: " +
+                    constrainedMainTreeLeaves + " and updateLeaves:" + updateLeaves);
 
         String searchStr = copyMainTree.toNewick();
         searchStr = searchStr.substring(0, searchStr.indexOf(";"));
@@ -125,8 +124,10 @@ public class TreeTableReducer implements ReduceFunction<TreeTable> {
             String updatedStr;
             try {
                 updatedStr = addSubtreesWithMissingTaxa(newickTree1, newickTree2);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
+                System.out.println("treeTable: " + treeTable);
+                System.out.println("t1: " + t1);
                 return treeTable;
             }
             // System.out.println(updatedStr);

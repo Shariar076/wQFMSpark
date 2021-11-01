@@ -1,6 +1,7 @@
 package reducer;
 
 import org.apache.spark.api.java.function.ReduceFunction;
+import properties.Configs;
 import structure.TaxaTable;
 
 import java.util.ArrayList;
@@ -24,11 +25,12 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
     //     }
     // }
 
-    private static boolean allTaxonInPartition(ArrayList<String> taxalist, ArrayList<String> partition) {
+    private static int countTaxonInPartition(ArrayList<String> taxalist, ArrayList<String> partition) {
+        int count = 0;
         for (String taxon : taxalist) {
-            if (!partition.contains(taxon)) return false;
+            if (!partition.contains(taxon)) count++;
         }
-        return true;
+        return count;
     }
 
     private static void updatePartition(ArrayList<String> taxalist, ArrayList<String> partition) {
@@ -45,19 +47,27 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
 
     private static void updateTaxaTablePartitions(ArrayList<String> taxaList, TaxaTable taxaTable) {
         ArrayList<ArrayList<String>> newPartitions = new ArrayList<>();
-        for (ArrayList<String> partition : taxaTable.TAXA_PARTITION_LIST) {
-            if(allTaxonInPartition(taxaList, partition)){
-                //taxaList already contained by some partition
-                return;
+        if (taxaTable.TAXA_PARTITION_LIST.isEmpty()) newPartitions.add(createPartition(taxaList));
+        else {
+            //update
+            for (ArrayList<String> partition : taxaTable.TAXA_PARTITION_LIST) {
+                if (countTaxonInPartition(taxaList, partition) == taxaList.size()) {
+                    //taxaList already contained by some partition
+                    return;
+                } else if (countTaxonInPartition(taxaList, partition) != 1) { // partition.size() < Configs.TAXA_PER_PARTITION
+                    updatePartition(taxaList, partition);
+                    // no new partition needed
+                    return;
+                }
             }
-            if (partition.size() < 8) { // either  8 or 12 or ...
-                updatePartition(taxaList, partition);
-                // no new partition needed
-                return;
-            }
+            //insert
+            for (ArrayList<String> partition : taxaTable.TAXA_PARTITION_LIST)
+                if (countTaxonInPartition(taxaList, partition) == 1) { //single taxa overlap
+                    newPartitions.add(createPartition(taxaList));
+                    break;
+                }
+            // here means no update occurred
         }
-        // here means no update occurred
-        newPartitions.add(createPartition(taxaList));
         taxaTable.TAXA_PARTITION_LIST.addAll(newPartitions);
     }
 

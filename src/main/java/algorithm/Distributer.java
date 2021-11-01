@@ -1,5 +1,6 @@
 package algorithm;
 
+import newick.TestPhylonet;
 import properties.Configs;
 import mapper.QuartetToTreeTablePartitionMapper;
 import mapper.StringToTaxaTableMapper;
@@ -27,8 +28,8 @@ public class Distributer {
         Dataset<Row> taggedDf = groupTaxaAndTagData(sortedQtDf, taxaTable);
         TreeTable treeTable = partitionDataAndRun(taggedDf, taxaTable);
         String centralizedRunTree = runCentalized(sortedQtDf);
-        System.out.println("centralizedRunTree: "+centralizedRunTree);
         System.out.println("distributedRunTree: "+treeTable.getTree());
+        System.out.println("centralizedRunTree: "+centralizedRunTree);
         return treeTable.getTree();
     }
 
@@ -89,6 +90,7 @@ public class Distributer {
         // .toDF();
 
         TreeTable finalTreeTable = treeTableDf.reduce(new TreeTableReducer(taxaTable.TAXA_LIST));
+        // TreeTable finalTreeTable = treeTableDf.collectAsList().stream().reduce(null, TestPhylonet::run);
         treeTableDf.show(false);
         System.out.println("Final tree " + finalTreeTable);
 
