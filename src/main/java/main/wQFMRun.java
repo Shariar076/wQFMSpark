@@ -45,7 +45,7 @@ public class wQFMRun {
         System.out.println("Input file consists of gene trees ... generating weighted quartets to file: " + DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT);
         IOHandler.generateWeightedQuartets(Config.INPUT_FILE_NAME, DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT);
         // remove file generated temporarily
-        // Helper.removeFile(DefaultValues.TEMP_WEIGHTED_QUARTETS_FILE_TO_REMOVE)
+        // Helper.removeFile(DefaultConfigs.TEMP_WEIGHTED_QUARTETS_FILE_TO_REMOVE)
         System.out.println("Generating weighted quartets completed.");
         // then switch to input file name as default weighted quartets name.
         Config.INPUT_FILE_NAME = DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT;

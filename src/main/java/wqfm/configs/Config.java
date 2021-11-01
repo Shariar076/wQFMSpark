@@ -15,11 +15,11 @@ public class Config {
     public static int MAX_ITERATIONS_LIMIT = 1000000; //can we keep it as another stopping-criterion ? [100k]
     public static boolean DEBUG_MODE_PRINTING_GAINS_BIPARTITIONS = false;
 
-//    public static int BIPARTITION_MODE = DefaultValues.BIPARTITION_GREEDY;
+//    public static int BIPARTITION_MODE = DefaultConfigs.BIPARTITION_GREEDY;
 //    public static boolean DEBUG_MODE_TESTING = true; // true -> while running from netbeans, false -> run from cmd
 
 
-    public static String INPUT_FILE_NAME = "input/gtree_11tax_est_5genes_R1.tre"; //DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT; // "input_files/weighted_quartets_avian_biological_dataset";
+    public static String INPUT_FILE_NAME = "input/gtree_11tax_est_5genes_R1.tre"; //DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT; // "input_files/weighted_quartets_avian_biological_dataset";
     public static String OUTPUT_FILE_NAME = "output/output-gt.tree";
 }
 

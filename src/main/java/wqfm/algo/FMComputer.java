@@ -246,8 +246,8 @@ public class FMComputer {
                 + " , Tax Passed = " + Helper.getStringMappedName(statOfMaxCumulativeGainBox.whichTaxaWasPassed)
                 + " map_final_bipartition = \n"
                 + Helper.getPartition(statOfMaxCumulativeGainBox.map_final_bipartition,
-                        DefaultValues.LEFT_PARTITION,
-                        DefaultValues.RIGHT_PARTITION,
+                        DefaultConfigs.LEFT_PARTITION,
+                        DefaultConfigs.RIGHT_PARTITION,
                         InitialTable.map_of_int_vs_str_tax_list));
          */
         //Only when max-cumulative-gain is GREATER than zero, we will change, otherwise return the initial bipartition of this iteration
@@ -287,8 +287,8 @@ public class FMComputer {
 
         /*        System.out.println("L 376. level = " + this.level + " , max_cumulative_gain_of_current_iteration = "
                 + max_cumulative_gain_of_current_iteration + ", this.bipartitionMap = \n"
-                + Helper.getPartition(bipartitionMap, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION, InitialTable.map_of_int_vs_str_tax_list)
-                + " , small_epsilon = " + Configs.SMALLEPSILON + " , return false.");
+                + Helper.getPartition(bipartitionMap, DefaultConfigs.LEFT_PARTITION, DefaultConfigs.RIGHT_PARTITION, InitialTable.map_of_int_vs_str_tax_list)
+                + " , small_epsilon = " + ConfigValues.SMALLEPSILON + " , return false.");
          */
         return false;
     }

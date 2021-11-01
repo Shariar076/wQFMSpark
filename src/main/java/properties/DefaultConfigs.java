@@ -1,6 +1,6 @@
 package properties;
 
-public interface DefaultValues {
+public interface DefaultConfigs {
     String INPUT_MODE_WEIGHTED_QUARTETS = "weighted-quartets";
     String INPUT_MODE_DEFAULT = INPUT_MODE_WEIGHTED_QUARTETS;
     String OFF = "off";

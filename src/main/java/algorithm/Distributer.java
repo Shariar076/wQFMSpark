@@ -1,7 +1,6 @@
 package algorithm;
 
-import newick.TestPhylonet;
-import properties.Configs;
+import properties.ConfigValues;
 import mapper.QuartetToTreeTablePartitionMapper;
 import mapper.StringToTaxaTableMapper;
 import org.apache.spark.sql.Dataset;
@@ -41,8 +40,8 @@ public class Distributer {
     }
 
     public static Dataset<Row> readFileInDf(String inputFileName) {
-        return Configs.SPARK.read().option("header", "true")
-                .csv(Configs.HDFS_PATH + "/" + inputFileName);
+        return ConfigValues.SPARK.read().option("header", "true")
+                .csv(ConfigValues.HDFS_PATH + "/" + inputFileName);
         // .orderBy(desc("count"));
     }
 

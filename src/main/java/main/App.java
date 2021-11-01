@@ -1,8 +1,8 @@
 package main;
 
 import algorithm.Distributer;
-import properties.Configs;
-import properties.DefaultValues;
+import properties.ConfigValues;
+import properties.DefaultConfigs;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.SparkSession;
@@ -34,15 +34,15 @@ public class App {
     }
 
     public static void initializeAndRun(SparkSession spark){
-        Configs.SPARK = spark;
+        ConfigValues.SPARK = spark;
 
-        System.out.println("Input file consists of gene trees ... generating weighted quartets to file: " + DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT);
-        // IOHandler.generateWeightedQuartets(Configs.INPUT_FILE_NAME, Configs.OUTPUT_FILE_NAME);
-        WQGenerator.generateWQ(Configs.INPUT_FILE_NAME, DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT);
+        System.out.println("Input file consists of gene trees ... generating weighted quartets to file: " + DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT);
+        // IOHandler.generateWeightedQuartets(ConfigValues.INPUT_FILE_NAME, ConfigValues.OUTPUT_FILE_NAME);
+        WQGenerator.generateWQ(ConfigValues.INPUT_FILE_NAME, DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT);
         System.out.println("Generation of weighted quartets completed.");
         // then switch to input file name as default weighted quartets name.
 
-        String treeOutput = App.runwQFMSpark(DefaultValues.INPUT_FILE_NAME_WQRTS_DEFAULT, Configs.OUTPUT_FILE_NAME); // run wQFM
+        String treeOutput = App.runwQFMSpark(DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT, ConfigValues.OUTPUT_FILE_NAME); // run wQFM
     }
     public static String addBracketsAndSemiColon(String s) {
         return "(" + s + ");";

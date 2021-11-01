@@ -1,6 +1,6 @@
 package util;
 
-import properties.Configs;
+import properties.ConfigValues;
 import org.apache.spark.api.java.function.FlatMapFunction;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
@@ -97,7 +97,7 @@ public class WQGenerator {
         // System.out.println(counts.collect());
         // counts.saveAsTextFile("hdfs://localhost:9000/user/himel/"+outputFilename);
         // Dataframe
-        Dataset<Row> stDf = Configs.SPARK.read().text(Configs.HDFS_PATH + inputFilename);
+        Dataset<Row> stDf = ConfigValues.SPARK.read().text(ConfigValues.HDFS_PATH + inputFilename);
         Dataset<String> qtDs = stDf.flatMap((FlatMapFunction<Row, String>)
                         r -> induceQuartetsFromTree(r.toString().replaceAll("^\\[|\\]$","")).iterator(),
                 Encoders.STRING());
@@ -105,7 +105,7 @@ public class WQGenerator {
         removeTempFile();
         Dataset<Row> weightedQuartets = qtDs.toDF().groupBy("value").count();
         weightedQuartets.write().mode("overwrite").option("header","true")
-                .csv(Configs.HDFS_PATH+"/"+outputFilename);
+                .csv(ConfigValues.HDFS_PATH+"/"+outputFilename);
 
     }
 }

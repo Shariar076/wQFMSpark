@@ -1,11 +1,9 @@
 package reducer;
 
 import org.apache.spark.api.java.function.ReduceFunction;
-import properties.Configs;
 import structure.TaxaTable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
@@ -54,7 +52,7 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
                 if (countTaxonInPartition(taxaList, partition) == taxaList.size()) {
                     //taxaList already contained by some partition
                     return;
-                } else if (countTaxonInPartition(taxaList, partition) != 1) { // partition.size() < Configs.TAXA_PER_PARTITION
+                } else if (countTaxonInPartition(taxaList, partition) != 1) { // partition.size() < ConfigValues.TAXA_PER_PARTITION
                     updatePartition(taxaList, partition);
                     // no new partition needed
                     return;
