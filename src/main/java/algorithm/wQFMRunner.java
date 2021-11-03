@@ -131,10 +131,10 @@ public class wQFMRunner implements Serializable {
         String final_tree = runner.recursiveDivideAndConquer(customDS, level, initialTable); //customDS will have (P, Q, Q_relevant etc) all the params needed.
         // System.out.println("\n\n[L 49.] Distributer: final tree return");
 
-//        System.out.println(final_tree);
+        // System.out.println(final_tree);
         String final_tree_decoded = wqfm.utils.IOHandler.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);
         // System.out.println(final_tree_decoded);
-        wqfm.utils.IOHandler.writeToFile(final_tree_decoded, ConfigValues.OUTPUT_FILE_NAME);
+        // wqfm.utils.IOHandler.writeToFile(final_tree_decoded, ConfigValues.OUTPUT_FILE_NAME);
 
         return final_tree_decoded;
     }

@@ -1,5 +1,7 @@
 package structure;
 
+import newick.NewickTree;
+
 import java.io.Serializable;
 
 public class TreeTable implements Serializable {
@@ -9,6 +11,14 @@ public class TreeTable implements Serializable {
 
     public TreeTable() {
     }
+
+    public TreeTable(Object o) {
+        TreeTable that = (TreeTable) o;
+        this.tree = that.tree;
+        this.tag = that.tag;
+        this.support = that.support;
+    }
+
 
     public String getTree() {
         return tree;

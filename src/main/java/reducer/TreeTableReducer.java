@@ -8,7 +8,7 @@ import structure.TreeTable;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class TreeTableReducer implements ReduceFunction<TreeTable> {
+public class TreeTableReducer implements ReduceFunction<String> {
     public static ArrayList<String> TAXA_LIST;
 
     public TreeTableReducer(ArrayList<String> TAXA_LIST) {
@@ -112,13 +112,13 @@ public class TreeTableReducer implements ReduceFunction<TreeTable> {
     }
 
     @Override
-    public TreeTable call(TreeTable treeTable, TreeTable t1) throws Exception {
+    public String call(String tree, String t1) throws Exception {
         STITree newickTree1 = null;
         STITree newickTree2 = null;
-        newickTree1 = new STITree(treeTable.tree);
-        newickTree2 = new STITree(t1.tree);
+        newickTree1 = new STITree(tree);
+        newickTree2 = new STITree(t1);
 
-        if (treeTable.tree == null) {
+        if (tree == null) {
             return t1;
         } else {
             String updatedStr;
@@ -126,15 +126,15 @@ public class TreeTableReducer implements ReduceFunction<TreeTable> {
                 updatedStr = addSubtreesWithMissingTaxa(newickTree1, newickTree2);
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("treeTable: " + treeTable);
+                System.out.println("tree: " + tree);
                 System.out.println("t1: " + t1);
-                return treeTable;
+                return tree;
             }
             // System.out.println(updatedStr);
-            treeTable.setTree(updatedStr);
-            treeTable.setTag(treeTable.getTag() + "+" + t1.getTag());
-            treeTable.setSupport(treeTable.getSupport() + t1.getSupport());
-            return treeTable;
+            // treeTable.setTree(updatedStr);
+            // treeTable.setTag(treeTable.getTag() + "+" + t1.getTag());
+            // treeTable.setSupport(treeTable.getSupport() + t1.getSupport());
+            return updatedStr;
         }
     }
 }
