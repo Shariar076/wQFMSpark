@@ -48,21 +48,21 @@
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_2.12</artifactId>
             <version>3.2.0</version>
-            <scope>provided</scope>
+<!--            <scope>provided</scope>-->
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-sql -->
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-sql_2.12</artifactId>
             <version>3.2.0</version>
-            <scope>provided</scope>
+<!--            <scope>provided</scope>-->
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-graphx -->
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-graphx_2.12</artifactId>
             <version>3.2.0</version>
-            <scope>provided</scope>
+<!--            <scope>provided</scope>-->
         </dependency>
 <!--        &lt;!&ndash; https://mvnrepository.com/artifact/graphframes/graphframes &ndash;&gt;-->
 <!--        <dependency>-->

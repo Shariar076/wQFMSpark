@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 public class WQGenerator {
     private static final String tempFileName = "temp-gt.tre";
+
     private static String extractQuartet(String rawQuartet) throws Exception {
         Pattern quartetPattern = Pattern.compile(", [a-z]+: ([0-9a-zA-Z]+) ([0-9a-zA-Z]+) \\| ([0-9a-zA-Z]+) ([0-9a-zA-Z]+)");
 
@@ -33,7 +34,7 @@ public class WQGenerator {
     }
 
     private static ArrayList<String> runTS() throws Exception {
-        String cmd = "triplets.soda2103 printQuartets" + " " + tempFileName;
+        String cmd = ConfigValues.TRIPLETS_SODA_PATH + " printQuartets " + tempFileName;
         ArrayList<String> lines = new ArrayList<>();
         ArrayList<String> errors = new ArrayList<>();
         Process p = Runtime.getRuntime().exec(cmd);
@@ -50,7 +51,7 @@ public class WQGenerator {
             errors.add(s);
         }
 
-        if (!errors.isEmpty()){
+        if (!errors.isEmpty()) {
             throw new Exception(errors.toString());
         }
 
@@ -66,7 +67,7 @@ public class WQGenerator {
         return runTS();
     }
 
-    private static void removeTempFile(){
+    private static void removeTempFile() {
         File myObj = new File(tempFileName);
         if (!myObj.delete()) {
             System.out.println("Failed to delete the temp file.");
@@ -99,13 +100,13 @@ public class WQGenerator {
         // Dataframe
         Dataset<Row> stDf = ConfigValues.SPARK.read().text(ConfigValues.HDFS_PATH + inputFilename);
         Dataset<String> qtDs = stDf.flatMap((FlatMapFunction<Row, String>)
-                        r -> induceQuartetsFromTree(r.toString().replaceAll("^\\[|\\]$","")).iterator(),
+                        r -> induceQuartetsFromTree(r.toString().replaceAll("^\\[|\\]$", "")).iterator(),
                 Encoders.STRING());
 
         removeTempFile();
         Dataset<Row> weightedQuartets = qtDs.toDF().groupBy("value").count();
-        weightedQuartets.write().mode("overwrite").option("header","true")
-                .csv(ConfigValues.HDFS_PATH+"/"+outputFilename);
+        weightedQuartets.write().mode("overwrite").option("header", "true")
+                .csv(ConfigValues.HDFS_PATH + "/" + outputFilename);
 
     }
 }

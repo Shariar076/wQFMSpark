@@ -32,9 +32,9 @@ public class App {
         return tree;
     }
 
-    public static void initializeAndRun(SparkSession spark){
-        ConfigValues.SPARK = spark;
-
+    public static void initializeAndRun(){
+        // ConfigValues.SPARK = spark;
+        ConfigValues.SPARK.sparkContext().setLogLevel("WARN");
         System.out.println("Input file consists of gene trees ... generating weighted quartets to file: " + DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT);
         // IOHandler.generateWeightedQuartets(ConfigValues.INPUT_FILE_NAME, ConfigValues.OUTPUT_FILE_NAME);
         WQGenerator.generateWQ(ConfigValues.INPUT_FILE_NAME, DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT);
@@ -46,15 +46,15 @@ public class App {
 
     public static void main(String[] args) {
         // wQFMRun.minimalCall();
-        SparkConf conf = new SparkConf().setAppName("test DF")
-                // .setJars(new String[]{System.getProperty("user.dir") + "/target/wQFMSpark-1.0-SNAPSHOT-jar-with-dependencies.jar"})
-                .setMaster("local")
-                // .setMaster("spark://doer-ThinkPad-T460s:7077")
-                ;
-        JavaSparkContext jsc = new JavaSparkContext(conf);
-        jsc.setLogLevel("WARN");
-        SparkSession spark = SparkSession.builder().config(jsc.getConf()).getOrCreate();
+        // SparkConf conf = new SparkConf().setAppName("test DF")
+        //         // .setJars(new String[]{System.getProperty("user.dir") + "/target/wQFMSpark-1.0-SNAPSHOT-jar-with-dependencies.jar"})
+        //         // .setMaster("local")
+        //         .setMaster("spark://doer-ThinkPad-T460s:7077")
+        //         ;
+        // JavaSparkContext jsc = new JavaSparkContext(conf);
+        // jsc.setLogLevel("WARN");
+        // SparkSession spark = SparkSession.builder().config(jsc.getConf()).getOrCreate();
         // SQLContext sqlContext = new SQLContext(jsc); //deprecated
-        initializeAndRun(spark);
+        initializeAndRun();
     }
 }

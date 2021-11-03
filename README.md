@@ -17,6 +17,14 @@ hdfs-site.xml
         <name>dfs.replication</name>
         <value>1</value>
     </property>
+    <property>
+        <name>dfs.data.dir</name>
+        <value>/users/kab076/dfs/data</value>
+    </property>
+    <property>
+        <name>dfs.name.dir</name>
+        <value>/users/kab076/dfs/name</value>
+    </property>
 ```
 
 hadoop-env.sh
