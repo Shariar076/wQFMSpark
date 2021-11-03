@@ -1,5 +1,6 @@
 package algorithm;
 
+import org.apache.spark.api.java.function.MapFunction;
 import properties.ConfigValues;
 import mapper.QuartetToTreeTablePartitionMapper;
 import mapper.StringToTaxaTableMapper;
@@ -28,11 +29,11 @@ public class Distributer {
         Dataset<Row> sortedQtDf = readFileInDf(inputFileName);
         TaxaTable taxaTable = initialiZeTaxaTable(sortedQtDf);
         Dataset<Row> taggedDf = groupTaxaAndTagData(sortedQtDf, taxaTable);
-        TreeTable treeTable = partitionDataAndRun(taggedDf, taxaTable);
+        String distributedRunTree = partitionDataAndRun(taggedDf, taxaTable);
         String centralizedRunTree = runCentalized(sortedQtDf);
-        System.out.println("distributedRunTree: "+treeTable.getTree());
+        System.out.println("distributedRunTree: "+distributedRunTree);
         System.out.println("centralizedRunTree: "+centralizedRunTree);
-        return treeTable.getTree();
+        return distributedRunTree;
     }
 
 
@@ -75,7 +76,7 @@ public class Distributer {
         return taggedQtDf;
     }
 
-    public static TreeTable partitionDataAndRun(Dataset<Row> taggedQtDf, TaxaTable taxaTable) {
+    public static String partitionDataAndRun(Dataset<Row> taggedQtDf, TaxaTable taxaTable) {
         Dataset<Row> partitionedDf = taggedQtDf
                 .withColumn("weightedQuartet", concat(col("value"), lit(" "), col("count")))
                 // .filter(col("tag").notEqual("UNDEFINED"))
@@ -88,19 +89,22 @@ public class Distributer {
         // TaxaPartition.getPartitionDetail(partitionedDf);
         System.out.println("NumPartitions: " + partitionedDf.javaRDD().getNumPartitions());
 
-        Dataset<TreeTable> treeTableDf = partitionedDf.select("weightedQuartet", "tag", "count")
+        Dataset<Row> treeTableDf = partitionedDf.select("weightedQuartet", "tag", "count")
                 .mapPartitions(new QuartetToTreeTablePartitionMapper(), Encoders.bean(TreeTable.class))
                 .cache() //avoid lazy execution i.e. running twice
                 .orderBy(desc("support"))
-                .filter(col("tree").notEqual("<NULL>"));
-        // .toDF();
+                .filter(col("tree").notEqual("<NULL>"))
+                .toDF();
 
-        TreeTable finalTreeTable = treeTableDf.reduce(new TreeTableReducer(taxaTable.TAXA_LIST));
+        String finalTree = treeTableDf
+                .map((MapFunction<Row, String>) r -> r.getAs("tree"),
+                        Encoders.STRING())
+                .reduce(new TreeTableReducer(taxaTable.TAXA_LIST));
         // TreeTable finalTreeTable = treeTableDf.collectAsList().stream().reduce(null, TestPhylonet::run);
         treeTableDf.show(false);
-        System.out.println("Final tree " + finalTreeTable);
+        System.out.println("Final tree " + finalTree);
 
-        return finalTreeTable;
+        return finalTree;
     }
 }
 /* divide list of taxa into n partitions;

@@ -134,7 +134,7 @@ public class wQFMRunner implements Serializable {
 //        System.out.println(final_tree);
         String final_tree_decoded = wqfm.utils.IOHandler.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);
         System.out.println(final_tree_decoded);
-        wqfm.utils.IOHandler.writeToFile(final_tree_decoded, ConfigValues.OUTPUT_FILE_NAME);
+        // wqfm.utils.IOHandler.writeToFile(final_tree_decoded, ConfigValues.OUTPUT_FILE_NAME);
 
         return final_tree_decoded;
     }
