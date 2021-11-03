@@ -115,7 +115,7 @@ public class wQFMRunner implements Serializable {
     }
     public String runDevideNConquer(List<String> quartetsList, String tag){
         this.setWqfmConfigs(1, tag);
-        System.out.println("Partition Quartets Count: "+ quartetsList.stream().count());
+        // System.out.println("Partition Quartets Count: "+ quartetsList.stream().count());
         FMRunner runner = new FMRunner();
         CustomDSPerLevel customDS = new CustomDSPerLevel();
         InitialTable initialTable = this.setLegacyInitialTable(quartetsList, customDS);
@@ -123,17 +123,17 @@ public class wQFMRunner implements Serializable {
         int level = 0;
         customDS.level = level; //for debugging issues.
 
-        System.out.println(InitialTable.TAXA_COUNTER);
+        // System.out.println(InitialTable.TAXA_COUNTER);
 
-        System.out.println(InitialTable.map_of_str_vs_int_tax_list);
-        System.out.println(InitialTable.map_of_int_vs_str_tax_list);
+        // System.out.println(InitialTable.map_of_str_vs_int_tax_list);
+        // System.out.println(InitialTable.map_of_int_vs_str_tax_list);
 
         String final_tree = runner.recursiveDivideAndConquer(customDS, level, initialTable); //customDS will have (P, Q, Q_relevant etc) all the params needed.
-        System.out.println("\n\n[L 49.] Distributer: final tree return");
+        // System.out.println("\n\n[L 49.] Distributer: final tree return");
 
 //        System.out.println(final_tree);
         String final_tree_decoded = wqfm.utils.IOHandler.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);
-        System.out.println(final_tree_decoded);
+        // System.out.println(final_tree_decoded);
         wqfm.utils.IOHandler.writeToFile(final_tree_decoded, ConfigValues.OUTPUT_FILE_NAME);
 
         return final_tree_decoded;

@@ -13,21 +13,21 @@ public class AnnotationsHandler {
     public static void handleAnnotations(String tree) {
         switch (Config.ANNOTATIONS_LEVEL) {
             case DefaultValues.ANNOTATIONS_LEVEL0_NONE:
-                System.out.println("No annotations used.");
+                // System.out.println("No annotations used.");
                 break;
 
             case DefaultValues.ANNOTAIONS_LEVEL1_QUARTET_SUPPORT:
-                System.out.println("Annotations done using quartet support.");
+                // System.out.println("Annotations done using quartet support.");
                 AnnotationsHandler.handleQuartetSupport(tree);
                 break;
 
             case DefaultValues.ANNOTATIONS_LEVEL2_QUARTET_SUPPORT_NORMALIZED_SUM:
-                System.out.println("Annotations done after normalizing by sum, using quartet support");
+                // System.out.println("Annotations done after normalizing by sum, using quartet support");
                 AnnotationsHandler.handleQuartetSupportNormalizedSum(tree);
                 break;
 
             case DefaultValues.ANNOTATIONS_LEVEL3_QUARTET_SUPPORT_NORMALIZED_MAX:
-                System.out.println("Annotations done after normalizing by max, using quartet support");
+                // System.out.println("Annotations done after normalizing by max, using quartet support");
                 AnnotationsHandler.handleQuartetSupportNormalizedMax(tree);
                 break;
         }

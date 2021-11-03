@@ -49,7 +49,7 @@ public class InitialBipartition {
                     status_q2 = DefaultValues.LEFT_PARTITION;
                     status_q3 = DefaultValues.RIGHT_PARTITION;
                     status_q4 = DefaultValues.RIGHT_PARTITION;
-                    //System.out.println(partition_list.get(idx_q1));
+                    //// System.out.println(partition_list.get(idx_q1));
                 }
                 else {
                     if (status_q1 == DefaultValues.UNASSIGNED_PARTITION) //q1 not present in any partition

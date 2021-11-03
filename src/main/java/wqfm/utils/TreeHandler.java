@@ -18,7 +18,7 @@ public class TreeHandler {
             case DefaultValues.REROOT_USING_PERL:
                 return null; //TreeHandler.rerootTree_Perl(newickTree, outGroupNode);
             default:
-                System.out.println("-->>FOR NOW Reroot only support using jar and python dendropy [to add perl later].");
+                // System.out.println("-->>FOR NOW Reroot only support using jar and python dendropy [to add perl later].");
                 return "NULL";
         }
     }
@@ -31,7 +31,7 @@ public class TreeHandler {
             tree = new STITree(newickTree);
             tree.rerootTreeAtNode(tree.getNode(outGroupNode));
         } catch (IOException | ParseException ex) {
-            System.out.println("Error in rerootTree.JAR ... check if jar main.jar exists. Exiting.");
+            // System.out.println("Error in rerootTree.JAR ... check if jar main.jar exists. Exiting.");
             System.exit(-1);
         }
 

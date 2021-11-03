@@ -54,11 +54,11 @@ public class Bin {
 
         //already counts are initialized to 0
         List<Bin> bins = Bin.getListOfBins(0.5, 1.0, Config.STEP_SIZE_BINNING); //initialize bins from [0.5,1.0] in delta = 0.01
-//        System.out.println(bins);
+//        // System.out.println(bins);
 
         //calculate counts in each bin as well as the proportion-counts
         if (bins.isEmpty()) {
-            System.out.println("-->>L 64. Num of bins is empty. Returning default beta = " + DefaultValues.BETA_DEFAULT_VAL);
+            // System.out.println("-->>L 64. Num of bins is empty. Returning default beta = " + DefaultValues.BETA_DEFAULT_VAL);
             return DefaultValues.BETA_DEFAULT_VAL;
         }
         double upper_limit_of_highest_bin = bins.get(bins.size() - 1).upper_limit;
@@ -86,7 +86,7 @@ public class Bin {
 
         //base-case if no ratios exist. [should be handled from calling function, but check nonetheless]
         if (total_count == 0) {
-            System.out.println("L 97. Bin. Total-Count-Ratios = 0, Use beta default = " + DefaultValues.BETA_DEFAULT_VAL);
+            // System.out.println("L 97. Bin. Total-Count-Ratios = 0, Use beta default = " + DefaultValues.BETA_DEFAULT_VAL);
             return DefaultValues.BETA_DEFAULT_VAL;
         }
         //set-up the proportions accordingly.

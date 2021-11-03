@@ -19,15 +19,15 @@ public class IOHandler {
             String s;
 
             while ((s = stdInput.readLine()) != null) {
-                System.out.println(s);
+                // System.out.println(s);
             }
 
             while ((s = stdError.readLine()) != null) {
-                System.out.println(s);
+                // System.out.println(s);
             }
 
         } catch (IOException ex) {
-            System.out.println("Exception while running system command <" + cmd + "> ... Exiting.");
+            // System.out.println("Exception while running system command <" + cmd + "> ... Exiting.");
             System.exit(-1);
         }
     }
@@ -46,19 +46,19 @@ public class IOHandler {
             fr = new FileWriter(file);
             fr.write(tree);
         } catch (IOException e) {
-            System.out.println("Error in writingFile to "
-                    + outputfileName + ", [Helper.writeToFile]. Exiting system.");
-            System.out.println("Tree:\n" + tree);
+            // System.out.println("Error in writingFile to "
+             //       + outputfileName + ", [Helper.writeToFile]. Exiting system.");
+            // System.out.println("Tree:\n" + tree);
             System.exit(-1);
         } finally {
             //close resources
             try {
                 fr.close();
             } catch (IOException e) {
-                System.out.println("Error in closing file resource in [Helper.writeToFile]. to outputfile = " + outputfileName);
+                // System.out.println("Error in closing file resource in [Helper.writeToFile]. to outputfile = " + outputfileName);
             }
         }
-        System.out.println(">-> Successfully written to output-file " + outputfileName);
+        // System.out.println(">-> Successfully written to output-file " + outputfileName);
     }
 
     public static boolean checkAllValuesIFSame(Map<Integer, Boolean> map, boolean val) {
@@ -82,22 +82,22 @@ public class IOHandler {
                         break;
                     }
                 }
-                // System.out.println(j);
+                // // System.out.println(j);
                 key = finalTree.substring(i, j);
-                // System.out.println("i: "+i+ " j: "+j);
-                // System.out.println("Key: "+ key);
+                // // System.out.println("i: "+i+ " j: "+j);
+                // // System.out.println("Key: "+ key);
                 String val = map_of_int_vs_str.get(Integer.parseInt(key.trim()));
-                //System.out.println(val);
+                //// System.out.println(val);
                 decodedTree += val;
                 i += (j - 1 - i);
             } else {
                 decodedTree += c;
             }
-            //  System.out.println(finalTree.charAt(i));
+            //  // System.out.println(finalTree.charAt(i));
 
         }
 //        for(int key: map_of_int_vs_str.keySet()){
-//            System.out.println("<<REPLACING key=" + key + ", with val=" + map_of_int_vs_str.get(key) + ">>");
+//            // System.out.println("<<REPLACING key=" + key + ", with val=" + map_of_int_vs_str.get(key) + ">>");
 //            replaced = replaced.replace(String.valueOf(key), map_of_int_vs_str.get(key));
 //        }
         return decodedTree;
@@ -117,7 +117,7 @@ public class IOHandler {
         });
 
 
-//        System.out.println("COMPARING two maps function\nmap1 = " + map1 + "\nmap2 = " + map2 + "\nnewFinalMap = " + newFinalMap);
+//        // System.out.println("COMPARING two maps function\nmap1 = " + map1 + "\nmap2 = " + map2 + "\nnewFinalMap = " + newFinalMap);
 
 
         return (map1.equals(newFinalMap));
@@ -167,7 +167,7 @@ public class IOHandler {
                                       int left_partition, int right_partition,
                                       Map<Integer, String> reverse_mapping) {
 
-        System.out.println(getPartition(partition_map, left_partition, right_partition, reverse_mapping));
+        // System.out.println(getPartition(partition_map, left_partition, right_partition, reverse_mapping));
     }
 }
 

@@ -24,23 +24,23 @@ public class FMRunner {
         InitialTable initialTable = new InitialTable();
         CustomDSPerLevel customDS = new CustomDSPerLevel();
         runner.readFileAndPopulateInitialTables(INPUT_FILE_NAME, customDS, initialTable);
-        System.out.println("Reading from file <" + INPUT_FILE_NAME + "> done."
-                + "\nInitial-Num-Quartets = " + initialTable.sizeTable());
-        System.out.println("Running with partition score " + WeightedPartitionScores.GET_PARTITION_SCORE_PRINT());
+        // System.out.println("Reading from file <" + INPUT_FILE_NAME + "> done."
+        //        + "\nInitial-Num-Quartets = " + initialTable.sizeTable());
+        // System.out.println("Running with partition score " + WeightedPartitionScores.GET_PARTITION_SCORE_PRINT());
         int level = 0;
         customDS.level = level; //for debugging issues.
 
-        System.out.println(InitialTable.TAXA_COUNTER);
+        // System.out.println(InitialTable.TAXA_COUNTER);
 
-        System.out.println(InitialTable.map_of_str_vs_int_tax_list);
-        System.out.println(InitialTable.map_of_int_vs_str_tax_list);
+        // System.out.println(InitialTable.map_of_str_vs_int_tax_list);
+        // System.out.println(InitialTable.map_of_int_vs_str_tax_list);
 
         String final_tree = runner.recursiveDivideAndConquer(customDS, level, initialTable); //customDS will have (P, Q, Q_relevant etc) all the params needed.
-        System.out.println("\n\n[L 49.] Distributer: final tree return");
+        // System.out.println("\n\n[L 49.] Distributer: final tree return");
 
-//        System.out.println(final_tree);
+//        // System.out.println(final_tree);
         String final_tree_decoded = IOHandler.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);
-        System.out.println(final_tree_decoded);
+        // System.out.println(final_tree_decoded);
         IOHandler.writeToFile(final_tree_decoded, OUTPUT_FILE_NAME);
 
         return final_tree_decoded;
@@ -56,7 +56,7 @@ public class FMRunner {
         customDS_this_level.fillRelevantQuartetsMap(); //fill-up the relevant quartets per taxa map
         if (level == 0) { //only do it for the initial step, other levels will be passed as parameters
             customDS_this_level.fillUpTaxaList(); //fill-up the taxa list
-            System.out.println("Total Num-Taxa = " + customDS_this_level.taxa_list_int.size());
+            // System.out.println("Total Num-Taxa = " + customDS_this_level.taxa_list_int.size());
         }
 
         /////////////////// TERMINATING CONDITIONS \\\\\\\\\\\\\\\\\\\\\\\\
@@ -72,9 +72,9 @@ public class FMRunner {
 
         InitialBipartition initialBip = new InitialBipartition();
         Map<Integer, Integer> mapInitialBipartition = initialBip.getInitialBipartitionMap(customDS_this_level);
-        System.out.println("initial bipartition map: "+ mapInitialBipartition);
+        // System.out.println("initial bipartition map: "+ mapInitialBipartition);
         if (Config.DEBUG_MODE_PRINTING_GAINS_BIPARTITIONS) {
-            System.out.println("L 84. FMComputer. Printing initialBipartition.");
+            // System.out.println("L 84. FMComputer. Printing initialBipartition.");
             IOHandler.printPartition(mapInitialBipartition, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION, InitialTable.map_of_int_vs_str_tax_list);
         }
 
@@ -82,7 +82,7 @@ public class FMRunner {
         //**************************************************
         initialBip_8_vals.compute8ValuesUsingAllQuartets_this_level(customDS_this_level, mapInitialBipartition);
         //**************************************************
-        System.out.println(WeightedPartitionScores.GET_PARTITION_SCORE_PRINT() + " LEVEL: " + level + ", ALPHA: " + WeightedPartitionScores.ALPHA_PARTITION_SCORE + ", BETA: " + WeightedPartitionScores.BETA_PARTITION_SCORE);
+        // System.out.println(WeightedPartitionScores.GET_PARTITION_SCORE_PRINT() + " LEVEL: " + level + ", ALPHA: " + WeightedPartitionScores.ALPHA_PARTITION_SCORE + ", BETA: " + WeightedPartitionScores.BETA_PARTITION_SCORE);
 
         FMComputer fmComputerObject = new FMComputer(customDS_this_level, mapInitialBipartition, initialBip_8_vals, level);
         FMResultObject fmResultObject = fmComputerObject.run_FM_Algorithm_Whole();
@@ -120,8 +120,8 @@ public class FMRunner {
         int cnt_right_brackets = countChars_in_String(line, ')');
 
         if ((cnt_left_brackets != cnt_right_brackets) || (cnt_left_brackets != 3) || (cnt_right_brackets != 3)) {
-            System.out.println("\n\n****** Found STAR, line num " + line_cnt + " :->" + line);
-            System.out.println("\nCan't handle polytomy for now. Exiting System.\n\n");
+            // System.out.println("\n\n****** Found STAR, line num " + line_cnt + " :->" + line);
+            // System.out.println("\nCan't handle polytomy for now. Exiting System.\n\n");
             System.exit(-1);
         }
 
@@ -147,14 +147,14 @@ public class FMRunner {
                 }
             }
         } catch (IOException ex) {
-            System.out.println("ERROR READING FILE <" + inputFileName + ">. EXITING SYSTEM");
+            // System.out.println("ERROR READING FILE <" + inputFileName + ">. EXITING SYSTEM");
             System.exit(-1);
 
         } finally {
             try {
                 fileInputStream.close();
             } catch (IOException ex) {
-                System.out.println("ERROR IN CLOSING fileInputStream while reading file. Exiting");
+                // System.out.println("ERROR IN CLOSING fileInputStream while reading file. Exiting");
                 System.exit(-1);
             }
         }

@@ -124,7 +124,7 @@ public class FMComputer {
             this.mapCandidateGainsPerListTax.get(gainOfThisTax).add(taxToConsider); //add gain to map
             this.mapCandidateTax_vs_8vals.put(taxToConsider, _8_values_whole_considering_thisTax_swap);
 
-            /*    System.out.println("FMComputer L219. taxToConsider = " + taxToConsider + " , " + Helper.getStringMappedName(taxToConsider)
+            /*    // System.out.println("FMComputer L219. taxToConsider = " + taxToConsider + " , " + Helper.getStringMappedName(taxToConsider)
                             + "\n _8_before = " + _8_vals_THIS_TAX_before_hypo_swap
                             + "\n _8_after = " + _8_vals_THIS_TAX_AFTER_hypo_swap
                             + "\n ps_before = " + ps_before_reduced
@@ -241,7 +241,7 @@ public class FMComputer {
         //Retrieve the stat's bipartition.
         StatsPerPass statOfMaxCumulativeGainBox = this.listOfPerPassStatistics.get(pass_index_with_max_cumulative_gain);
 
-        /*        System.out.println("[FMComputer L 341] Cumulative gain (max) = " + max_cumulative_gain_of_current_iteration
+        /*        // System.out.println("[FMComputer L 341] Cumulative gain (max) = " + max_cumulative_gain_of_current_iteration
                 + " , for pass = " + (pass_index_with_max_cumulative_gain + 1)
                 + " , Tax Passed = " + Helper.getStringMappedName(statOfMaxCumulativeGainBox.whichTaxaWasPassed)
                 + " map_final_bipartition = \n"
@@ -285,7 +285,7 @@ public class FMComputer {
             return true;
         }
 
-        /*        System.out.println("L 376. level = " + this.level + " , max_cumulative_gain_of_current_iteration = "
+        /*        // System.out.println("L 376. level = " + this.level + " , max_cumulative_gain_of_current_iteration = "
                 + max_cumulative_gain_of_current_iteration + ", this.bipartitionMap = \n"
                 + Helper.getPartition(bipartitionMap, DefaultConfigs.LEFT_PARTITION, DefaultConfigs.RIGHT_PARTITION, InitialTable.map_of_int_vs_str_tax_list)
                 + " , small_epsilon = " + ConfigValues.SMALLEPSILON + " , return false.");
@@ -300,13 +300,13 @@ public class FMComputer {
 
         while (true) { //stopping condition
             if (iterationsFM > Config.MAX_ITERATIONS_LIMIT) { //another stopping criterion.
-                System.out.println("[FMComputer L409.] Thread (" + Thread.currentThread().getName()
-                        + ", " + Thread.currentThread().getId() + ") MAX_ITERATIONS_LIMIT = "
-                        + Config.MAX_ITERATIONS_LIMIT + " is reached for level = " + this.level);
+                // System.out.println("[FMComputer L409.] Thread (" + Thread.currentThread().getName()
+                //        + ", " + Thread.currentThread().getId() + ") MAX_ITERATIONS_LIMIT = "
+                //        + Config.MAX_ITERATIONS_LIMIT + " is reached for level = " + this.level);
                 break;
             }
             iterationsFM++;
-//            System.out.println("---------------- LEVEL " + level + ", Iteration " + iterationsFM + " ----------------");
+//            // System.out.println("---------------- LEVEL " + level + ", Iteration " + iterationsFM + " ----------------");
             map_previous_iteration = new HashMap<>(this.bipartitionMap); // always store this
             run_FM_single_iteration();
 
