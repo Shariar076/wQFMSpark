@@ -1,6 +1,7 @@
 target
-input
+#input
 output
 log
-.idea
+venv
+*/.idea
 .vscode

@@ -2,6 +2,8 @@ package algorithm;
 
 import properties.ConfigValues;
 import wqfm.algo.FMRunner;
+import wqfm.configs.Config;
+import wqfm.configs.DefaultValues;
 import wqfm.ds.CustomDSPerLevel;
 import wqfm.ds.InitialTable;
 import wqfm.ds.Quartet;
@@ -107,7 +109,12 @@ public class wQFMRunner implements Serializable {
     //     //**************************************************
     //     initialBip_8_vals.compute8ValuesUsingAllQuartets_this_level(customDS_this_level, mapInitialBipartition);
     // }
-    public String runDevideNConquer(List<String> quartetsList){
+    public void setWqfmConfigs(int annotationLevel, String tag){
+        Config.ANNOTATIONS_LEVEL = annotationLevel; //copy the checks here
+        Config.QUARTET_TAG = tag;
+    }
+    public String runDevideNConquer(List<String> quartetsList, String tag){
+        this.setWqfmConfigs(1, tag);
         System.out.println("Partition Quartets Count: "+ quartetsList.stream().count());
         FMRunner runner = new FMRunner();
         CustomDSPerLevel customDS = new CustomDSPerLevel();

@@ -6,5 +6,6 @@ public interface DefaultConfigs {
     String OFF = "off";
     String NULL = "NULL";
     String INPUT_FILE_NAME_WQRTS_DEFAULT =  "input/input-weighted-quartets.csv";
+    String INPUT_FILE_NAME_WQRTS_PARTITIONED =  "input/partitioned-weighted-quartets.csv";
 
 }

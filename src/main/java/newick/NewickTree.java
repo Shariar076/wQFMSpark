@@ -1,5 +1,9 @@
 package newick;
 
+import phylonet.tree.io.ParseException;
+import phylonet.tree.model.sti.STITree;
+
+import java.io.IOException;
 import java.util.*;
 
 public class NewickTree {
@@ -193,23 +197,31 @@ public class NewickTree {
     }
 
     public static void main(String[] args) {
-        String newickStr1 = "(((10,8,9,7),(6,5)),(4,(3,(1,2))));";
-        String newickStr2 = "(((10,8,9,7),(6,5)),(4,(3,(1,2))));";
-        String newickStr3 = "((4,(3,(1,2))),((10,8,9,7),(6,5)));";
-
-        NewickTree sampleNewickTree1 = NewickTree.readNewickFormat(newickStr1);
-        NewickTree sampleNewickTree2 = NewickTree.readNewickFormat(newickStr2);
-        NewickTree sampleNewickTree3 = NewickTree.readNewickFormat(newickStr3);
-
-        System.out.println(sampleNewickTree1);
-        System.out.println(sampleNewickTree2);
-        System.out.println(sampleNewickTree3);
-
-        System.out.println(sampleNewickTree1.equals(sampleNewickTree2));
-        System.out.println(sampleNewickTree1.equals(sampleNewickTree3));
-
-        for (Node node : sampleNewickTree1.nodeList) {
-            System.out.println(node.toString());
+        // String newickStr1 = "(((10,8,9,7),(6,5)),(4,(3,(1,2))));";
+        // String newickStr2 = "(((10,8,9,7),(6,5)),(4,(3,(1,2))));";
+        // String newickStr3 = "((4,(3,(1,2))),((10,8,9,7),(6,5)));";
+        //
+        // NewickTree sampleNewickTree1 = NewickTree.readNewickFormat(newickStr1);
+        // NewickTree sampleNewickTree2 = NewickTree.readNewickFormat(newickStr2);
+        // NewickTree sampleNewickTree3 = NewickTree.readNewickFormat(newickStr3);
+        //
+        // System.out.println(sampleNewickTree1);
+        // System.out.println(sampleNewickTree2);
+        // System.out.println(sampleNewickTree3);
+        //
+        // System.out.println(sampleNewickTree1.equals(sampleNewickTree2));
+        // System.out.println(sampleNewickTree1.equals(sampleNewickTree3));
+        //
+        // for (Node node : sampleNewickTree1.nodeList) {
+        //     System.out.println(node.toString());
+        // }
+        String annotatedString = "((10,((5,6)4.305555555555555,(9,(8,7)4.583333333333333)4.023809523809524)4.333333333333333)5.0,(11,((3,4)3.75,(1,2)3.9444444444444446)5.0)5.0);";
+        try {
+            STITree tree =new STITree(annotatedString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 

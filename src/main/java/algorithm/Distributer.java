@@ -8,10 +8,13 @@ import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.expressions.UserDefinedFunction;
 import org.apache.spark.sql.types.DataTypes;
+import properties.DefaultConfigs;
 import reducer.TaxaTableReducer;
 import reducer.TreeTableReducer;
 import structure.TaxaTable;
 import structure.TreeTable;
+import wqfm.configs.Config;
+import wqfm.utils.IOHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +39,7 @@ public class Distributer {
     public static String runCentalized(Dataset<Row> sortedWqDf) {
         sortedWqDf = sortedWqDf.withColumn("weightedQuartet", concat(col("value"), lit(" "), col("count")));
         List<String> qtList = sortedWqDf.select("weightedQuartet").as(Encoders.STRING()).collectAsList();
-        return new wQFMRunner().runDevideNConquer(qtList);
+        return new wQFMRunner().runDevideNConquer(qtList, "*");
     }
 
     public static Dataset<Row> readFileInDf(String inputFileName) {
@@ -78,6 +81,10 @@ public class Distributer {
                 // .filter(col("tag").notEqual("UNDEFINED"))
                 .orderBy("tag"); // orderBy partitioned unique data to same partition
 
+        partitionedDf.select("weightedQuartet", "tag").write().partitionBy("tag")
+                .mode("overwrite").option("header","false")
+                .csv(ConfigValues.HDFS_PATH+"/"+ DefaultConfigs.INPUT_FILE_NAME_WQRTS_PARTITIONED);
+        // IOHandler.runSystemCommand(Config.PYTHON_ENGINE+ " ./scripts/test.py --input input/partitioned-weighted-quartets.csv --tag A-E-F-H-M-O");
         // TaxaPartition.getPartitionDetail(partitionedDf);
         System.out.println("NumPartitions: " + partitionedDf.javaRDD().getNumPartitions());
 

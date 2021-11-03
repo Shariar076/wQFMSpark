@@ -15,11 +15,16 @@ public class Config {
     public static int MAX_ITERATIONS_LIMIT = 1000000; //can we keep it as another stopping-criterion ? [100k]
     public static boolean DEBUG_MODE_PRINTING_GAINS_BIPARTITIONS = false;
 
+    public static int ANNOTATIONS_LEVEL = DefaultValues.ANNOTATIONS_LEVEL0_NONE;
 //    public static int BIPARTITION_MODE = DefaultConfigs.BIPARTITION_GREEDY;
 //    public static boolean DEBUG_MODE_TESTING = true; // true -> while running from netbeans, false -> run from cmd
 
 
     public static String INPUT_FILE_NAME = "input/gtree_11tax_est_5genes_R1.tre"; //DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT; // "input_files/weighted_quartets_avian_biological_dataset";
-    public static String OUTPUT_FILE_NAME = "output/output-gt.tree";
+    public static String OUTPUT_FILE_NAME = "output/output-st.tree";
+    public static String PYTHON_ENGINE = "./venv/bin/python3";
+    public static String BRANCH_ANNOTATIONS_QUARTET_SUPPORT = "./scripts/annotate_branches.py";
+    public static String SPECIES_TREE_FILE_NAME = "output/output-st.tree";
+    public static String QUARTET_TAG = "*";
 }
 

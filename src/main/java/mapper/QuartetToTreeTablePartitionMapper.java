@@ -26,7 +26,7 @@ public class QuartetToTreeTablePartitionMapper implements MapPartitionsFunction<
             else if (!qtTag.equals(row.getString(1))) throw new Exception("Tag mismatch within partition");
         }
         String tree = "<NULL>";
-        if (arrayList.size() > 0) tree = new wQFMRunner().runDevideNConquer(arrayList);
+        if (arrayList.size() > 0) tree = new wQFMRunner().runDevideNConquer(arrayList, qtTag);
 
         treeTable.setTree(tree);
         treeTable.setTag(qtTag);
