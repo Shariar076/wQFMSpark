@@ -1,6 +1,5 @@
 package algorithm;
 
-import newick.TestPhylonet;
 import org.apache.spark.api.java.function.MapFunction;
 import properties.ConfigValues;
 import mapper.QuartetToTreeTablePartitionMapper;
@@ -12,11 +11,9 @@ import org.apache.spark.sql.expressions.UserDefinedFunction;
 import org.apache.spark.sql.types.DataTypes;
 import properties.DefaultConfigs;
 import reducer.TaxaTableReducer;
-import reducer.TreeTableReducer;
+import reducer.TreeReducer;
 import structure.TaxaTable;
 import structure.TreeTable;
-import wqfm.configs.Config;
-import wqfm.utils.IOHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +29,7 @@ public class Distributer {
         Dataset<Row> taggedDf = groupTaxaAndTagData(sortedQtDf, taxaTable);
         String distributedRunTree = partitionDataAndRun(taggedDf, taxaTable);
         String centralizedRunTree = runCentalized(sortedQtDf);
-        System.out.println("distributedRunTree: "+distributedRunTree);
+        System.out.println("distributedRunTree: " + distributedRunTree);
         System.out.println("centralizedRunTree: "+centralizedRunTree);
         return distributedRunTree;
     }
@@ -84,8 +81,8 @@ public class Distributer {
                 .orderBy("tag"); // orderBy partitioned unique data to same partition
 
         partitionedDf.select("weightedQuartet", "tag").write().partitionBy("tag")
-                .mode("overwrite").option("header","false")
-                .csv(ConfigValues.HDFS_PATH+"/"+ DefaultConfigs.INPUT_FILE_NAME_WQRTS_PARTITIONED);
+                .mode("overwrite").option("header", "false")
+                .csv(ConfigValues.HDFS_PATH + "/" + DefaultConfigs.INPUT_FILE_NAME_WQRTS_PARTITIONED);
         // IOHandler.runSystemCommand(Config.PYTHON_ENGINE+ " ./scripts/test.py --input input/partitioned-weighted-quartets.csv --tag A-E-F-H-M-O");
         // TaxaPartition.getPartitionDetail(partitionedDf);
         System.out.println("NumPartitions: " + partitionedDf.javaRDD().getNumPartitions());
@@ -97,11 +94,17 @@ public class Distributer {
                 .filter(col("tree").notEqual("<NULL>"))
                 .toDF();
 
+        treeTableDf.show(false);
+
+        TreeReducer treeReducer = new TreeReducer(taxaTable.TAXA_LIST);
+
         String finalTree = treeTableDf
                 .map((MapFunction<Row, String>) r -> r.getAs("tree"), Encoders.STRING())
-                .reduce(new TreeTableReducer(taxaTable.TAXA_LIST));
-                // .collectAsList().stream().reduce(null, TestPhylonet::run);
-        treeTableDf.show(false);
+                .collectAsList()
+                .stream().reduce(null, treeReducer::call);
+        // .reduce(new TreeReducer(taxaTable.TAXA_LIST));
+
+        // treeDs.show(false);
         System.out.println("Final tree " + finalTree);
 
         return finalTree;

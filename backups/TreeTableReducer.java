@@ -126,7 +126,7 @@ public class TreeTableReducer implements ReduceFunction<String> {
     // public static void main(String[] args) {
     //     // TAXA_LIST=[1, 5, 8, 9, 2, 4, 7, 6, 11, 3, 10]
     //     ArrayList<String> taxa_list = new ArrayList<>(Arrays.asList(new String[]{"1", "5", "8", "9", "2", "4", "7", "6", "11", "3", "10"}));
-    //     TreeTableReducer tr = new TreeTableReducer(taxa_list);
+    //     TreeReducer tr = new TreeReducer(taxa_list);
     //     try {
     //         tr.call("((11,(4,(3,(1,2)))),((5,6),(9,(8,7))));", "((10,((5,6),(9,(8,7)))),(11,(4,(3,(1,2)))));");
     //     } catch (Exception e) {

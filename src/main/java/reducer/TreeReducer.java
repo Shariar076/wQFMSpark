@@ -1,17 +1,18 @@
 package reducer;
 
-import org.apache.spark.api.java.function.ReduceFunction;
+import phylonet.tree.io.ParseException;
 import phylonet.tree.model.sti.STINode;
 import phylonet.tree.model.sti.STITree;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class TreeTableReducer implements ReduceFunction<String> {
+public class TreeReducer {
     public static ArrayList<String> TAXA_LIST;
 
-    public TreeTableReducer(ArrayList<String> TAXA_LIST) {
-        TreeTableReducer.TAXA_LIST = TAXA_LIST;
+    public TreeReducer(ArrayList<String> TAXA_LIST) {
+        TreeReducer.TAXA_LIST = TAXA_LIST;
     }
 
     public static List<String> iteratorToList(Iterator<STINode> iterator) {
@@ -110,23 +111,32 @@ public class TreeTableReducer implements ReduceFunction<String> {
 
     }
 
-    @Override
-    public String call(String tree, String t1) throws Exception {
-        System.out.println("=================================TreeReducer tree: " + tree);
-        System.out.println("=================================TreeReducer t1: " + t1);
+    // @Override
+    public String call(String tree, String t1) { // throws Exception
 
-        STITree newickTree1 = new STITree(tree);
-        STITree newickTree2 = new STITree(t1);
-        String updatedStr;
-        updatedStr = addSubtreesWithMissingTaxa(newickTree1, newickTree2);
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TreeReducer updatedStr: " + updatedStr);
-        return updatedStr;
+        if (tree == null) {
+            return t1;
+        } else {
+            STITree newickTree1 = null;
+            STITree newickTree2 = null;
+            String updatedStr ="";
+            try {
+                newickTree1 = new STITree(tree);
+                newickTree2 = new STITree(t1);
+                updatedStr = addSubtreesWithMissingTaxa(newickTree1, newickTree2);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("TreeReducer tree: " + tree);
+                System.out.println("TreeReducer t1: " + t1);
+            }
+            return updatedStr;
+        }
     }
 
     // public static void main(String[] args) {
     //     // TAXA_LIST=[1, 5, 8, 9, 2, 4, 7, 6, 11, 3, 10]
     //     ArrayList<String> taxa_list = new ArrayList<>(Arrays.asList(new String[]{"1", "5", "8", "9", "2", "4", "7", "6", "11", "3", "10"}));
-    //     TreeTableReducer tr = new TreeTableReducer(taxa_list);
+    //     TreeReducer tr = new TreeReducer(taxa_list);
     //     try {
     //         tr.call("((11,(4,(3,(1,2)))),((5,6),(9,(8,7))));", "((10,((5,6),(9,(8,7)))),(11,(4,(3,(1,2)))));");
     //     } catch (Exception e) {
