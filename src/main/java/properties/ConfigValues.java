@@ -15,12 +15,13 @@ public class ConfigValues {
     public static SparkSession SPARK = getSPARK();
 
     public static SparkSession getSPARK() {
-        // SparkSession.builder()
+        // spark = SparkSession.builder()
         // .appName("wQFMSpark")
         // // .master("local")
         // .master("spark://doer-ThinkPad-T460s:7077")
         // // .config("spark.serializer", "org.apache.spark.serializer.JavaSerializer")
         // .getOrCreate();
+        // spark.sparkContext().setLogLevel("WARN");
 
         SparkConf conf = new SparkConf().setAppName("wQFMSpark")
                 // .setJars(new String[]{System.getProperty("user.dir") + "/target/wQFMSpark-1.0-SNAPSHOT-jar-with-dependencies.jar"})

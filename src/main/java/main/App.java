@@ -34,7 +34,6 @@ public class App {
 
     public static void initializeAndRun(){
         // ConfigValues.SPARK = spark;
-        ConfigValues.SPARK.sparkContext().setLogLevel("WARN");
         System.out.println("Input file consists of gene trees ... generating weighted quartets to file: " + DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT);
         // IOHandler.generateWeightedQuartets(ConfigValues.INPUT_FILE_NAME, ConfigValues.OUTPUT_FILE_NAME);
         WQGenerator.generateWQ(ConfigValues.INPUT_FILE_NAME, DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT);
