@@ -1,8 +1,8 @@
 package reducer;
 
 import org.apache.spark.api.java.function.ReduceFunction;
-import phylonet.tree.model.sti.STINode;
-import phylonet.tree.model.sti.STITree;
+import structure.SerializedSTINode;
+import structure.SerializedSTITree;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -14,7 +14,7 @@ public class TreeTableReducer implements ReduceFunction<String> {
         TreeTableReducer.TAXA_LIST = TAXA_LIST;
     }
 
-    public static List<String> iteratorToList(Iterator<STINode> iterator) {
+    public static List<String> iteratorToList(Iterator<SerializedSTINode> iterator) {
         List<String> list = new ArrayList<>();
         while (iterator.hasNext()) {
             list.add(iterator.next().toString());
@@ -32,15 +32,15 @@ public class TreeTableReducer implements ReduceFunction<String> {
         return count;
     }
 
-    public static boolean ifTaxonIsLeaf(STINode node, String taxon) {
+    public static boolean ifTaxonIsLeaf(SerializedSTINode node, String taxon) {
         String newickTree = node.toNewick();
         String tempStr = newickTree.substring(0, newickTree.indexOf(taxon));
         int numLeftParenUptoTaxon = countCharInString(tempStr, '(');
         return numLeftParenUptoTaxon == 1;
     }
 
-    public static String updateMainTree(STITree mainTree, STINode updateSubtree, List<String> updateLeaves, String absentTaxon) throws Exception {
-        STITree copyMainTree = new STITree(mainTree);
+    public static String updateMainTree(SerializedSTITree mainTree, SerializedSTINode updateSubtree, List<String> updateLeaves, String absentTaxon) throws Exception {
+        SerializedSTITree copyMainTree = new SerializedSTITree(mainTree);
         String mainTreeNewick = mainTree.toNewick();
         // System.out.println("Converted to Str: " + mainTreeNewick);
 
@@ -74,7 +74,7 @@ public class TreeTableReducer implements ReduceFunction<String> {
         return mainTreeNewick;
     }
 
-    public static String addSubtreesWithMissingTaxa(STITree stiTree, STITree t1) throws Exception {
+    public static String addSubtreesWithMissingTaxa(SerializedSTITree stiTree, SerializedSTITree t1) throws Exception {
         List<String> taxa_list = TAXA_LIST;
 
         List<String> absentTaxa = new ArrayList<>();
@@ -84,11 +84,11 @@ public class TreeTableReducer implements ReduceFunction<String> {
         // System.out.println("absentTaxa: " + absentTaxa);
 
         if (absentTaxa.size() > 0) {
-            List<STINode> targetNode = new ArrayList<>();
+            List<SerializedSTINode> targetNode = new ArrayList<>();
 
             int found = 0;
             for (int i = 0; i < t1.getNodeCount(); i++) {
-                STINode thisNode = t1.getNode(i);
+                SerializedSTINode thisNode = t1.getNode(i);
                 List<String> thisNodeLeaves = iteratorToList(thisNode.getLeaves().iterator());
                 // assumption: The first node found with any absent taxa should contain all absent taxa
                 for (String taxon : absentTaxa) {
@@ -97,7 +97,7 @@ public class TreeTableReducer implements ReduceFunction<String> {
                         //replace with new sub tree with missing taxa
                         String updatedStiTree = updateMainTree(stiTree, thisNode, thisNodeLeaves, taxon);
 
-                        stiTree = new STITree(updatedStiTree);
+                        stiTree = new SerializedSTITree(updatedStiTree);
                         // System.out.println("thisNode: " + thisNode);
                         targetNode.add(thisNode);
                         found++;
@@ -115,8 +115,8 @@ public class TreeTableReducer implements ReduceFunction<String> {
         System.out.println("=================================TreeReducer tree: " + tree);
         System.out.println("=================================TreeReducer t1: " + t1);
 
-        STITree newickTree1 = new STITree(tree);
-        STITree newickTree2 = new STITree(t1);
+        SerializedSTITree newickTree1 = new SerializedSTITree(tree);
+        SerializedSTITree newickTree2 = new SerializedSTITree(t1);
         String updatedStr;
         updatedStr = addSubtreesWithMissingTaxa(newickTree1, newickTree2);
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TreeReducer updatedStr: " + updatedStr);
@@ -134,3 +134,4 @@ public class TreeTableReducer implements ReduceFunction<String> {
     //     }
     // }
 }
+

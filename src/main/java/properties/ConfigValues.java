@@ -15,6 +15,7 @@ public class ConfigValues {
             .appName("wQFMSpark")
             // .master("local")
             .master("spark://doer-ThinkPad-T460s:7077")
+            // .config("spark.serializer", "org.apache.spark.serializer.JavaSerializer")
             .getOrCreate();;
 }
 

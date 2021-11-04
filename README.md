@@ -7,7 +7,7 @@ core-site.xml
 ```
     <property>
         <name>fs.defaultFS</name>
-        <value>hdfs://localhost:9000</value>
+        <value>hdfs://0.0.0.0:9000</value>
     </property>
 ```
 

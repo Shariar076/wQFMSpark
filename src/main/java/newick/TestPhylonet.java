@@ -105,35 +105,26 @@ public class TestPhylonet {
 
     }
 
-    public static TreeTable run(TreeTable treeTable, TreeTable t1) {
-        System.out.println("===============================================================");
-        System.out.println(treeTable);
-        if (treeTable==null) return t1;
-        STITree newickTree1 = null;
-        STITree newickTree2 = null;
-        try {
-            newickTree1 = new STITree(treeTable.getTree());
-            newickTree2 = new STITree(t1.getTree());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
+    public static String run(String tree, String t1){
+        System.out.println("=================================TreeReducer tree: " + tree);
+        System.out.println("=================================TreeReducer t1: " + t1);
+        if (tree == null) {
+            return t1;
+        } else {
+            STITree newickTree1 = null;
+            STITree newickTree2 = null;
+            try {
+                newickTree1 = new STITree(tree);
+                newickTree2 = new STITree(t1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            String updatedStr;
+            updatedStr = addSubtreesWithMissingTaxa(newickTree1, newickTree2);
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TreeReducer updatedStr: " + updatedStr);
+            return updatedStr;
         }
-
-        // String srchStr ="((5,6),(9,(8,7)))";
-        // String repStr = "(10,((5,6),(9,(8,7))))";
-
-        String updatedStr = addSubtreesWithMissingTaxa(newickTree1, newickTree2);
-        System.out.println(updatedStr);
-        //check: The first node found with any absent taxa should contain all absent taxa
-        // for(String taxon: absentTaxa){
-        //     if(!Arrays.asList(targetNode.getLeaves()).contains(taxon)) System.out.println("Error!!!! taxon: "+taxon+" not present in target node");
-        // }
-        treeTable.setTree(updatedStr);
-        treeTable.setTag(treeTable.getTag() + "-" + t1.getTag());
-        treeTable.setSupport(treeTable.getSupport() + t1.getSupport());
-
-        return treeTable;
-
     }
 }

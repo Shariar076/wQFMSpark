@@ -1,5 +1,6 @@
 package algorithm;
 
+import newick.TestPhylonet;
 import org.apache.spark.api.java.function.MapFunction;
 import properties.ConfigValues;
 import mapper.QuartetToTreeTablePartitionMapper;
@@ -97,10 +98,9 @@ public class Distributer {
                 .toDF();
 
         String finalTree = treeTableDf
-                .map((MapFunction<Row, String>) r -> r.getAs("tree"),
-                        Encoders.STRING())
+                .map((MapFunction<Row, String>) r -> r.getAs("tree"), Encoders.STRING())
                 .reduce(new TreeTableReducer(taxaTable.TAXA_LIST));
-        // TreeTable finalTreeTable = treeTableDf.collectAsList().stream().reduce(null, TestPhylonet::run);
+                // .collectAsList().stream().reduce(null, TestPhylonet::run);
         treeTableDf.show(false);
         System.out.println("Final tree " + finalTree);
 
@@ -120,4 +120,18 @@ public class Distributer {
  * If you only want 1 partition, then you can do repartition(1,col("col1")) or just coalesce(1).
  * But not that coalesce does not behave the same in the sense that coalesce me be moved further up in your code
  * such that you may loose parallelism (see How to prevent Spark optimization)
+ *
+ * Repartitioning is based on hash partitioning (take the hash code of the partitioning key modulo the number of partitions),
+ * so whether each partition only has one value is purely chance.
+ * If you can map each partitioning key to a unique Int in the range of zero to (number of unique values - 1),
+ * since the hash code of an Int in Scala is that integer, this would ensure that if there are at least as many partitions
+ * as there are unique values, no partition has multiple distinct partitioning key values.
+ * That said, coming up with the assignment of values to such Ints is inherently not parallelizable
+ * and requires either a sequential scan or knowing the distinct values ahead of time.
+ * Probabilistically, the chance that a particular value hashes into a particular partition of (n partitions) is 1/n.
+ * As n increases relative to the number of distinct values, the chance of no partition having more than one distinct
+ * value increases (at the limit, if you could have 2^32 partitions, nearly all of them would be empty but an actual
+ * hash collision would still guarantee multiple distinct values in a partition). So if you can tolerate empty partitions,
+ *
+ * choosing a number of partitions that's sufficiently greater than the number of distinct values would reduce the chance of a sub-ideal result.
  * */
