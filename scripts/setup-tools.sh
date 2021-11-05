@@ -1,7 +1,7 @@
 sudo apt install maven
 sudo apt install openjdk-8-jdk
 
-wget https://dlcdn.apache.org/spark/spark-3.2.0/spark-3.2.0-bin-hadoop3.2.tgz
+wget https://dlcdn.apache.org/spark/spark-3.1.2/spark-3.1.2-bin-hadoop3.2.tgz
 wget https://archive.apache.org/dist/hadoop/common/hadoop-3.2.0/hadoop-3.2.0.tar.gz
 
 scp /home/himel/.local/bin/triplets.soda2103 kab076@ms0923.utah.cloudlab.us:~/

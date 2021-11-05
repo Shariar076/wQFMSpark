@@ -25,8 +25,8 @@ public class ConfigValues {
 
         SparkConf conf = new SparkConf().setAppName("wQFMSpark")
                 // .setJars(new String[]{System.getProperty("user.dir") + "/target/wQFMSpark-1.0-SNAPSHOT-jar-with-dependencies.jar"})
-                // .setMaster("local")
-                .setMaster("spark://doer-ThinkPad-T460s:7077")
+                .setMaster("local")
+                // .setMaster("spark://doer-ThinkPad-T460s:7077")
                 ;
         // conf.registerKryoClasses(new Class<?>[]{ STITree.class});
         JavaSparkContext jsc = new JavaSparkContext(conf);
