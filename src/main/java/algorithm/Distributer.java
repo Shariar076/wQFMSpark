@@ -28,9 +28,9 @@ public class Distributer {
         TaxaTable taxaTable = initialiZeTaxaTable(sortedQtDf);
         Dataset<Row> taggedDf = groupTaxaAndTagData(sortedQtDf, taxaTable);
         String distributedRunTree = partitionDataAndRun(taggedDf, taxaTable);
-        String centralizedRunTree = runCentalized(sortedQtDf);
+        // String centralizedRunTree = runCentalized(sortedQtDf);
         System.out.println("distributedRunTree: " + distributedRunTree);
-        System.out.println("centralizedRunTree: "+centralizedRunTree);
+        // System.out.println("centralizedRunTree: " + centralizedRunTree);
         return distributedRunTree;
     }
 
@@ -60,17 +60,20 @@ public class Distributer {
         // Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaListByCombination(taxaTable.TAXA_LIST);
         Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaListByTaxaTable(taxaTable.TAXA_PARTITION_LIST);
         //Print partitionMap
-        for (Map.Entry<String, ArrayList<String>> partition : taxaPartitionMap.entrySet()) {
-            System.out.println(partition);
-        }
+        // for (Map.Entry<String, ArrayList<String>> partition : taxaPartitionMap.entrySet()) {
+        //     System.out.println(partition);
+        // }
 
-        //t's because, List returned by subList() method is an instance of 'RandomAccessSubList' which is not serializable.
+        //it's because, List returned by subList() method is an instance of 'RandomAccessSubList' which is not serializable.
         // Therefore, you need to create a new ArrayList object from the list returned by the subList().
         UserDefinedFunction tagger = udf(
                 (String qtStr) -> TaxaPartition.getTag(qtStr, taxaPartitionMap), DataTypes.StringType
         );
         Dataset<Row> taggedQtDf = sortedWqDf.withColumn("tag", tagger.apply(col("value")));
-        taggedQtDf.groupBy(col("tag")).count().show(false);
+        taggedQtDf.groupBy(col("tag")).count().show(taxaPartitionMap.size(),false);
+        // taggedQtDf.filter(col("tag").notEqual("UNDEFINED")).show(taxaPartitionMap.size(), false);
+
+        System.out.println("Number of taxaPartition: " + taxaPartitionMap.size());
         return taggedQtDf;
     }
 
@@ -78,36 +81,37 @@ public class Distributer {
         Dataset<Row> partitionedDf = taggedQtDf
                 .withColumn("weightedQuartet", concat(col("value"), lit(" "), col("count")))
                 // .filter(col("tag").notEqual("UNDEFINED"))
-                .orderBy("tag"); // orderBy partitioned unique data to same partition
+                .repartition(col("tag")); // orderBy partitioned unique data to same partition
 
-        partitionedDf.select("weightedQuartet", "tag").write().partitionBy("tag")
-                .mode("overwrite").option("header", "false")
-                .csv(ConfigValues.HDFS_PATH + "/" + DefaultConfigs.INPUT_FILE_NAME_WQRTS_PARTITIONED);
-        // IOHandler.runSystemCommand(Config.PYTHON_ENGINE+ " ./scripts/test.py --input input/partitioned-weighted-quartets.csv --tag A-E-F-H-M-O");
         // TaxaPartition.getPartitionDetail(partitionedDf);
-        System.out.println("NumPartitions: " + partitionedDf.javaRDD().getNumPartitions());
+
+        // partitionedDf.select("weightedQuartet", "tag").write().partitionBy("tag")
+        //         .mode("overwrite").option("header", "false")
+        //         .csv(ConfigValues.HDFS_PATH + "/" + DefaultConfigs.INPUT_FILE_NAME_WQRTS_PARTITIONED);
+        // // IOHandler.runSystemCommand(Config.PYTHON_ENGINE+ " ./scripts/test.py --input input/partitioned-weighted-quartets.csv --tag A-E-F-H-M-O");
+        System.out.println("Number of Data Partitions: " + partitionedDf.javaRDD().getNumPartitions());
 
         Dataset<Row> treeTableDf = partitionedDf.select("weightedQuartet", "tag", "count")
                 .mapPartitions(new QuartetToTreeTablePartitionMapper(), Encoders.bean(TreeTable.class))
-                .cache() //avoid lazy execution i.e. running twice
+                .persist()// .cache() //avoid lazy execution i.e. running twice
                 .orderBy(desc("support"))
                 .filter(col("tree").notEqual("<NULL>"))
                 .toDF();
 
-        treeTableDf.show(false);
+        treeTableDf.show((int)treeTableDf.count(),false);
 
         TreeReducer treeReducer = new TreeReducer(taxaTable.TAXA_LIST);
 
-        String finalTree = treeTableDf
-                .map((MapFunction<Row, String>) r -> r.getAs("tree"), Encoders.STRING())
-                .collectAsList()
-                .stream().reduce(null, treeReducer::call);
+        // String finalTree = treeTableDf
+        //         .map((MapFunction<Row, String>) r -> r.getAs("tree"), Encoders.STRING())
+        //         .collectAsList()
+        //         .stream().reduce(null, treeReducer::call);
         // .reduce(new TreeReducer(taxaTable.TAXA_LIST));
 
         // treeDs.show(false);
-        System.out.println("Final tree " + finalTree);
+        // System.out.println("Final tree " + finalTree);
 
-        return finalTree;
+        return "finalTree";
     }
 }
 /* divide list of taxa into n partitions;

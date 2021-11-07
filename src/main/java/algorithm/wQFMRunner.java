@@ -8,6 +8,8 @@ import wqfm.ds.CustomDSPerLevel;
 import wqfm.ds.InitialTable;
 import wqfm.ds.Quartet;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -116,6 +118,17 @@ public class wQFMRunner implements Serializable {
     public String runDevideNConquer(List<String> quartetsList, String tag){
         this.setWqfmConfigs(1, tag);
         System.out.println("Partition Quartets Count: "+ quartetsList.stream().count());
+        ////////////////////////////////////////////////
+        try {
+            FileWriter writer = new FileWriter("records/failed-wqtList.txt");
+            for(String str: quartetsList) {
+                writer.write(str + System.lineSeparator());
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ///////////////////////////////////////////////
         FMRunner runner = new FMRunner();
         CustomDSPerLevel customDS = new CustomDSPerLevel();
         InitialTable initialTable = this.setLegacyInitialTable(quartetsList, customDS);

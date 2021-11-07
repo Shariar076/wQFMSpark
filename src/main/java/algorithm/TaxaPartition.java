@@ -16,7 +16,7 @@ public class TaxaPartition {
     public static Map<String, ArrayList<String>> partitionTaxaListByTaxaTable(ArrayList<ArrayList<String>> taxaPartitionList) {
         Map<String, ArrayList<String>> mapPartition = new HashMap<>();
 
-        for (ArrayList<String> list: taxaPartitionList) {
+        for (ArrayList<String> list : taxaPartitionList) {
             String key = String.join("-", list);
             mapPartition.put(key, list);
         }
@@ -27,7 +27,7 @@ public class TaxaPartition {
         Map<String, ArrayList<String>> mapPartition = new HashMap<>();
 
         CombinationGenerator combinationGenerator = new CombinationGenerator();
-        List<int[]> combinations = combinationGenerator.generate(taxaList.size(), taxaList.size()-1);
+        List<int[]> combinations = combinationGenerator.generate(taxaList.size(), taxaList.size() - 1);
 
         for (int[] combination : combinations) {
             List<String> taxaPartition = Arrays.stream(combination).mapToObj(taxaList::get).collect(toList());
@@ -40,7 +40,7 @@ public class TaxaPartition {
 
     public static Map<String, ArrayList<String>> partitionTaxaListByWindow(ArrayList<String> taxaList) {
         Map<String, ArrayList<String>> mapPartition = new HashMap<>();
-        int windowSize =  8; //taxaList.size()-1;
+        int windowSize = 8; //taxaList.size()-1;
         int startIdx = 0;
         int slide = 1;
         // remember fromIdx low endpoint (inclusive) of the subList and toIdx is high endpoint (exclusive) of the subList
@@ -94,7 +94,7 @@ public class TaxaPartition {
         // Dataset<Integer> rowCountDs = partitionedDf.mapPartitions(new SimplePartionMapper(), Encoders.INT());
         Dataset<Integer> rowCountDs = partitionedDf.mapPartitions((MapPartitionsFunction<Row, Integer>)
                 TaxaPartition::countDataOnPArtition, Encoders.INT());
-        rowCountDs.show();
+        rowCountDs.show((int) rowCountDs.count());
         System.out.println("NumPartitions: " + partitionedDf.javaRDD().getNumPartitions());
     }
 }

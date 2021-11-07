@@ -1,6 +1,7 @@
 package reducer;
 
 import org.apache.spark.api.java.function.ReduceFunction;
+import properties.ConfigValues;
 import structure.TaxaTable;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
         return taxalist;
     }
 
-    private static void updateTaxaTablePartitions(ArrayList<String> taxaList, TaxaTable taxaTable) {
+    private static void updateTaxaTablePartitionsByTaxaList(ArrayList<String> taxaList, TaxaTable taxaTable) {
         ArrayList<ArrayList<String>> newPartitions = new ArrayList<>();
         if (taxaTable.TAXA_PARTITION_LIST.isEmpty()) newPartitions.add(createPartition(taxaList));
         else {
@@ -52,21 +53,34 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
                 if (countTaxonInPartition(taxaList, partition) == taxaList.size()) {
                     //taxaList already contained by some partition
                     return;
-                } else if (countTaxonInPartition(taxaList, partition) != 1) { // partition.size() < ConfigValues.TAXA_PER_PARTITION
+                } else if (partition.size() + taxaList.size() < ConfigValues.TAXA_PER_PARTITION) { // countTaxonInPartition(taxaList, partition) != 1
                     updatePartition(taxaList, partition);
                     // no new partition needed
                     return;
                 }
             }
             //insert
-            for (ArrayList<String> partition : taxaTable.TAXA_PARTITION_LIST)
-                if (countTaxonInPartition(taxaList, partition) == 1) { //single taxa overlap
-                    newPartitions.add(createPartition(taxaList));
-                    break;
-                }
+            newPartitions.add(createPartition(taxaList));
+            // for (ArrayList<String> partition : taxaTable.TAXA_PARTITION_LIST)
+            //     if (countTaxonInPartition(taxaList, partition) == 1) { //single taxa overlap
+            //         newPartitions.add(createPartition(taxaList));
+            //         break;
+            //     }
             // here means no update occurred
         }
         taxaTable.TAXA_PARTITION_LIST.addAll(newPartitions);
+    }
+
+    private static void updateTaxaTablePartitionsByTaxaTablePartitions(TaxaTable t1, TaxaTable taxaTable) {
+        for (ArrayList<String> p1 : t1.TAXA_PARTITION_LIST) {
+            boolean contained = false;
+            for (ArrayList<String> partition : taxaTable.TAXA_PARTITION_LIST)
+                if (partition.containsAll(p1)) {
+                    contained = true;
+                    break;
+                }
+            if(!contained) taxaTable.TAXA_PARTITION_LIST.add(p1);
+        }
     }
 
     @Override
@@ -75,7 +89,8 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
             updateTaxaTableWithTaxon(taxon, taxaTable);
         }
         // updateTaxaTableWithTaxaList(taxaTable, t1);
-        updateTaxaTablePartitions(t1.TAXA_LIST, taxaTable);
+        if (t1.TAXA_PARTITION_LIST.isEmpty()) updateTaxaTablePartitionsByTaxaList(t1.TAXA_LIST, taxaTable);  // t1: no reduce yet
+        else updateTaxaTablePartitionsByTaxaTablePartitions(t1,taxaTable); // t1: already reduced
         return taxaTable;
     }
 }
