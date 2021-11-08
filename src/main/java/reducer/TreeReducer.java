@@ -1,5 +1,6 @@
 package reducer;
 
+import org.apache.spark.api.java.function.ReduceFunction;
 import phylonet.tree.io.ParseException;
 import phylonet.tree.model.sti.STINode;
 import phylonet.tree.model.sti.STITree;
@@ -8,7 +9,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class TreeReducer {
+public class TreeReducer implements ReduceFunction<String> {
     public static ArrayList<String> TAXA_LIST;
 
     public TreeReducer(ArrayList<String> TAXA_LIST) {
@@ -111,7 +112,7 @@ public class TreeReducer {
 
     }
 
-    // @Override
+    @Override
     public String call(String tree, String t1) { // throws Exception
 
         if (tree == null) {

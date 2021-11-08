@@ -113,9 +113,10 @@ public class Distributer {
 
         String finalTree = treeTableDf
                 .map((MapFunction<Row, String>) r -> r.getAs("tree"), Encoders.STRING())
-                .collectAsList()
-                .stream().reduce(null, treeReducer::call);
-        // .reduce(new TreeReducer(taxaTable.TAXA_LIST));
+                // .collectAsList()
+                // .stream().reduce(null, treeReducer::call);
+                .reduce(new TreeReducer(taxaTable.TAXA_LIST));
+        ConfigValues.SPARK.stop();
 
         // treeDs.show(false);
         System.out.println("Final tree " + finalTree);
