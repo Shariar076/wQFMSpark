@@ -30,9 +30,9 @@ public class Distributer {
         TaxaTable taxaTable = initialiZeTaxaTable(sortedQtDf);
         Dataset<Row> taggedDf = groupTaxaAndTagData(sortedQtDf, taxaTable);
         String distributedRunTree = partitionDataAndRun(taggedDf, taxaTable);
-        String centralizedRunTree = runCentalized(sortedQtDf);
+        // String centralizedRunTree = runCentalized(sortedQtDf);
         System.out.println("distributedRunTree: " + distributedRunTree);
-        System.out.println("centralizedRunTree: " + centralizedRunTree);
+        // System.out.println("centralizedRunTree: " + centralizedRunTree);
         return distributedRunTree;
     }
 
@@ -80,9 +80,9 @@ public class Distributer {
         );
         Dataset<Row> taggedQtDf = sortedWqDf.withColumn("tag", tagger.apply(col("value")));
         taggedQtDf.groupBy(col("tag")).count().show(taxaPartitionMap.size(),false);
-        taggedQtDf.filter(col("tag").equalTo("UNDEFINED")).show( false);
+        taggedQtDf.filter(col("tag").equalTo("UNDEFINED")).show(false);
 
-        System.out.println("Number of taxaPartition: " + taxaPartitionMap.size());
+        System.out.println("Number of Partitions by taxaPartition: " + taggedQtDf.groupBy(col("tag")).count().count());
         return taggedQtDf;
     }
 
