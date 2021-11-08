@@ -28,9 +28,9 @@ public class Distributer {
         TaxaTable taxaTable = initialiZeTaxaTable(sortedQtDf);
         Dataset<Row> taggedDf = groupTaxaAndTagData(sortedQtDf, taxaTable);
         String distributedRunTree = partitionDataAndRun(taggedDf, taxaTable);
-        // String centralizedRunTree = runCentalized(sortedQtDf);
+        String centralizedRunTree = runCentalized(sortedQtDf);
         System.out.println("distributedRunTree: " + distributedRunTree);
-        // System.out.println("centralizedRunTree: " + centralizedRunTree);
+        System.out.println("centralizedRunTree: " + centralizedRunTree);
         return distributedRunTree;
     }
 
@@ -71,7 +71,7 @@ public class Distributer {
         );
         Dataset<Row> taggedQtDf = sortedWqDf.withColumn("tag", tagger.apply(col("value")));
         taggedQtDf.groupBy(col("tag")).count().show(taxaPartitionMap.size(),false);
-        // taggedQtDf.filter(col("tag").notEqual("UNDEFINED")).show(taxaPartitionMap.size(), false);
+        taggedQtDf.filter(col("tag").equalTo("UNDEFINED")).show( false);
 
         System.out.println("Number of taxaPartition: " + taxaPartitionMap.size());
         return taggedQtDf;
@@ -98,20 +98,20 @@ public class Distributer {
                 .filter(col("tree").notEqual("<NULL>"))
                 .toDF();
 
-        treeTableDf.show((int)treeTableDf.count(),false);
-
+        treeTableDf.show(false);
+        System.out.println("Total generated trees: "+treeTableDf.count());
         TreeReducer treeReducer = new TreeReducer(taxaTable.TAXA_LIST);
 
-        // String finalTree = treeTableDf
-        //         .map((MapFunction<Row, String>) r -> r.getAs("tree"), Encoders.STRING())
-        //         .collectAsList()
-        //         .stream().reduce(null, treeReducer::call);
+        String finalTree = treeTableDf
+                .map((MapFunction<Row, String>) r -> r.getAs("tree"), Encoders.STRING())
+                .collectAsList()
+                .stream().reduce(null, treeReducer::call);
         // .reduce(new TreeReducer(taxaTable.TAXA_LIST));
 
         // treeDs.show(false);
-        // System.out.println("Final tree " + finalTree);
+        System.out.println("Final tree " + finalTree);
 
-        return "finalTree";
+        return finalTree;
     }
 }
 /* divide list of taxa into n partitions;

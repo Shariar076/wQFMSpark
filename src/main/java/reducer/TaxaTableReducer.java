@@ -44,6 +44,32 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
         return taxalist;
     }
 
+    private static void updateTaxaTablePartitionsByTaxaListV1(ArrayList<String> taxaList, TaxaTable taxaTable) {
+        ArrayList<ArrayList<String>> newPartitions = new ArrayList<>();
+        if (taxaTable.TAXA_PARTITION_LIST.isEmpty()) newPartitions.add(createPartition(taxaList));
+        else {
+            //update
+            for (ArrayList<String> partition : taxaTable.TAXA_PARTITION_LIST) {
+                if (countTaxonInPartition(taxaList, partition) == taxaList.size()) {
+                    //taxaList already contained by some partition
+                    return;
+                } else if (countTaxonInPartition(taxaList, partition) != 1) { // partition.size() < ConfigValues.TAXA_PER_PARTITION
+                    updatePartition(taxaList, partition);
+                    // no new partition needed
+                    return;
+                }
+            }
+            //insert
+            for (ArrayList<String> partition : taxaTable.TAXA_PARTITION_LIST)
+                if (countTaxonInPartition(taxaList, partition) == 1) { //single taxa overlap
+                    newPartitions.add(createPartition(taxaList));
+                    break;
+                }
+            // here means no update occurred
+        }
+        taxaTable.TAXA_PARTITION_LIST.addAll(newPartitions);
+    }
+
     private static void updateTaxaTablePartitionsByTaxaList(ArrayList<String> taxaList, TaxaTable taxaTable) {
         ArrayList<ArrayList<String>> newPartitions = new ArrayList<>();
         if (taxaTable.TAXA_PARTITION_LIST.isEmpty()) newPartitions.add(createPartition(taxaList));
@@ -53,7 +79,8 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
                 if (countTaxonInPartition(taxaList, partition) == taxaList.size()) {
                     //taxaList already contained by some partition
                     return;
-                } else if (partition.size() + taxaList.size() < ConfigValues.TAXA_PER_PARTITION) { // countTaxonInPartition(taxaList, partition) != 1
+                } else if (partition.size() + taxaList.size() < ConfigValues.TAXA_PER_PARTITION
+                        && countTaxonInPartition(taxaList, partition) > 2) { // countTaxonInPartition(taxaList, partition) != 1
                     updatePartition(taxaList, partition);
                     // no new partition needed
                     return;
@@ -61,12 +88,6 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
             }
             //insert
             newPartitions.add(createPartition(taxaList));
-            // for (ArrayList<String> partition : taxaTable.TAXA_PARTITION_LIST)
-            //     if (countTaxonInPartition(taxaList, partition) == 1) { //single taxa overlap
-            //         newPartitions.add(createPartition(taxaList));
-            //         break;
-            //     }
-            // here means no update occurred
         }
         taxaTable.TAXA_PARTITION_LIST.addAll(newPartitions);
     }
@@ -79,7 +100,7 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
                     contained = true;
                     break;
                 }
-            if(!contained) taxaTable.TAXA_PARTITION_LIST.add(p1);
+            if (!contained) taxaTable.TAXA_PARTITION_LIST.add(p1);
         }
     }
 
@@ -88,9 +109,10 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
         for (String taxon : t1.TAXA_LIST) {
             updateTaxaTableWithTaxon(taxon, taxaTable);
         }
-        // updateTaxaTableWithTaxaList(taxaTable, t1);
-        if (t1.TAXA_PARTITION_LIST.isEmpty()) updateTaxaTablePartitionsByTaxaList(t1.TAXA_LIST, taxaTable);  // t1: no reduce yet
-        else updateTaxaTablePartitionsByTaxaTablePartitions(t1,taxaTable); // t1: already reduced
+        updateTaxaTablePartitionsByTaxaListV1(t1.TAXA_LIST, taxaTable);
+        // if (t1.TAXA_PARTITION_LIST.isEmpty())
+        //     updateTaxaTablePartitionsByTaxaList(t1.TAXA_LIST, taxaTable);  // t1: no reduce yet
+        // else updateTaxaTablePartitionsByTaxaTablePartitions(t1, taxaTable); // t1: already reduced
         return taxaTable;
     }
 }

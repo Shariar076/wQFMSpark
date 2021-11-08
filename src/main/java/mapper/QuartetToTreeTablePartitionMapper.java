@@ -27,7 +27,13 @@ public class QuartetToTreeTablePartitionMapper implements MapPartitionsFunction<
             // throw new Exception("Tag mismatch within partition, expected: "+ qtTag+" , got: "+row.getString(1));
         }
         String tree = "<NULL>";
-        if (arrayList.size() > 0) tree = new wQFMRunner().runDevideNConquer(arrayList, qtTag.toString()); //String.valueOf(arrayList.size());
+        if (arrayList.size() > 0) {
+            try {
+                tree = new wQFMRunner().runDevideNConquer(arrayList, qtTag.toString()); //String.valueOf(arrayList.size());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
 
         treeTable.setTree(tree);
         treeTable.setTag(qtTag.toString());
