@@ -127,8 +127,9 @@ public class TreeReducer implements ReduceFunction<String> {
                 updatedStr = addSubtreesWithMissingTaxa(newickTree1, newickTree2);
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("TreeReducer tree: " + tree);
-                System.out.println("TreeReducer t1: " + t1);
+                System.out.println(">>>>>>>>>>>>>TreeReducer tree: " + tree);
+                System.out.println(">>>>>>>>>>>>>TreeReducer t1: " + t1);
+                return tree;
             }
             return updatedStr;
         }

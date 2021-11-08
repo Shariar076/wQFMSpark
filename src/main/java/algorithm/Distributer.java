@@ -107,16 +107,16 @@ public class Distributer {
                 .filter(col("tree").notEqual("<NULL>"))
                 .toDF();
 
-        treeTableDf.show(false);
-        System.out.println("Total generated trees: "+treeTableDf.count());
-        TreeReducer treeReducer = new TreeReducer(taxaTable.TAXA_LIST);
+        // TreeReducer treeReducer = new TreeReducer(taxaTable.TAXA_LIST);
 
         String finalTree = treeTableDf
                 .map((MapFunction<Row, String>) r -> r.getAs("tree"), Encoders.STRING())
                 // .collectAsList()
                 // .stream().reduce(null, treeReducer::call);
                 .reduce(new TreeReducer(taxaTable.TAXA_LIST));
-        ConfigValues.SPARK.stop();
+        treeTableDf.show(false);
+        System.out.println("Total generated trees: "+treeTableDf.count());
+        // ConfigValues.SPARK.stop();
 
         // treeDs.show(false);
         System.out.println("Final tree " + finalTree);
