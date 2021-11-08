@@ -70,7 +70,7 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
         taxaTable.TAXA_PARTITION_LIST.addAll(newPartitions);
     }
 
-    private static void updateTaxaTablePartitionsByTaxaList(ArrayList<String> taxaList, TaxaTable taxaTable) {
+    private static void updateTaxaTablePartitionsByTaxaListV2(ArrayList<String> taxaList, TaxaTable taxaTable) {
         ArrayList<ArrayList<String>> newPartitions = new ArrayList<>();
         if (taxaTable.TAXA_PARTITION_LIST.isEmpty()) newPartitions.add(createPartition(taxaList));
         else {
@@ -92,7 +92,7 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
         taxaTable.TAXA_PARTITION_LIST.addAll(newPartitions);
     }
 
-    private static void updateTaxaTablePartitionsByTaxaTablePartitions(TaxaTable t1, TaxaTable taxaTable) {
+    private static void updateTaxaTablePartitionsByTaxaTablePartitionsV2(TaxaTable t1, TaxaTable taxaTable) {
         for (ArrayList<String> p1 : t1.TAXA_PARTITION_LIST) {
             boolean contained = false;
             for (ArrayList<String> partition : taxaTable.TAXA_PARTITION_LIST)
@@ -104,15 +104,26 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
         }
     }
 
+    private static void updateTaxaTablePartitionsByTaxaListV3(ArrayList<String> taxaList, TaxaTable taxaTable) {
+        taxaTable.TAXA_PARTITION_LIST.add(taxaList);
+    }
+
     @Override
     public TaxaTable call(TaxaTable taxaTable, TaxaTable t1) throws Exception {
         for (String taxon : t1.TAXA_LIST) {
             updateTaxaTableWithTaxon(taxon, taxaTable);
         }
-        updateTaxaTablePartitionsByTaxaListV1(t1.TAXA_LIST, taxaTable);
+        // v1
+        // updateTaxaTablePartitionsByTaxaListV1(t1.TAXA_LIST, taxaTable);
+        // v2
         // if (t1.TAXA_PARTITION_LIST.isEmpty())
-        //     updateTaxaTablePartitionsByTaxaList(t1.TAXA_LIST, taxaTable);  // t1: no reduce yet
-        // else updateTaxaTablePartitionsByTaxaTablePartitions(t1, taxaTable); // t1: already reduced
+        //     updateTaxaTablePartitionsByTaxaListV2(t1.TAXA_LIST, taxaTable);  // t1: no reduce yet
+        // else updateTaxaTablePartitionsByTaxaTablePartitionsV2(t1, taxaTable); // t1: already reduced
+        // v3
+        if (t1.TAXA_LIST.size() > 4) {
+            System.out.println(t1.TAXA_LIST);
+            updateTaxaTablePartitionsByTaxaListV3(taxaTable.TAXA_LIST, taxaTable);
+        }
         return taxaTable;
     }
 }
