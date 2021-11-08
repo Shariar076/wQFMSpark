@@ -105,7 +105,8 @@ public class WQGenerator {
 
         removeTempFile();
         Dataset<Row> weightedQuartets = qtDs.toDF().groupBy("value").count();
-        weightedQuartets.write().mode("overwrite").option("header", "true")
+        weightedQuartets.write().mode("overwrite")
+                .option("sep"," ").option("quoteAll", "false")
                 .csv(ConfigValues.HDFS_PATH + "/" + outputFilename);
 
     }

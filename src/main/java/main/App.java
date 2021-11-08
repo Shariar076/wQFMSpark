@@ -33,14 +33,16 @@ public class App {
     }
 
     public static void initializeAndRun(){
-        // ConfigValues.SPARK = spark;
-        System.out.println("Input file consists of gene trees ... generating weighted quartets to file: " + DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT);
-        // IOHandler.generateWeightedQuartets(ConfigValues.INPUT_FILE_NAME, ConfigValues.OUTPUT_FILE_NAME);
-        WQGenerator.generateWQ(ConfigValues.INPUT_FILE_NAME, DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT);
-        System.out.println("Generation of weighted quartets completed.");
-        // then switch to input file name as default weighted quartets name.
+        if (ConfigValues.INPUT_MODE.equals("gene-trees")) {
+            System.out.println("Input file consists of gene trees ... generating weighted quartets to file: " + DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT);
+            // IOHandler.generateWeightedQuartets(ConfigValues.INPUT_FILE_NAME, ConfigValues.OUTPUT_FILE_NAME);
+            WQGenerator.generateWQ(ConfigValues.INPUT_FILE_NAME, DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT);
+            System.out.println("Generation of weighted quartets completed.");
+            // then switch to input file name as default weighted quartets name.
+            ConfigValues.INPUT_FILE_NAME = DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT;
+        }
 
-        String treeOutput = App.runwQFMSpark(DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT, ConfigValues.OUTPUT_FILE_NAME); // run wQFM
+        String treeOutput = App.runwQFMSpark(ConfigValues.INPUT_FILE_NAME, ConfigValues.OUTPUT_FILE_NAME); // run wQFM
     }
 
     public static void main(String[] args) {

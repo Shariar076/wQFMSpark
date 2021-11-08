@@ -1,6 +1,8 @@
 package algorithm;
 
 import org.apache.spark.api.java.function.MapFunction;
+import org.apache.spark.sql.types.StructField;
+import org.apache.spark.sql.types.StructType;
 import properties.ConfigValues;
 import mapper.QuartetToTreeTablePartitionMapper;
 import mapper.StringToTaxaTableMapper;
@@ -42,7 +44,14 @@ public class Distributer {
     }
 
     public static Dataset<Row> readFileInDf(String inputFileName) {
-        return ConfigValues.SPARK.read().option("header", "true")
+        StructType schema = DataTypes.createStructType(new StructField[]{
+                DataTypes.createStructField("value", DataTypes.StringType, false),
+                DataTypes.createStructField("count", DataTypes.DoubleType, false)
+        });
+
+        return ConfigValues.SPARK.read()
+                .option("sep"," ")
+                .schema(schema)
                 .csv(ConfigValues.HDFS_PATH + "/" + inputFileName);
         // .orderBy(desc("count"));
     }

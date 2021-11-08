@@ -21,7 +21,7 @@ public class QuartetToTreeTablePartitionMapper implements MapPartitionsFunction<
             Row row = iterator.next();
             arrayList.add(row.getString(0));
             // qtCount++;
-            qtWeightSum += Double.parseDouble(row.getString(2)); //row.getDouble(2);
+            qtWeightSum += row.getDouble(2);
             if (qtTag.length() == 0) qtTag = new StringBuilder(row.getString(1)); // find this partition's tag
             else if (!qtTag.toString().contains(row.getString(1))) qtTag.append('|').append(row.getString(1));
             // throw new Exception("Tag mismatch within partition, expected: "+ qtTag+" , got: "+row.getString(1));
