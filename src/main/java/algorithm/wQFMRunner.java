@@ -125,7 +125,7 @@ public class wQFMRunner implements Serializable {
             if(count%100000==0) System.out.println("Task at count: "+ count);
             count++;
         }
-        System.out.println("Task Complete, Elapsed time: "+ (System.currentTimeMillis()-time_1));
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>> Task Complete, Elapsed time: "+ (System.currentTimeMillis()-time_1));
         return String.valueOf(dummy.size());
     }
     public String runDevideNConquer(List<String> quartetsList, String tag){
@@ -151,7 +151,7 @@ public class wQFMRunner implements Serializable {
         String final_tree_decoded = wqfm.utils.IOHandler.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);
         System.out.println(final_tree_decoded);
         // wqfm.utils.IOHandler.writeToFile(final_tree_decoded, ConfigValues.OUTPUT_FILE_NAME);
-        System.out.println("Task Complete, Elapsed time: "+ (System.currentTimeMillis()-time_1));
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>> Task Complete, Elapsed time: "+ (System.currentTimeMillis()-time_1));
         return final_tree_decoded;
     }
 }
