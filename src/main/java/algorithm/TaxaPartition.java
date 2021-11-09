@@ -16,8 +16,9 @@ public class TaxaPartition {
     public static Map<String, ArrayList<String>> partitionTaxaListByTaxaTable(ArrayList<ArrayList<String>> taxaPartitionList) {
         Map<String, ArrayList<String>> mapPartition = new HashMap<>();
 
-        for (ArrayList<String> list : taxaPartitionList) {
-            String key = String.join("-", list);
+        for (int i=0; i<taxaPartitionList.size();i++) {
+            ArrayList<String> list = taxaPartitionList.get(i);
+            String key = String.valueOf(i);
             mapPartition.put(key, list);
         }
         return mapPartition;
