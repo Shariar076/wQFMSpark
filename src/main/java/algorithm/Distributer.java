@@ -122,7 +122,7 @@ public class Distributer {
         Dataset<Row> partitionedDf = taggedQtDf
                 .withColumn("weightedQuartet", concat(col("value"), lit(" "), col("count")))
                 // .filter(col("tag").notEqual("UNDEFINED"))
-                .repartitionByRange(numPartitions, col("tag")); // orderBy partitioned unique data to same partition
+                .repartitionByRange(ConfigValues.NUM_WORKER, col("tag")); // orderBy partitioned unique data to same partition
 
         // TaxaPartition.getPartitionDetail(partitionedDf);
 
