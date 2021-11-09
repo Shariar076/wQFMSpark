@@ -1,0 +1,235 @@
+21/11/09 04:11:40 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+21/11/09 04:11:41 INFO SparkContext: Running Spark version 3.1.2
+21/11/09 04:11:41 INFO ResourceUtils: ==============================================================
+21/11/09 04:11:41 INFO ResourceUtils: No custom resources configured for spark.driver.
+21/11/09 04:11:41 INFO ResourceUtils: ==============================================================
+21/11/09 04:11:41 INFO SparkContext: Submitted application: wQFMSpark
+21/11/09 04:11:41 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 40960, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+21/11/09 04:11:41 INFO ResourceProfile: Limiting resource is cpu
+21/11/09 04:11:41 INFO ResourceProfileManager: Added ResourceProfile id: 0
+21/11/09 04:11:41 INFO SecurityManager: Changing view acls to: kab076
+21/11/09 04:11:41 INFO SecurityManager: Changing modify acls to: kab076
+21/11/09 04:11:41 INFO SecurityManager: Changing view acls groups to: 
+21/11/09 04:11:41 INFO SecurityManager: Changing modify acls groups to: 
+21/11/09 04:11:41 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(kab076); groups with view permissions: Set(); users  with modify permissions: Set(kab076); groups with modify permissions: Set()
+21/11/09 04:11:41 INFO Utils: Successfully started service 'sparkDriver' on port 42555.
+21/11/09 04:11:41 INFO SparkEnv: Registering MapOutputTracker
+21/11/09 04:11:41 INFO SparkEnv: Registering BlockManagerMaster
+21/11/09 04:11:41 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+21/11/09 04:11:41 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+21/11/09 04:11:41 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+21/11/09 04:11:41 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-c4a49525-7bab-4834-95c7-1dcaa14addbb
+21/11/09 04:11:42 INFO MemoryStore: MemoryStore started with capacity 398.7 MiB
+21/11/09 04:11:42 INFO SparkEnv: Registering OutputCommitCoordinator
+21/11/09 04:11:42 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+21/11/09 04:11:42 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://ms0819.utah.cloudlab.us:4040
+21/11/09 04:11:42 INFO SparkContext: Added JAR file:/users/kab076/wQFMSpark/./target/wQFMSpark-1.0-SNAPSHOT-jar-with-dependencies.jar at spark://ms0819.utah.cloudlab.us:42555/jars/wQFMSpark-1.0-SNAPSHOT-jar-with-dependencies.jar with timestamp 1636456301358
+21/11/09 04:11:42 INFO SparkContext: Added file file:///users/kab076/wQFMSpark/triplets.soda2103 at spark://ms0819.utah.cloudlab.us:42555/files/triplets.soda2103 with timestamp 1636456301358
+21/11/09 04:11:42 INFO Utils: Copying /users/kab076/wQFMSpark/triplets.soda2103 to /tmp/spark-7d00f7ce-20bf-4257-8f8d-ef3e2082fd9f/userFiles-aec7f40f-c93d-4555-9261-2b9a9e4bc093/triplets.soda2103
+21/11/09 04:11:42 INFO StandaloneAppClient$ClientEndpoint: Connecting to master spark://node0:7077...
+21/11/09 04:11:42 INFO TransportClientFactory: Successfully created connection to node0/10.10.1.1:7077 after 44 ms (0 ms spent in bootstraps)
+21/11/09 04:11:42 INFO StandaloneSchedulerBackend: Connected to Spark cluster with app ID app-20211109041142-0010
+21/11/09 04:11:42 INFO StandaloneAppClient$ClientEndpoint: Executor added: app-20211109041142-0010/0 on worker-20211109002414-128.110.217.44-43329 (128.110.217.44:43329) with 16 core(s)
+21/11/09 04:11:42 INFO StandaloneSchedulerBackend: Granted executor ID app-20211109041142-0010/0 on hostPort 128.110.217.44:43329 with 16 core(s), 40.0 GiB RAM
+21/11/09 04:11:42 INFO StandaloneAppClient$ClientEndpoint: Executor added: app-20211109041142-0010/1 on worker-20211109002452-128.110.217.51-42171 (128.110.217.51:42171) with 16 core(s)
+21/11/09 04:11:42 INFO StandaloneSchedulerBackend: Granted executor ID app-20211109041142-0010/1 on hostPort 128.110.217.51:42171 with 16 core(s), 40.0 GiB RAM
+21/11/09 04:11:42 INFO StandaloneAppClient$ClientEndpoint: Executor added: app-20211109041142-0010/2 on worker-20211109002436-128.110.217.52-35535 (128.110.217.52:35535) with 16 core(s)
+21/11/09 04:11:42 INFO StandaloneSchedulerBackend: Granted executor ID app-20211109041142-0010/2 on hostPort 128.110.217.52:35535 with 16 core(s), 40.0 GiB RAM
+21/11/09 04:11:42 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 33155.
+21/11/09 04:11:42 INFO NettyBlockTransferService: Server created on ms0819.utah.cloudlab.us:33155
+21/11/09 04:11:42 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+21/11/09 04:11:42 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, ms0819.utah.cloudlab.us, 33155, None)
+21/11/09 04:11:42 INFO BlockManagerMasterEndpoint: Registering block manager ms0819.utah.cloudlab.us:33155 with 398.7 MiB RAM, BlockManagerId(driver, ms0819.utah.cloudlab.us, 33155, None)
+21/11/09 04:11:42 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, ms0819.utah.cloudlab.us, 33155, None)
+21/11/09 04:11:42 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, ms0819.utah.cloudlab.us, 33155, None)
+21/11/09 04:11:42 INFO StandaloneAppClient$ClientEndpoint: Executor updated: app-20211109041142-0010/1 is now RUNNING
+21/11/09 04:11:42 INFO StandaloneAppClient$ClientEndpoint: Executor updated: app-20211109041142-0010/2 is now RUNNING
+21/11/09 04:11:42 INFO StandaloneAppClient$ClientEndpoint: Executor updated: app-20211109041142-0010/0 is now RUNNING
+21/11/09 04:11:43 INFO StandaloneSchedulerBackend: SchedulerBackend is ready for scheduling beginning after reached minRegisteredResourcesRatio: 0.0
+21/11/09 04:11:43 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+Input file consists of gene trees ... generating weighted quartets to file: input/input-weighted-quartets.csv
+Generation of weighted quartets completed.
+================= **** ========== Running wQFM on Spark ============== **** ====================
+Final Taxa Table: TaxaTable{TAXA_COUNT=37,
+ TAXA_LIST=[BOS, TAR, MAC, MON, OTO, ECH, HOM, LOX, PON, ERI, VIC, ORN, RAT, CAV, GOR, SUS, DIP, FEL, TUR, TUP, CAL, ORY, MUS, GAL, MIC, PAN, DAS, CAN, EQU, SPE, CHO, SOR, PTE, MYO, OCH, PRO, NEW],
+ TAXA_PARTITION_LIST Size=178}
++---+-----+
+|tag|count|
++---+-----+
+|112|8718 |
+|113|6239 |
+|110|2497 |
+|89 |39026|
+|111|6314 |
+|114|1391 |
+|88 |75640|
++---+-----+
+
++-----+-----+---+
+|value|count|tag|
++-----+-----+---+
++-----+-----+---+
+
+Number of Partitions by taxaPartition: 7
+Number of Data Partitions: 200
+21/11/09 04:12:21 ERROR TaskSchedulerImpl: Lost executor 2 on 128.110.217.52: Remote RPC client disassociated. Likely due to containers exceeding thresholds, or network issues. Check driver logs for WARN messages.
+21/11/09 04:12:21 WARN TaskSetManager: Lost task 19.0 in stage 21.0 (TID 803) (128.110.217.52 executor 2): ExecutorLostFailure (executor 2 exited caused by one of the running tasks) Reason: Remote RPC client disassociated. Likely due to containers exceeding thresholds, or network issues. Check driver logs for WARN messages.
+21/11/09 04:12:21 WARN TaskSetManager: Lost task 92.0 in stage 21.0 (TID 806) (128.110.217.52 executor 2): ExecutorLostFailure (executor 2 exited caused by one of the running tasks) Reason: Remote RPC client disassociated. Likely due to containers exceeding thresholds, or network issues. Check driver logs for WARN messages.
+21/11/09 04:12:21 WARN TaskSetManager: Lost task 19.1 in stage 21.0 (TID 1003) (128.110.217.51 executor 1): FetchFailed(BlockManagerId(2, 128.110.217.52, 32819, None), shuffleId=5, mapIndex=2, mapId=764, reduceId=19, message=
+org.apache.spark.shuffle.FetchFailedException: The relative remote executor(Id: 2), which maintains the block data to fetch is dead.
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.throwFetchFailedException(ShuffleBlockFetcherIterator.scala:770)
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.next(ShuffleBlockFetcherIterator.scala:685)
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.next(ShuffleBlockFetcherIterator.scala:70)
+	at org.apache.spark.util.CompletionIterator.next(CompletionIterator.scala:29)
+	at scala.collection.Iterator$$anon$11.nextCur(Iterator.scala:484)
+	at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:490)
+	at scala.collection.Iterator$$anon$10.hasNext(Iterator.scala:458)
+	at org.apache.spark.util.CompletionIterator.hasNext(CompletionIterator.scala:31)
+	at org.apache.spark.InterruptibleIterator.hasNext(InterruptibleIterator.scala:37)
+	at scala.collection.Iterator$$anon$10.hasNext(Iterator.scala:458)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$GeneratedIteratorForCodegenStage2.processNext(Unknown Source)
+	at org.apache.spark.sql.execution.BufferedRowIterator.hasNext(BufferedRowIterator.java:43)
+	at org.apache.spark.sql.execution.WholeStageCodegenExec$$anon$1.hasNext(WholeStageCodegenExec.scala:755)
+	at scala.collection.Iterator$$anon$10.hasNext(Iterator.scala:458)
+	at scala.collection.Iterator$$anon$10.hasNext(Iterator.scala:458)
+	at scala.collection.convert.Wrappers$IteratorWrapper.hasNext(Wrappers.scala:31)
+	at mapper.QuartetToTreeTablePartitionMapper.call(QuartetToTreeTablePartitionMapper.java:24)
+	at org.apache.spark.sql.Dataset.$anonfun$mapPartitions$1(Dataset.scala:2820)
+	at org.apache.spark.sql.execution.MapPartitionsExec.$anonfun$doExecute$3(objects.scala:195)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:898)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:898)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:90)
+	at org.apache.spark.scheduler.Task.run(Task.scala:131)
+	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$3(Executor.scala:497)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:1439)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:500)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: org.apache.spark.ExecutorDeadException: The relative remote executor(Id: 2), which maintains the block data to fetch is dead.
+	at org.apache.spark.network.netty.NettyBlockTransferService$$anon$2.createAndStart(NettyBlockTransferService.scala:133)
+	at org.apache.spark.network.shuffle.RetryingBlockFetcher.fetchAllOutstanding(RetryingBlockFetcher.java:153)
+	at org.apache.spark.network.shuffle.RetryingBlockFetcher.start(RetryingBlockFetcher.java:133)
+	at org.apache.spark.network.netty.NettyBlockTransferService.fetchBlocks(NettyBlockTransferService.scala:143)
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.sendRequest(ShuffleBlockFetcherIterator.scala:283)
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.send$1(ShuffleBlockFetcherIterator.scala:743)
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.fetchUpToMaxBytes(ShuffleBlockFetcherIterator.scala:738)
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.initialize(ShuffleBlockFetcherIterator.scala:552)
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.<init>(ShuffleBlockFetcherIterator.scala:171)
+	at org.apache.spark.shuffle.BlockStoreShuffleReader.read(BlockStoreShuffleReader.scala:85)
+	at org.apache.spark.sql.execution.ShuffledRowRDD.compute(ShuffledRowRDD.scala:212)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	... 23 more
+
+)
+21/11/09 04:12:21 WARN TaskSetManager: Lost task 92.1 in stage 21.0 (TID 1002) (128.110.217.44 executor 0): FetchFailed(BlockManagerId(2, 128.110.217.52, 32819, None), shuffleId=5, mapIndex=2, mapId=764, reduceId=92, message=
+org.apache.spark.shuffle.FetchFailedException: The relative remote executor(Id: 2), which maintains the block data to fetch is dead.
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.throwFetchFailedException(ShuffleBlockFetcherIterator.scala:770)
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.next(ShuffleBlockFetcherIterator.scala:685)
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.next(ShuffleBlockFetcherIterator.scala:70)
+	at org.apache.spark.util.CompletionIterator.next(CompletionIterator.scala:29)
+	at scala.collection.Iterator$$anon$11.nextCur(Iterator.scala:484)
+	at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:490)
+	at scala.collection.Iterator$$anon$10.hasNext(Iterator.scala:458)
+	at org.apache.spark.util.CompletionIterator.hasNext(CompletionIterator.scala:31)
+	at org.apache.spark.InterruptibleIterator.hasNext(InterruptibleIterator.scala:37)
+	at scala.collection.Iterator$$anon$10.hasNext(Iterator.scala:458)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$GeneratedIteratorForCodegenStage2.processNext(Unknown Source)
+	at org.apache.spark.sql.execution.BufferedRowIterator.hasNext(BufferedRowIterator.java:43)
+	at org.apache.spark.sql.execution.WholeStageCodegenExec$$anon$1.hasNext(WholeStageCodegenExec.scala:755)
+	at scala.collection.Iterator$$anon$10.hasNext(Iterator.scala:458)
+	at scala.collection.Iterator$$anon$10.hasNext(Iterator.scala:458)
+	at scala.collection.convert.Wrappers$IteratorWrapper.hasNext(Wrappers.scala:31)
+	at mapper.QuartetToTreeTablePartitionMapper.call(QuartetToTreeTablePartitionMapper.java:24)
+	at org.apache.spark.sql.Dataset.$anonfun$mapPartitions$1(Dataset.scala:2820)
+	at org.apache.spark.sql.execution.MapPartitionsExec.$anonfun$doExecute$3(objects.scala:195)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:898)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:898)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:90)
+	at org.apache.spark.scheduler.Task.run(Task.scala:131)
+	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$3(Executor.scala:497)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:1439)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:500)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: org.apache.spark.ExecutorDeadException: The relative remote executor(Id: 2), which maintains the block data to fetch is dead.
+	at org.apache.spark.network.netty.NettyBlockTransferService$$anon$2.createAndStart(NettyBlockTransferService.scala:133)
+	at org.apache.spark.network.shuffle.RetryingBlockFetcher.fetchAllOutstanding(RetryingBlockFetcher.java:153)
+	at org.apache.spark.network.shuffle.RetryingBlockFetcher.start(RetryingBlockFetcher.java:133)
+	at org.apache.spark.network.netty.NettyBlockTransferService.fetchBlocks(NettyBlockTransferService.scala:143)
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.sendRequest(ShuffleBlockFetcherIterator.scala:283)
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.send$1(ShuffleBlockFetcherIterator.scala:743)
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.fetchUpToMaxBytes(ShuffleBlockFetcherIterator.scala:738)
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.initialize(ShuffleBlockFetcherIterator.scala:552)
+	at org.apache.spark.storage.ShuffleBlockFetcherIterator.<init>(ShuffleBlockFetcherIterator.scala:171)
+	at org.apache.spark.shuffle.BlockStoreShuffleReader.read(BlockStoreShuffleReader.scala:85)
+	at org.apache.spark.sql.execution.ShuffledRowRDD.compute(ShuffledRowRDD.scala:212)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:373)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:337)
+	... 23 more
+
+)
+21/11/09 04:12:26 WARN TaskSetManager: Lost task 6.0 in stage 21.1 (TID 1023) (128.110.217.51 executor 1): TaskKilled (Stage finished)
++--------+---+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|support |tag|tree                                                                                                                                                                                          |
++--------+---+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|899000.0|88 |((((LOX,ECH),((DAS,CHO),(GAL,(ORN,(MAC,MON))))),((ERI,SOR),((MYO,PTE),((EQU,(CAN,FEL)),(VIC,(BOS,TUR)))))),((TUP,(OCH,(SPE,(DIP,(RAT,MUS))))),(OTO,(TAR,(CAL,(NEW,(PON,(GOR,(PAN,HOM)))))))));|
+|460250.0|89 |((((GAL,(DAS,CHO)),(ECH,(LOX,PRO))),((ERI,SOR),((MYO,PTE),((EQU,FEL),(VIC,(SUS,(BOS,TUR))))))),((TUP,((ORY,OCH),(CAV,(SPE,(DIP,(RAT,MUS)))))),((OTO,MIC),(TAR,(NEW,(PON,(GOR,(PAN,HOM))))))));|
+|104625.0|112|(((TUP,(OCH,(CAV,(SPE,(RAT,MUS,DIP))))),(MIC,(CAL,(NEW,(GOR,PAN,HOM,PON))))),((((ORN,GAL),(DAS,CHO)),(ECH,(LOX,PRO))),((ERI,SOR),((MYO,PTE),((EQU,(CAN,FEL)),(VIC,(SUS,(BOS,TUR))))))));      |
+|72150.0 |111|(((((DAS,CHO),(LOX,ECH)),(GAL,(MAC,MON))),((SOR,ERI),((PTE,MYO),((FEL,EQU),(VIC,(SUS,(BOS,TUR))))))),((TUP,((ORY,OCH),(CAV,(SPE,(RAT,MUS,DIP))))),((OTO,MIC),(TAR,(GOR,PON,PAN,HOM)))));      |
+|70850.0 |113|(((TUP,(ORY,(CAV,RAT,SPE,MUS))),((OTO,MIC),(TAR,(CAL,(NEW,(GOR,PON,HOM)))))),(((ORN,(MAC,MON)),((DAS,CHO),(ECH,(LOX,PRO)))),((SOR,ERI),((PTE,MYO),((SUS,BOS,VIC),(EQU,(CAN,FEL)))))));        |
+|28375.0 |110|((((DIP,RAT),(ORY,OCH)),(OTO,(TAR,(NEW,(CAL,(PAN,HOM)))))),((MYO,(CAN,(VIC,TUR))),((ECH,PRO),(GAL,(ORN,(MON,MAC))))));                                                                        |
+|15875.0 |114|(((TUP,((SPE,DIP,CAV,MUS),(ORY,OCH))),((TAR,(CAL,(PON,PAN,NEW,GOR))),(MIC,OTO))),((((DAS,CHO),(PRO,LOX)),(GAL,(ORN,(MON,MAC)))),(ERI,SOR,(PTE,((EQU,(CAN,FEL)),(TUR,BOS,SUS))))));            |
++--------+---+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Total generated trees: 7
+Final tree (((TUP,((ORY,OCH),(CAV,(SPE,(DIP,MUS,RAT))))),((OTO,MIC),(CAL,(TAR,(NEW,(PON,(GOR,(PAN,HOM)))))))),((((ORN,GAL),(DAS,CHO)),(ECH,(PRO,LOX))),((ERI,SOR),((MYO,PTE),((EQU,(CAN,FEL)),(VIC,(SUS,(BOS,TUR))))))));
+distributedRunTree: (((TUP,((ORY,OCH),(CAV,(SPE,(DIP,MUS,RAT))))),((OTO,MIC),(CAL,(TAR,(NEW,(PON,(GOR,(PAN,HOM)))))))),((((ORN,GAL),(DAS,CHO)),(ECH,(PRO,LOX))),((ERI,SOR),((MYO,PTE),((EQU,(CAN,FEL)),(VIC,(SUS,(BOS,TUR))))))));
+
+Time taken = 30749 ms ==> 0 minutes and 30 seconds.
+================= **** ======================== **** ====================
