@@ -11,6 +11,7 @@ import wqfm.ds.Quartet;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,6 +115,18 @@ public class wQFMRunner implements Serializable {
     public void setWqfmConfigs(int annotationLevel, String tag){
         Config.ANNOTATIONS_LEVEL = annotationLevel; //copy the checks here
         Config.QUARTET_TAG = tag;
+    }
+    public String dummyRunner(List<String> quartetsList, String tag){
+        ArrayList<String> dummy = new ArrayList<>();
+        long time_1 = System.currentTimeMillis();
+        long count = 0;
+        while(count< 999999999){
+            dummy.add(String.valueOf(count));
+            if(count%10000000==0) System.out.println("Worker at count: "+ count);
+            count++;
+        }
+        System.out.println("Worker Process Complete, Elapsed time: "+ (System.currentTimeMillis()-time_1));
+        return String.valueOf(dummy.size());
     }
     public String runDevideNConquer(List<String> quartetsList, String tag){
         this.setWqfmConfigs(1, tag);

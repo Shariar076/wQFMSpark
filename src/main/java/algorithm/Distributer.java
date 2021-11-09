@@ -50,7 +50,7 @@ public class Distributer {
         });
 
         return ConfigValues.SPARK.read()
-                .option("sep"," ")
+                .option("sep", " ")
                 .schema(schema)
                 .csv(ConfigValues.HDFS_PATH + "/" + inputFileName);
         // .orderBy(desc("count"));
@@ -79,11 +79,42 @@ public class Distributer {
                 (String qtStr) -> TaxaPartition.getTag(qtStr, taxaPartitionMap), DataTypes.StringType
         );
         Dataset<Row> taggedQtDf = sortedWqDf.withColumn("tag", tagger.apply(col("value")));
-        taggedQtDf.groupBy(col("tag")).count().show(taxaPartitionMap.size(),false);
+        taggedQtDf.groupBy(col("tag")).count().show(taxaPartitionMap.size(), false);
         taggedQtDf.filter(col("tag").equalTo("UNDEFINED")).show(false);
 
         System.out.println("Number of Partitions by taxaPartition: " + taggedQtDf.groupBy(col("tag")).count().count());
         return taggedQtDf;
+    }
+
+    private static String runExplained(Dataset<Row> partitionedDf, TaxaTable taxaTable) {
+        Dataset<Row> treeTableDf = partitionedDf.select("weightedQuartet", "tag", "count")
+                .mapPartitions(new QuartetToTreeTablePartitionMapper(), Encoders.bean(TreeTable.class))
+                .orderBy(desc("support"))
+                .filter(col("tree").notEqual("<NULL>"))
+                .toDF()
+                .persist();// .cache() //avoid lazy execution i.e. running twice
+
+        System.out.println("Total generated trees: " + treeTableDf.count());
+        treeTableDf.show(false);
+        // TreeReducer treeReducer = new TreeReducer(taxaTable.TAXA_LIST);
+
+        return treeTableDf
+                .map((MapFunction<Row, String>) r -> r.getAs("tree"), Encoders.STRING())
+                // .collectAsList()
+                // .stream().reduce(null, treeReducer::call);
+                .reduce(new TreeReducer(taxaTable.TAXA_LIST));
+    }
+
+    private String runSilent(Dataset<Row> partitionedDf, TaxaTable taxaTable) {
+        return partitionedDf.select("weightedQuartet", "tag", "count")
+                .mapPartitions(new QuartetToTreeTablePartitionMapper(), Encoders.bean(TreeTable.class))
+                .persist() //.cache() //avoid lazy execution i.e. running twice
+                .orderBy(desc("support"))
+                .filter(col("tree").notEqual("<NULL>"))
+                .toDF()
+                .select("tree")
+                .map((MapFunction<Row, String>) r -> r.getAs("tree"), Encoders.STRING())
+                .reduce(new TreeReducer(taxaTable.TAXA_LIST));
     }
 
     public static String partitionDataAndRun(Dataset<Row> taggedQtDf, TaxaTable taxaTable) {
@@ -100,32 +131,7 @@ public class Distributer {
         // // IOHandler.runSystemCommand(Config.PYTHON_ENGINE+ " ./scripts/test.py --input input/partitioned-weighted-quartets.csv --tag A-E-F-H-M-O");
         System.out.println("Number of Data Partitions: " + partitionedDf.javaRDD().getNumPartitions());
 
-        String finalTree = partitionedDf.select("weightedQuartet", "tag", "count")
-                .mapPartitions(new QuartetToTreeTablePartitionMapper(), Encoders.bean(TreeTable.class))
-                .persist() //.cache() //avoid lazy execution i.e. running twice
-                .orderBy(desc("support"))
-                .filter(col("tree").notEqual("<NULL>"))
-                .toDF()
-                .select("tree")
-                .map((MapFunction<Row, String>) r -> r.getAs("tree"), Encoders.STRING())
-                .reduce(new TreeReducer(taxaTable.TAXA_LIST));
-
-        // Dataset<Row> treeTableDf = partitionedDf.select("weightedQuartet", "tag", "count")
-        //         .mapPartitions(new QuartetToTreeTablePartitionMapper(), Encoders.bean(TreeTable.class))
-        //         .orderBy(desc("support"))
-        //         .filter(col("tree").notEqual("<NULL>"))
-        //         .toDF()
-        //         .persist();// .cache() //avoid lazy execution i.e. running twice
-        //
-        // System.out.println("Total generated trees: "+treeTableDf.count());
-        // // TreeReducer treeReducer = new TreeReducer(taxaTable.TAXA_LIST);
-        //
-        // String finalTree = treeTableDf
-        //         .map((MapFunction<Row, String>) r -> r.getAs("tree"), Encoders.STRING())
-        //         // .collectAsList()
-        //         // .stream().reduce(null, treeReducer::call);
-        //         .reduce(new TreeReducer(taxaTable.TAXA_LIST));
-        // treeTableDf.show(false);
+        String finalTree = runExplained(partitionedDf, taxaTable);
 
         ConfigValues.SPARK.stop();
 
