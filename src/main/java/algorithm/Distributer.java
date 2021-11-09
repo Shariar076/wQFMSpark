@@ -102,10 +102,10 @@ public class Distributer {
 
         Dataset<Row> treeTableDf = partitionedDf.select("weightedQuartet", "tag", "count")
                 .mapPartitions(new QuartetToTreeTablePartitionMapper(), Encoders.bean(TreeTable.class))
-                .persist()// .cache() //avoid lazy execution i.e. running twice
                 .orderBy(desc("support"))
                 .filter(col("tree").notEqual("<NULL>"))
-                .toDF();
+                .toDF()
+                .persist();// .cache() //avoid lazy execution i.e. running twice
 
         // TreeReducer treeReducer = new TreeReducer(taxaTable.TAXA_LIST);
 

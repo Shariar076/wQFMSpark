@@ -103,7 +103,7 @@ public class WQGenerator {
                         r -> induceQuartetsFromTree(r.toString().replaceAll("^\\[|\\]$", "")).iterator(),
                 Encoders.STRING());
 
-        removeTempFile();
+        // removeTempFile();
         Dataset<Row> weightedQuartets = qtDs.toDF().groupBy("value").count();
         weightedQuartets.write().mode("overwrite")
                 .option("sep"," ").option("quoteAll", "false")
