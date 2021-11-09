@@ -10,7 +10,9 @@ public class ConfigValues {
     public static String INPUT_MODE = "gene-trees"; //wqrt, gene-trees
     public static String INPUT_FILE_NAME = "input/37_taxon_all_gt.tre"; //"input/37_taxa.wqrts";
     public static String OUTPUT_FILE_NAME = "output/output-gt.tree";
-    public static final String HDFS_PATH = "hdfs://localhost:9000/user/himel/";
+    public static final String HDFS = "hdfs://localhost:9000";
+    public static final String HDFS_USER = "himel";
+    public static final String HDFS_PATH = HDFS + "/user/" + HDFS_USER + "/";
     public static final int TAXA_PER_PARTITION = 36;
 
     public static SparkSession SPARK = getSPARK();

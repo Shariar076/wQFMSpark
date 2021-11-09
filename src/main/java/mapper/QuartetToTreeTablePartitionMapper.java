@@ -5,9 +5,13 @@ import org.apache.spark.api.java.function.MapPartitionsFunction;
 import org.apache.spark.sql.Row;
 import structure.TreeTable;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+
+import static util.HDFSWriter.writeToHDFS;
 
 public class QuartetToTreeTablePartitionMapper implements MapPartitionsFunction<Row, TreeTable> {
     @Override
@@ -31,7 +35,11 @@ public class QuartetToTreeTablePartitionMapper implements MapPartitionsFunction<
             try {
                 tree = new wQFMRunner().runDevideNConquer(arrayList, qtTag.toString()); //String.valueOf(arrayList.size());
             }catch (Exception e){
-                e.printStackTrace();
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                String exceptionAsString = sw.toString();
+                writeToHDFS(arrayList, qtTag +".wqrt");
+                writeToHDFS(exceptionAsString, qtTag +"-ex.txt");
             }
         }
 

@@ -6,8 +6,12 @@ import phylonet.tree.model.sti.STINode;
 import phylonet.tree.model.sti.STITree;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import static util.HDFSWriter.appendToHDFS;
 
 public class TreeReducer implements ReduceFunction<String> {
     public static ArrayList<String> TAXA_LIST;
@@ -113,22 +117,26 @@ public class TreeReducer implements ReduceFunction<String> {
     }
 
     @Override
-    public String call(String tree, String t1) { // throws Exception
+    public String call(String tree, String t1) throws Exception {
 
         if (tree == null) {
             return t1;
         } else {
             STITree newickTree1 = null;
             STITree newickTree2 = null;
-            String updatedStr ="";
+            String updatedStr = "";
             try {
                 newickTree1 = new STITree(tree);
                 newickTree2 = new STITree(t1);
                 updatedStr = addSubtreesWithMissingTaxa(newickTree1, newickTree2);
             } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println(">>>>>>>>>>>>>TreeReducer tree: " + tree);
-                System.out.println(">>>>>>>>>>>>>TreeReducer t1: " + t1);
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                String exceptionAsString = sw.toString();
+                String dataToWrite ="tree: " + tree
+                        +"\nt1: " + t1
+                        +"\n"+exceptionAsString;
+                appendToHDFS(dataToWrite, "TreeReducer-ex.txt");
                 return tree;
             }
             return updatedStr;
