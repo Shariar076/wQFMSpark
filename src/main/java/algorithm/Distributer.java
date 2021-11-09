@@ -79,10 +79,9 @@ public class Distributer {
                 (String qtStr) -> TaxaPartition.getTag(qtStr, taxaPartitionMap), DataTypes.StringType
         );
         Dataset<Row> taggedQtDf = sortedWqDf.withColumn("tag", tagger.apply(col("value")));
-        taggedQtDf.groupBy(col("tag")).count().show(taxaPartitionMap.size(), false);
+        taggedQtDf.groupBy(col("tag")).count().show(false);
         taggedQtDf.filter(col("tag").equalTo("UNDEFINED")).show(false);
 
-        System.out.println("Number of Partitions by taxaPartition: " + taggedQtDf.groupBy(col("tag")).count().count());
         return taggedQtDf;
     }
 
@@ -118,10 +117,12 @@ public class Distributer {
     }
 
     public static String partitionDataAndRun(Dataset<Row> taggedQtDf, TaxaTable taxaTable) {
+        int numPartitions = (int)taggedQtDf.groupBy(col("tag")).count().count();
+        System.out.println("Number of Partitions by taxaPartition: " + numPartitions);
         Dataset<Row> partitionedDf = taggedQtDf
                 .withColumn("weightedQuartet", concat(col("value"), lit(" "), col("count")))
                 // .filter(col("tag").notEqual("UNDEFINED"))
-                .repartition(col("tag")); // orderBy partitioned unique data to same partition
+                .repartitionByRange(numPartitions, col("tag")); // orderBy partitioned unique data to same partition
 
         // TaxaPartition.getPartitionDetail(partitionedDf);
 
