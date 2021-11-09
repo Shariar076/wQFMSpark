@@ -33,7 +33,9 @@ public class QuartetToTreeTablePartitionMapper implements MapPartitionsFunction<
         String tree = "<NULL>";
         if (arrayList.size() > 0) {
             try {
-                tree = new wQFMRunner().runDevideNConquer(arrayList, qtTag.toString()); //String.valueOf(arrayList.size());
+                tree = new wQFMRunner()
+                        // .runDevideNConquer(arrayList, qtTag.toString()); //String.valueOf(arrayList.size());
+                        .dummyRunner(arrayList, qtTag.toString());
             }catch (Exception e){
                 StringWriter sw = new StringWriter();
                 e.printStackTrace(new PrintWriter(sw));
