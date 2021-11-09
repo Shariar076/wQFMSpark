@@ -116,7 +116,7 @@ public class Distributer {
                 .reduce(new TreeReducer(taxaTable.TAXA_LIST));
         treeTableDf.show(false);
         System.out.println("Total generated trees: "+treeTableDf.count());
-        // ConfigValues.SPARK.stop();
+        ConfigValues.SPARK.stop();
 
         // treeDs.show(false);
         System.out.println("Final tree " + finalTree);
