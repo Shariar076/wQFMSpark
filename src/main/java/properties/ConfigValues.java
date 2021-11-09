@@ -14,6 +14,7 @@ public class ConfigValues {
     public static final String HDFS_USER = "himel";
     public static final String HDFS_PATH = HDFS + "/user/" + HDFS_USER + "/";
     public static final int TAXA_PER_PARTITION = 36;
+    public static final int NUM_WORKER = 3;
 
     public static SparkSession SPARK = getSPARK();
 
