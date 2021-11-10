@@ -18,10 +18,10 @@ import java.util.Map;
 
 public class wQFMRunner implements Serializable {
     //Temp
-    public static Map<Integer, Integer> stringToMap(String mapString){
+    public static Map<Integer, Integer> stringToMap(String mapString) {
         Map<Integer, Integer> retMap = new HashMap<Integer, Integer>();
-        String[] pairs = mapString.replaceAll("\\{|\\}|\\s+","").split(",");
-        for (int i=0;i<pairs.length;i++) {
+        String[] pairs = mapString.replaceAll("\\{|\\}|\\s+", "").split(",");
+        for (int i = 0; i < pairs.length; i++) {
             String pair = pairs[i];
             String[] keyValue = pair.split("=");
             retMap.put(Integer.valueOf(keyValue[0]), Integer.valueOf(keyValue[1]));
@@ -30,9 +30,9 @@ public class wQFMRunner implements Serializable {
     }
 
     //Temp
-    public InitialTable setLegacyInitialTable(List<String> quartetsList, CustomDSPerLevel customDS){
+    public InitialTable setLegacyInitialTable(List<String> quartetsList, CustomDSPerLevel customDS) {
         InitialTable initialTable = new InitialTable();
-        for(String quartet: quartetsList){
+        for (String quartet : quartetsList) {
             Quartet quartet1 = new Quartet(quartet);
             initialTable.addToListOfQuartets(quartet1);
             int idx_qrt_in_table_1 = initialTable.sizeTable() - 1; //size - 1 is the last index
@@ -112,26 +112,28 @@ public class wQFMRunner implements Serializable {
     //     //**************************************************
     //     initialBip_8_vals.compute8ValuesUsingAllQuartets_this_level(customDS_this_level, mapInitialBipartition);
     // }
-    public void setWqfmConfigs(int annotationLevel, String tag){
+    public void setWqfmConfigs(int annotationLevel, String tag) {
         Config.ANNOTATIONS_LEVEL = annotationLevel; //copy the checks here
         Config.QUARTET_TAG = tag;
     }
-    public String dummyRunner(List<String> quartetsList, String tag){
+
+    public String dummyRunner(List<String> quartetsList, String tag) {
         ArrayList<String> dummy = new ArrayList<>();
         long time_1 = System.currentTimeMillis();
         long count = 0;
-        while(count< 10000000){
+        while (count < 10000000) {
             dummy.add(String.valueOf(count));
-            if(count%100000==0) System.out.println("Task at count: "+ count);
+            if (count % 100000 == 0) System.out.println("Task at count: " + count);
             count++;
         }
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>> Task Complete, Elapsed time: "+ (System.currentTimeMillis()-time_1));
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>> Task Complete, Elapsed time: " + (System.currentTimeMillis() - time_1));
         return String.valueOf(dummy.size());
     }
-    public String runDevideNConquer(List<String> quartetsList, String tag){
+
+    public String runDevideNConquer(List<String> quartetsList, String tag) {
         long time_1 = System.currentTimeMillis();
         this.setWqfmConfigs(1, tag);
-        System.out.println("Partition Quartets Count: "+ quartetsList.stream().count());
+        System.out.println("Partition Quartets Count: " + quartetsList.stream().count());
         FMRunner runner = new FMRunner();
         CustomDSPerLevel customDS = new CustomDSPerLevel();
         InitialTable initialTable = this.setLegacyInitialTable(quartetsList, customDS);
@@ -143,15 +145,20 @@ public class wQFMRunner implements Serializable {
 
         System.out.println(InitialTable.map_of_str_vs_int_tax_list);
         System.out.println(InitialTable.map_of_int_vs_str_tax_list);
-
-        String final_tree = runner.recursiveDivideAndConquer(customDS, level, initialTable); //customDS will have (P, Q, Q_relevant etc) all the params needed.
+        String final_tree_decoded = "";
+        try {
+            String final_tree = runner.recursiveDivideAndConquer(customDS, level, initialTable); //customDS will have (P, Q, Q_relevant etc) all the params needed.
+            final_tree_decoded = wqfm.utils.IOHandler.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);
+            System.out.println(final_tree_decoded);
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>> Task Complete, Elapsed time: " + (System.currentTimeMillis() - time_1));
+        } catch (Exception e) {
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>> Task Complete, Elapsed time: " + (System.currentTimeMillis() - time_1));
+            throw e;
+        }
         System.out.println("\n\n[L 49.] Distributer: final tree return");
 
 //        System.out.println(final_tree);
-        String final_tree_decoded = wqfm.utils.IOHandler.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);
-        System.out.println(final_tree_decoded);
         // wqfm.utils.IOHandler.writeToFile(final_tree_decoded, ConfigValues.OUTPUT_FILE_NAME);
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>> Task Complete, Elapsed time: "+ (System.currentTimeMillis()-time_1));
         return final_tree_decoded;
     }
 }

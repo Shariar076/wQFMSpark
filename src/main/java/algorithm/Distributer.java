@@ -88,10 +88,10 @@ public class Distributer {
     private static String runExplained(Dataset<Row> partitionedDf, TaxaTable taxaTable) {
         Dataset<Row> treeTableDf = partitionedDf.select("weightedQuartet", "tag", "count")
                 .mapPartitions(new QuartetToTreeTablePartitionMapper(), Encoders.bean(TreeTable.class))
+                .persist() // .cache() //avoid lazy execution i.e. running twice
                 .orderBy(desc("support"))
                 .filter(col("tree").notEqual("<NULL>"))
-                .toDF()
-                .persist();// .cache() //avoid lazy execution i.e. running twice
+                .toDF();
 
         System.out.println("Total generated trees: " + treeTableDf.count());
         treeTableDf.show(false);
