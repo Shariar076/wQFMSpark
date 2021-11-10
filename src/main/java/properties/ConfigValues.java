@@ -13,8 +13,8 @@ public class ConfigValues {
     public static final String HDFS = "hdfs://ms0819.utah.cloudlab.us:9000";
     public static final String HDFS_USER = "kab076";
     public static final String HDFS_PATH = HDFS + "/user/" + HDFS_USER + "/";
-    public static final int TAXA_PER_PARTITION = 100;
-    public static final int NUM_WORKER = 3;
+    public static final int TAXA_PER_PARTITION = 70;
+    public static final int NUM_WORKER = 48;
 
     public static SparkSession SPARK = getSPARK();
 
