@@ -42,7 +42,6 @@ public class QuartetToTreeTablePartitionMapper implements MapPartitionsFunction<
                 String exceptionAsString = sw.toString();
                 writeToHDFS(arrayList, qtTag +".wqrt");
                 writeToHDFS(exceptionAsString, qtTag +"-ex.txt");
-                return Collections.singletonList(treeTable).iterator();
             }
         }
 
