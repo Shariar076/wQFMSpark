@@ -132,11 +132,12 @@ public class Distributer {
         // // IOHandler.runSystemCommand(Config.PYTHON_ENGINE+ " ./scripts/test.py --input input/partitioned-weighted-quartets.csv --tag A-E-F-H-M-O");
         System.out.println("Number of Data Partitions: " + partitionedDf.javaRDD().getNumPartitions());
 
+        System.out.println("Partitioning Tasks to workers ...");
         long time_1 = System.currentTimeMillis();
         String finalTree = runExplained(partitionedDf, taxaTable);
-        System.out.println("All Mapped Tasks Complete, Elapsed time: "+ (System.currentTimeMillis()-time_1));
-
         ConfigValues.SPARK.stop();
+
+        System.out.println("All partitioned Tasks Complete, Elapsed time: "+ (System.currentTimeMillis()-time_1));
 
         // treeDs.show(false);
         System.out.println("Final tree " + finalTree);
