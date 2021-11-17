@@ -14,6 +14,7 @@ public class TaxaTable implements Serializable {
     // public Map<String,Integer> TAXA_GRP_COUNT = new HashMap<>();
 
     public ArrayList<ArrayList<String>> TAXA_PARTITION_LIST =  new ArrayList<>();
+    public Map<Integer, Integer> PARTITION_OVERLAP_MAP =  new HashMap<>();
 
     public TaxaTable() {
     }
@@ -42,12 +43,21 @@ public class TaxaTable implements Serializable {
         this.TAXA_PARTITION_LIST = TAXA_PARTITION_LIST;
     }
 
+    public Map<Integer, Integer> getPARTITION_OVERLAP_MAP() {
+        return PARTITION_OVERLAP_MAP;
+    }
+
+    public void setPARTITION_OVERLAP_MAP(Map<Integer, Integer> PARTITION_OVERLAP_MAP) {
+        this.PARTITION_OVERLAP_MAP = PARTITION_OVERLAP_MAP;
+    }
+
     @Override
     public String toString() {
         return "TaxaTable{" +
                 "TAXA_COUNT=" + TAXA_COUNT +
                 ",\n TAXA_LIST=" + TAXA_LIST +
                 ",\n TAXA_PARTITION_LIST Size=" + TAXA_PARTITION_LIST.size()+
+                ",\n PARTITION_OVERLAP_MAP=" + PARTITION_OVERLAP_MAP+
                 '}';
     }
 
@@ -124,15 +134,18 @@ public class TaxaTable implements Serializable {
             }
             for (ArrayList<String> partition : this.TAXA_PARTITION_LIST) {
                 // no new partition needed if space is available
-                if (partition.size() + taxaList.size() < ConfigValues.TAXA_PER_PARTITION){ //countTaxonInPartition(taxaList, partition) > 2
+                if (partition.size() + taxaList.size() < ConfigValues.TAXA_PER_PARTITION
+                        && countTaxonInPartition(taxaList, partition) > 0){ //countTaxonInPartition(taxaList, partition) > 2
                     updatePartition(taxaList, partition);
                     return;
                 }
             }
             //insert
-            for (ArrayList<String> partition : this.TAXA_PARTITION_LIST) {
+            for (int i =0; i < this.TAXA_PARTITION_LIST.size(); i++) {
+                ArrayList<String> partition = this.TAXA_PARTITION_LIST.get(i);
                 if (countTaxonInPartition(taxaList, partition) > 0){ // over-lap
                     newPartitions.add(createPartition(taxaList));
+                    this.PARTITION_OVERLAP_MAP.put(this.TAXA_PARTITION_LIST.size(), i);
                     break;
                 }
             }
