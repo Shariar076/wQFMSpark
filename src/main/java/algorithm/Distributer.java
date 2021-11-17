@@ -52,8 +52,8 @@ public class Distributer {
         return ConfigValues.SPARK.read()
                 .option("sep", " ")
                 .schema(schema)
-                .csv(ConfigValues.HDFS_PATH + "/" + inputFileName)
-                .orderBy(desc("count"));
+                .csv(ConfigValues.HDFS_PATH + "/" + inputFileName);
+                // .orderBy(desc("count"));
     }
 
     public static TaxaTable initialiZeTaxaTable(Dataset<Row> sortedWqDf) {
