@@ -21,6 +21,7 @@ import structure.TaxaTable;
 import structure.TreeTable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +57,7 @@ public class Distributer {
                 .option("sep", " ")
                 .schema(schema)
                 .csv(ConfigValues.HDFS_PATH + "/" + inputFileName);
-                // .orderBy(desc("count"));
+        // .orderBy(desc("count"));
     }
 
     public static TaxaTable initialiZeTaxaTable(Dataset<Row> sortedWqDf) {
@@ -111,10 +112,10 @@ public class Distributer {
         treeTableDf.show(false);
         // TreeReducer treeReducer = new TreeReducer(taxaTable.TAXA_LIST);
 
-        for(Row row :treeTableDf.collectAsList()){
-            String treeNode = "t_"+row.getAs("tag");
+        for (Row row : treeTableDf.collectAsList()) {
+            String treeNode = "t_" + row.getAs("tag");
             String nodeTree = row.getAs("tree");
-            interPartitionTree = interPartitionTree.replace(treeNode, nodeTree.substring(0, nodeTree.length()-1));
+            interPartitionTree = interPartitionTree.replace(treeNode, nodeTree.substring(0, nodeTree.length() - 1));
         }
         return interPartitionTree;
     }
@@ -123,38 +124,55 @@ public class Distributer {
         ///////////////////////////////////////// groupTaxaAndTagData//////////////////////////////////
         // Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaListByCombination(taxaTable.TAXA_LIST);
         // Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaListByTaxaTable(taxaTable.TAXA_PARTITION_LIST);
-        Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionInDisjointGroups(taxaTable.TAXA_LIST);
+
+        Map<String, ArrayList<String>> taxaPartitionMap = null;
+        Dataset<Row> taggedQtDf = null;
+        long minUndefined = sortedWqDf.count();
+
+        for (int i = 0; i < 10; i++) { //check multiple partitions
+            Map<String, ArrayList<String>> tempPartitionMap = TaxaPartition.partitionInDisjointGroups(taxaTable.TAXA_LIST);
+            //it's because, List returned by subList() method is an instance of 'RandomAccessSubList' which is not serializable.
+            // Therefore, you need to create a new ArrayList object from the list returned by the subList().
+            UserDefinedFunction tagger = udf(
+                    (String qtStr) -> TaxaPartition.getTag(qtStr, tempPartitionMap), DataTypes.StringType
+            );
+            Dataset<Row> tempTaggedDf = sortedWqDf.withColumn("tag", tagger.apply(col("value")));
+            if (tempTaggedDf.filter(col("tag").equalTo("UNDEFINED")).count() < minUndefined) {
+                minUndefined = tempTaggedDf.filter(col("tag").equalTo("UNDEFINED")).count();
+                System.out.println("UNDEFINED count: "+minUndefined);
+                taxaPartitionMap = tempPartitionMap;
+                taggedQtDf = tempTaggedDf;
+            }
+            Collections.shuffle(taxaTable.TAXA_LIST);
+        }
+
         //Print partitionMap
         for (Map.Entry<String, ArrayList<String>> partition : taxaPartitionMap.entrySet()) {
             System.out.println(partition);
         }
 
-        //it's because, List returned by subList() method is an instance of 'RandomAccessSubList' which is not serializable.
-        // Therefore, you need to create a new ArrayList object from the list returned by the subList().
-        UserDefinedFunction tagger = udf(
-                (String qtStr) -> TaxaPartition.getTag(qtStr, taxaPartitionMap), DataTypes.StringType
-        );
-        Dataset<Row> taggedQtDf = sortedWqDf.withColumn("tag", tagger.apply(col("value")));
+
         taggedQtDf.groupBy(col("tag")).count().show(false);
 
         UserDefinedFunction isQuartet = udf(
                 (String qtStr) -> TaxaPartition.isValidQuartet(qtStr), DataTypes.BooleanType
         );
-        Dataset<Row> updatedDf =  taggedQtDf.filter(col("tag").equalTo("UNDEFINED"))
-                .map((MapFunction<Row, String>) r -> TaxaPartition.updateUndefined(r.getAs("value"), taxaPartitionMap),
+        Map<String, ArrayList<String>> finalTaxaPartitionMap = taxaPartitionMap;
+        Dataset<Row> updatedDf = taggedQtDf.filter(col("tag").equalTo("UNDEFINED"))
+                .map((MapFunction<Row, String>) r -> TaxaPartition.updateUndefined(r.getAs("value"), finalTaxaPartitionMap),
                         Encoders.STRING())
                 .toDF()
                 .where(isQuartet.apply(col("value")))
                 .groupBy("value").count();
 
-        System.out.println("Valid quartets in UNDEFINED: "+ updatedDf.count());
+        System.out.println("Valid quartets in UNDEFINED: " + updatedDf.count());
         updatedDf.show(false);
         String undefinedDfTree = runCentalized(updatedDf);
-        System.out.println("InterPartitionTree: "+ undefinedDfTree);
+        System.out.println("InterPartitionTree: " + undefinedDfTree);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////
 
-        int numPartitions = (int)taggedQtDf.groupBy(col("tag")).count().count();
+        int numPartitions = (int) taggedQtDf.groupBy(col("tag")).count().count();
         System.out.println("Number of Partitions by taxaPartition: " + numPartitions);
         Dataset<Row> partitionedDf = taggedQtDf
                 .withColumn("weightedQuartet", concat(col("value"), lit(" "), col("count")))
@@ -174,7 +192,7 @@ public class Distributer {
         String finalTree = runPartitionsAndGetTree(partitionedDf, taxaTable, undefinedDfTree);
         ConfigValues.SPARK.stop();
 
-        System.out.println("All partitioned Tasks Complete, Elapsed time: "+ (System.currentTimeMillis()-time_1));
+        System.out.println("All partitioned Tasks Complete, Elapsed time: " + (System.currentTimeMillis() - time_1));
 
         // treeDs.show(false);
         System.out.println("Final tree " + finalTree);
