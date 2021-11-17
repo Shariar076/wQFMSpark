@@ -4,10 +4,12 @@ import org.apache.spark.api.java.function.MapPartitionsFunction;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
+import properties.ConfigValues;
 import structure.TaxaTable;
 import util.CombinationGenerator;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -16,7 +18,7 @@ public class TaxaPartition {
     public static Map<String, ArrayList<String>> partitionTaxaListByTaxaTable(ArrayList<ArrayList<String>> taxaPartitionList) {
         Map<String, ArrayList<String>> mapPartition = new HashMap<>();
 
-        for (int i=0; i<taxaPartitionList.size();i++) {
+        for (int i = 0; i < taxaPartitionList.size(); i++) {
             ArrayList<String> list = taxaPartitionList.get(i);
             String key = String.valueOf(i);
             mapPartition.put(key, list);
@@ -57,6 +59,68 @@ public class TaxaPartition {
             // }
         }
         return mapPartition;
+    }
+
+    public static Map<String, ArrayList<String>> partitionInDisjointGroups(ArrayList<String> taxaList) {
+        Map<String, ArrayList<String>> mapPartition = new HashMap<>();
+        int numPartition = taxaList.size() / ConfigValues.TAXA_PER_PARTITION + 1;
+        // ArrayList<List<String>> partitionList = new ArrayList<>(Arrays.asList(
+        //         Arrays.asList("SOR","ERI","MYO","PTE","EQU","CAN","FEL","VIC","SUS","BOS","TUR"),
+        //         Arrays.asList("ECH","LOX","PRO","CHO","DAS","GAL","ORN","MAC","MON"),
+        //         Arrays.asList("TUP","OCH","ORY","CAV","SPE","DIP","MUS","RAT","MIC","OTO"),
+        //         Arrays.asList("TAR","CAL","NEW","PON","GOR","HOM","PAN")
+        // ));
+        // for (int i = 0; i < partitionList.size(); i++) {
+        //     ArrayList<String> partition = new ArrayList<>(partitionList.get(i));
+        //     String key = String.valueOf(i);
+        //     mapPartition.put(key, partition);
+        // }
+        for (int i = 0; i < numPartition; i++) {
+            int fromIndex = i * ConfigValues.TAXA_PER_PARTITION;
+            int toIndex = Math.min((i + 1) * ConfigValues.TAXA_PER_PARTITION, taxaList.size());
+            ArrayList<String> partition = new ArrayList<>(taxaList.subList(fromIndex, toIndex));
+            String key = String.valueOf(i);
+            mapPartition.put(key, partition);
+        }
+        return mapPartition;
+    }
+
+    public static String getPartitionKey(String taxa, Map<String, ArrayList<String>> taxaPartitionMap) {
+        for (String key : taxaPartitionMap.keySet()) {
+            if (taxaPartitionMap.get(key).contains(taxa)) return key;
+        }
+        return taxa; // this is never returned
+    }
+
+    public static boolean isValidQuartet(String qtString) {
+        qtString = qtString.replace(" ", "");
+        qtString = qtString.replace(";", ",");
+        qtString = qtString.replace("(", "");
+        qtString = qtString.replace(")", ""); // Finally end up with A,B,C,D,41.0
+        ArrayList<String> taxaList = new ArrayList<>(Arrays.asList(qtString.split(",")).subList(0, 4));
+        List<String> uniqueTaxa = taxaList.stream().distinct().collect(Collectors.toList());
+        return uniqueTaxa.size() == 4;
+    }
+
+    public static String updateUndefined(String qtString, Map<String, ArrayList<String>> taxaPartitionMap) {
+        String orgString = qtString;
+        qtString = qtString.replace(" ", "");
+        qtString = qtString.replace(";", ",");
+        qtString = qtString.replace("(", "");
+        qtString = qtString.replace(")", ""); // Finally end up with A,B,C,D,41.0
+        ArrayList<String> taxaList = new ArrayList<>(Arrays.asList(qtString.split(",")).subList(0, 4));
+        ArrayList<String> updatedBip = new ArrayList<>();
+
+
+        for (int i = 0; i < 2; i++) {
+            int[] sisterKeys = {Integer.valueOf(getPartitionKey(taxaList.get(i * 2), taxaPartitionMap)),
+                    Integer.valueOf(getPartitionKey(taxaList.get(i * 2 + 1), taxaPartitionMap))};
+            Arrays.sort(sisterKeys);
+            updatedBip.add("(" + "t_" + sisterKeys[0] + "," + "t_" + sisterKeys[1] + ")");
+        }
+        Collections.sort(updatedBip);
+
+        return "(" + updatedBip.get(0) + "," + updatedBip.get(1) + ");";
     }
 
     public static boolean quartetInPartition(List<String> partition, List<String> qtTaxaList) {

@@ -16,8 +16,8 @@ public class TaxaTableReducer implements ReduceFunction<TaxaTable> {
         // v1
         // updateTaxaTablePartitionsByTaxaListV1(t1.TAXA_LIST, taxaTable);
         // v2
-        if (t1.TAXA_PARTITION_LIST.isEmpty()) taxaTable.updateTaxaTablePartitionsByTaxaListV2(t1.TAXA_LIST);  // t1: no reduce yet
-        else taxaTable.updateTaxaTablePartitionsByTaxaTablePartitionsV2(t1); // t1: already reduced
+        // if (t1.TAXA_PARTITION_LIST.isEmpty()) taxaTable.updateTaxaTablePartitionsByTaxaListV2(t1.TAXA_LIST);  // t1: no reduce yet
+        // else taxaTable.updateTaxaTablePartitionsByTaxaTablePartitionsV2(t1); // t1: already reduced
         // v3
         // if (t1.TAXA_LIST.size() > 4) updateTaxaTablePartitionsByTaxaListV3(taxaTable.TAXA_LIST, taxaTable);
         return taxaTable;
