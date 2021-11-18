@@ -145,6 +145,7 @@ public class Distributer {
                 boolean contained = false;
                 List<String> leaves = TreeReducer.iteratorToList(thisNode.getLeaves().iterator());
                 if (!addedTaxa.containsAll(leaves)) {
+                    System.out.println(leaves);
                     partitionList.add(new ArrayList<>(leaves));
                     addedTaxa.addAll(leaves);
                 }
@@ -167,11 +168,10 @@ public class Distributer {
         int iterationCount = 0;
         for (Row weight : qtWeights) {
             iterationCount++;
-            Dataset<Row> tempDf = sortedWqDf.filter(col("count").equalTo(weight.getAs("count")));
-            // .select("value")
-            // .groupBy("value").count().orderBy(desc("count"));
+            Dataset<Row> tempDf = sortedWqDf.filter(col("count")
+                            .equalTo(weight.getAs("count")));
             if (refTreeDf == null) refTreeDf = tempDf;
-            else refTreeDf = refTreeDf.union(tempDf);//.groupBy("value").count().orderBy(desc("count"));
+            else refTreeDf = refTreeDf.union(tempDf);
             try {
                 refTree = runCentalized(refTreeDf);
                 if (getLeaveCountInTree(refTree) == taxaTable.TAXA_COUNT) break;

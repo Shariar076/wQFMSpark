@@ -110,10 +110,10 @@ public class TaxaPartition {
         ArrayList<String> taxaList = new ArrayList<>(Arrays.asList(qtString.split(",")).subList(0, 4));
         String t1 = null, t2 = null, t3 = null;
         for (String taxon : taxaList) {
-            int occurrences = Collections.frequency(taxaList, taxaList);
+            int occurrences = Collections.frequency(taxaList, taxon);
             if (occurrences > 1) t1 = taxon;
             else {
-                if (t2.isEmpty()) t2 = taxon;
+                if (t2 == null) t2 = taxon;
                 else t3 = taxon;
             }
         }
