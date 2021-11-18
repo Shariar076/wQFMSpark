@@ -1,11 +1,11 @@
 package algorithm;
 
 import org.apache.spark.api.java.function.MapFunction;
-import org.apache.spark.api.java.function.ReduceFunction;
-import org.apache.spark.sql.RowFactory;
-import org.apache.spark.sql.catalyst.encoders.RowEncoder;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
+import phylonet.tree.io.ParseException;
+import phylonet.tree.model.sti.STINode;
+import phylonet.tree.model.sti.STITree;
 import properties.ConfigValues;
 import mapper.QuartetToTreeTablePartitionMapper;
 import mapper.StringToTaxaTableMapper;
@@ -14,14 +14,13 @@ import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.expressions.UserDefinedFunction;
 import org.apache.spark.sql.types.DataTypes;
-import properties.DefaultConfigs;
 import reducer.TaxaTableReducer;
 import reducer.TreeReducer;
 import structure.TaxaTable;
 import structure.TreeTable;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -120,31 +119,90 @@ public class Distributer {
         return interPartitionTree;
     }
 
+    public static int getLeaveCountInTree(String treeStr) {
+        STITree tree = null;
+        try {
+            tree = new STITree(treeStr);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        return tree.getLeafCount();
+    }
+
+    public static ArrayList<ArrayList<String>> getTaxaPartitions(String treeStr) throws Exception {
+        ArrayList<ArrayList<String>> partitionList = new ArrayList<>();
+        ArrayList<String> addedTaxa = new ArrayList<>();
+        STITree tree = null;
+        try {
+            tree = new STITree(treeStr);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println(tree.getNodeCount());
+        for (int i = 0; i < tree.getNodeCount(); i++) {
+            STINode thisNode = tree.getNode(i);
+            if (thisNode.getLeafCount() <= ConfigValues.TAXA_PER_PARTITION && thisNode.getLeafCount() >= 4) {
+                boolean contained = false;
+                List<String> leaves = TreeReducer.iteratorToList(thisNode.getLeaves().iterator());
+                if (!addedTaxa.containsAll(leaves)) {
+                    partitionList.add(new ArrayList<>(leaves));
+                    addedTaxa.addAll(leaves);
+                }
+            }
+            if (addedTaxa.size() == tree.getLeafCount()) break;
+        }
+        if (addedTaxa.size() != tree.getLeafCount()) {
+            throw new Exception("Please increase Taxa per partition");
+        }
+        return partitionList;
+    }
+
     public static String partitionDataAndRun(Dataset<Row> sortedWqDf, TaxaTable taxaTable) {
+        ////////////////////////////////////////// Reference Tree //////////////////////////////////////
+        System.out.println("================= Constructing Reference tree =================");
+        List<Row> qtWeights = sortedWqDf.select("count").distinct().orderBy(desc("count")).collectAsList();
+        System.out.println("Maximum iteration needed: " + qtWeights.size());
+        Dataset<Row> refTreeDf = null;
+        String refTree = "";
+        int iterationCount = 0;
+        for (Row weight : qtWeights) {
+            iterationCount++;
+            Dataset<Row> tempDf = sortedWqDf.filter(col("count").equalTo(weight.getAs("count")));
+            // .select("value")
+            // .groupBy("value").count().orderBy(desc("count"));
+            if (refTreeDf == null) refTreeDf = tempDf;
+            else refTreeDf = refTreeDf.union(tempDf);//.groupBy("value").count().orderBy(desc("count"));
+            try {
+                refTree = runCentalized(refTreeDf);
+                if (getLeaveCountInTree(refTree) == taxaTable.TAXA_COUNT) break;
+            } catch (Exception ignored) {
+            }
+
+        }
+        System.out.println("Final Reference Tree:" + refTree + "\nTotal iteration:" + iterationCount);
+        try {
+            taxaTable.TAXA_PARTITION_LIST = getTaxaPartitions(refTree);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         ///////////////////////////////////////// groupTaxaAndTagData//////////////////////////////////
         // Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaListByCombination(taxaTable.TAXA_LIST);
-        // Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaListByTaxaTable(taxaTable.TAXA_PARTITION_LIST);
+        Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionTaxaListByTaxaTable(taxaTable.TAXA_PARTITION_LIST);
+        // Map<String, ArrayList<String>> taxaPartitionMap = TaxaPartition.partitionInDisjointGroups(taxaTable.TAXA_LIST);
 
-        Map<String, ArrayList<String>> taxaPartitionMap = null;
-        Dataset<Row> taggedQtDf = null;
-        long minUndefined = sortedWqDf.count();
-
-        for (int i = 0; i < 10; i++) { //check multiple partitions
-            Map<String, ArrayList<String>> tempPartitionMap = TaxaPartition.partitionInDisjointGroups(taxaTable.TAXA_LIST);
-            //it's because, List returned by subList() method is an instance of 'RandomAccessSubList' which is not serializable.
-            // Therefore, you need to create a new ArrayList object from the list returned by the subList().
-            UserDefinedFunction tagger = udf(
-                    (String qtStr) -> TaxaPartition.getTag(qtStr, tempPartitionMap), DataTypes.StringType
-            );
-            Dataset<Row> tempTaggedDf = sortedWqDf.withColumn("tag", tagger.apply(col("value")));
-            if (tempTaggedDf.filter(col("tag").equalTo("UNDEFINED")).count() < minUndefined) {
-                minUndefined = tempTaggedDf.filter(col("tag").equalTo("UNDEFINED")).count();
-                System.out.println("UNDEFINED count: "+minUndefined);
-                taxaPartitionMap = tempPartitionMap;
-                taggedQtDf = tempTaggedDf;
-            }
-            Collections.shuffle(taxaTable.TAXA_LIST);
-        }
+        //it's because, List returned by subList() method is an instance of 'RandomAccessSubList' which is not serializable.
+        // Therefore, you need to create a new ArrayList object from the list returned by the subList().
+        UserDefinedFunction tagger = udf(
+                (String qtStr) -> TaxaPartition.getTag(qtStr, taxaPartitionMap), DataTypes.StringType
+        );
+        Dataset<Row> taggedQtDf = sortedWqDf.withColumn("tag", tagger.apply(col("value")));
+        // if (tempTaggedDf.filter(col("tag").equalTo("UNDEFINED")).count() < minUndefined) {
+        //     minUndefined = tempTaggedDf.filter(col("tag").equalTo("UNDEFINED")).count();
+        //     System.out.println("UNDEFINED count: "+minUndefined);
+        //     taxaPartitionMap = tempPartitionMap;
+        //     taggedQtDf = tempTaggedDf;
+        // }
+        // Collections.shuffle(taxaTable.TAXA_LIST);
 
         //Print partitionMap
         for (Map.Entry<String, ArrayList<String>> partition : taxaPartitionMap.entrySet()) {
@@ -154,22 +212,38 @@ public class Distributer {
 
         taggedQtDf.groupBy(col("tag")).count().show(false);
 
-        UserDefinedFunction isQuartet = udf(
-                (String qtStr) -> TaxaPartition.isValidQuartet(qtStr), DataTypes.BooleanType
-        );
-        Map<String, ArrayList<String>> finalTaxaPartitionMap = taxaPartitionMap;
-        Dataset<Row> updatedDf = taggedQtDf.filter(col("tag").equalTo("UNDEFINED"))
-                .map((MapFunction<Row, String>) r -> TaxaPartition.updateUndefined(r.getAs("value"), finalTaxaPartitionMap),
-                        Encoders.STRING())
-                .toDF()
-                .where(isQuartet.apply(col("value")))
-                .groupBy("value").count();
 
-        System.out.println("Valid quartets in UNDEFINED: " + updatedDf.count());
-        updatedDf.show(false);
-        String undefinedDfTree = runCentalized(updatedDf);
-        System.out.println("InterPartitionTree: " + undefinedDfTree);
+        String interPartitionTree = null;
+        if (taxaPartitionMap.size() > 3) { // at least 4 partition is needed for constructing quartets
+            UserDefinedFunction isQuartet = udf(
+                    (String qtStr) -> TaxaPartition.isValidQuartet(qtStr), DataTypes.BooleanType
+            );
+            Dataset<Row> updatedDf = taggedQtDf.filter(col("tag").equalTo("UNDEFINED"))
+                    .map((MapFunction<Row, String>) r -> TaxaPartition.updateUndefined(r.getAs("value"), taxaPartitionMap), Encoders.STRING())
+                    .toDF()
+                    .where(isQuartet.apply(col("value")))
+                    .groupBy("value").count();
 
+            System.out.println("Valid quartets in UNDEFINED: " + updatedDf.count());
+            updatedDf.show(false);
+            interPartitionTree = runCentalized(updatedDf);
+        } else {
+            if (taxaPartitionMap.size() == 2) interPartitionTree = "(t_0,t_1);";
+            else if (taxaPartitionMap.size() == 3) {
+                UserDefinedFunction isTriplet = udf(
+                        (String qtStr) -> TaxaPartition.isValidTriptet(qtStr), DataTypes.BooleanType
+                );
+                Row maxWeightRow = taggedQtDf.filter(col("tag").equalTo("UNDEFINED"))
+                        .map((MapFunction<Row, String>) r -> TaxaPartition.updateUndefined(r.getAs("value"), taxaPartitionMap), Encoders.STRING())
+                        .toDF()
+                        .where(isTriplet.apply(col("value")))
+                        .groupBy("value").count()
+                        .orderBy(desc("count")).limit(1).first();
+                interPartitionTree = TaxaPartition.getTripletStr(maxWeightRow.getAs("value"));
+            }
+
+        }
+        System.out.println("InterPartitionTree: " + interPartitionTree);
         //////////////////////////////////////////////////////////////////////////////////////////////////
 
         int numPartitions = (int) taggedQtDf.groupBy(col("tag")).count().count();
@@ -189,7 +263,7 @@ public class Distributer {
 
         System.out.println("Partitioning Tasks to workers ...");
         long time_1 = System.currentTimeMillis();
-        String finalTree = runPartitionsAndGetTree(partitionedDf, taxaTable, undefinedDfTree);
+        String finalTree = runPartitionsAndGetTree(partitionedDf, taxaTable, interPartitionTree);
         ConfigValues.SPARK.stop();
 
         System.out.println("All partitioned Tasks Complete, Elapsed time: " + (System.currentTimeMillis() - time_1));

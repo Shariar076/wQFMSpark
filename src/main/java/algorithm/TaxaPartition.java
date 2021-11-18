@@ -92,6 +92,34 @@ public class TaxaPartition {
         return taxa; // this is never returned
     }
 
+    public static boolean isValidTriptet(String qtString) {
+        qtString = qtString.replace(" ", "");
+        qtString = qtString.replace(";", ",");
+        qtString = qtString.replace("(", "");
+        qtString = qtString.replace(")", ""); // Finally end up with A,B,C,D,41.0
+        ArrayList<String> taxaList = new ArrayList<>(Arrays.asList(qtString.split(",")).subList(0, 4));
+        List<String> uniqueTaxa = taxaList.stream().distinct().collect(Collectors.toList());
+        return uniqueTaxa.size() == 3;
+    }
+
+    public static String getTripletStr(String qtString) {
+        qtString = qtString.replace(" ", "");
+        qtString = qtString.replace(";", ",");
+        qtString = qtString.replace("(", "");
+        qtString = qtString.replace(")", ""); // Finally end up with A,B,C,D,41.0
+        ArrayList<String> taxaList = new ArrayList<>(Arrays.asList(qtString.split(",")).subList(0, 4));
+        String t1 = null, t2 = null, t3 = null;
+        for (String taxon : taxaList) {
+            int occurrences = Collections.frequency(taxaList, taxaList);
+            if (occurrences > 1) t1 = taxon;
+            else {
+                if (t2.isEmpty()) t2 = taxon;
+                else t3 = taxon;
+            }
+        }
+        return "(" + t1 + ",(" + t2 + "," + t3 + "));";
+    }
+
     public static boolean isValidQuartet(String qtString) {
         qtString = qtString.replace(" ", "");
         qtString = qtString.replace(";", ",");

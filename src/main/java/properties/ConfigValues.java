@@ -8,13 +8,13 @@ import phylonet.tree.model.sti.STITree;
 public class ConfigValues {
     public static final String TRIPLETS_SODA_PATH = "./triplets.soda2103";
     public static String INPUT_MODE = "wqrt"; //wqrt, gene-trees
-    public static String INPUT_FILE_NAME = "input/37_taxa.wqrts"; //"input/37_taxa.wqrts";
+    public static String INPUT_FILE_NAME = "input/48_taxa_1x_50_500.wqrt"; //"input/37_taxa.wqrts";
     public static String OUTPUT_FILE_NAME = "output/output-gt.tree";
     public static final String HDFS = "hdfs://localhost:9000";
     // public static final String HDFS = "hdfs://ms0819.utah.cloudlab.us:9000";
     public static final String HDFS_USER = "himel";
     public static final String HDFS_PATH = HDFS + "/user/" + HDFS_USER + "/";
-    public static final int TAXA_PER_PARTITION = 10;
+    public static final int TAXA_PER_PARTITION = 35;
     public static final int NUM_WORKER = 4;
 
     public static SparkSession SPARK = getSPARK();
