@@ -126,7 +126,7 @@ public class wQFMRunner implements Serializable {
             if (count % 100000 == 0) System.out.println("Task at count: " + count);
             count++;
         }
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>> Task Complete, Elapsed time: " + (System.currentTimeMillis() - time_1));
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>> Task Complete, Elapsed time: " + (System.currentTimeMillis() - time_1 + " ms"));
         return String.valueOf(dummy.size());
     }
 
@@ -150,9 +150,9 @@ public class wQFMRunner implements Serializable {
             String final_tree = runner.recursiveDivideAndConquer(customDS, level, initialTable); //customDS will have (P, Q, Q_relevant etc) all the params needed.
             final_tree_decoded = wqfm.utils.IOHandler.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);
             System.out.println(final_tree_decoded);
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>> Task Complete, Elapsed time: " + (System.currentTimeMillis() - time_1));
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>> Task Complete, Elapsed time: " + (System.currentTimeMillis() - time_1 + " ms"));
         } catch (Exception e) {
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>> Task Complete, Elapsed time: " + (System.currentTimeMillis() - time_1));
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>> Task Complete, Elapsed time: " + (System.currentTimeMillis() - time_1 + " ms"));
             throw e;
         }
         System.out.println("\n\n[L 49.] Distributer: final tree return");

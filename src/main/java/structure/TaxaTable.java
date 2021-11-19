@@ -77,7 +77,7 @@ public class TaxaTable implements Serializable {
     //     }
     // }
 
-    private static int countTaxonInPartition(ArrayList<String> taxalist, ArrayList<String> partition) {
+    public static int countTaxonInPartition(ArrayList<String> taxalist, ArrayList<String> partition) {
         int count = 0;
         for (String taxon : taxalist) {
             if (partition.contains(taxon)) count++;
@@ -85,7 +85,7 @@ public class TaxaTable implements Serializable {
         return count;
     }
 
-    private static void updatePartition(ArrayList<String> taxalist, ArrayList<String> partition) {
+    public static void updatePartition(ArrayList<String> taxalist, ArrayList<String> partition) {
         for (String taxon : taxalist) {
             if (!partition.contains(taxon)) partition.add(taxon);
         }
