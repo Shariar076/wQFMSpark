@@ -1,12 +1,15 @@
 package main;
 
 import algorithm.Distributer;
-import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.sql.SparkSession;
+import phylonet.cmdline.tool.InferStCmdLineTool;
+import phylonet.coalescent.MDCInference_DP;
+import phylonet.tree.io.ParseException;
+import phylonet.tree.model.sti.STITree;
 import properties.ConfigValues;
 import properties.DefaultConfigs;
 import util.WQGenerator;
+
+import java.io.IOException;
 
 /**
  * Hello world!
@@ -43,6 +46,17 @@ public class App {
         }
 
         String treeOutput = App.runwQFMSpark(ConfigValues.INPUT_FILE_NAME, ConfigValues.OUTPUT_FILE_NAME); // run wQFM
+    }
+
+    public void runCliTools(){
+        new InferStCmdLineTool().printUsage(System.out);
+        MDCInference_DP.main(new String[]{"-i", "input/37_taxon_all_gt.tre", "-o", "input/MDCInference_DP_ST.tre"});
+        try {
+            STITree tree = new STITree("(GAL:0,((ORN:0,(MAC:0,MON:0):5):17,(((CHO:0,DAS:0):1,(ECH:0,(PRO:0,LOX:0):3):3):21,(((ERI:0,SOR:0):15,((EQU:0,(FEL:0,CAN:0):2):15,((MYO:0,PTE:0):4,(VIC:0,(SUS:0,(BOS:0,TUR:0):8):14):3):26):25):4,((TUP:0,((ORY:0,OCH:0):3,((CAV:0,SPE:0):20,(DIP:0,(RAT:0,MUS:0):1):15):16):15):27,((TAR:0,(OTO:0,MIC:0):3):23,(CAL:0,(NEW:0,(PON:0,(GOR:0,(HOM:0,PAN:0):10):3):4):15):14):11):17):23):21):0):0;");
+            System.out.println(tree.getNodeCount());
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

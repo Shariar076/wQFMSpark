@@ -5,6 +5,7 @@ import org.apache.spark.sql.api.java.UDF1;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 import phylonet.tree.io.ParseException;
+import phylonet.tree.model.Tree;
 import phylonet.tree.model.sti.STINode;
 import phylonet.tree.model.sti.STITree;
 import properties.ConfigValues;
@@ -21,10 +22,7 @@ import structure.TaxaTable;
 import structure.TreeTable;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.apache.spark.sql.functions.*;
 
@@ -158,6 +156,43 @@ public class Distributer {
         return partitionList;
     }
 
+    public static ArrayList<ArrayList<String>> getTaxaPartitionsUnrooted(String treeStr) throws Exception {
+        ArrayList<ArrayList<String>> partitionList = new ArrayList<>();
+        ArrayList<String> addedTaxa = new ArrayList<>();
+        STITree tree = null;
+        List<Tree> rootedTrees = null;
+        try {
+            rootedTrees = new STITree(treeStr).getAllRootingTrees();
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        Iterator<Tree> treeIterator = rootedTrees.iterator();
+        boolean done = false;
+        while (treeIterator.hasNext() && !done) {
+            tree = (STITree) treeIterator.next();
+            for (int i = 0; i < tree.getNodeCount(); i++) {
+                STINode thisNode = tree.getNode(i);
+                System.out.println(thisNode.getLeaves());
+                if (thisNode.getLeafCount() <= ConfigValues.TAXA_PER_PARTITION && thisNode.getLeafCount() >= 4) {
+                    List<String> leaves = TreeReducer.iteratorToList(thisNode.getLeaves().iterator());
+                    if (!addedTaxa.containsAll(leaves)) {
+                        partitionList.add(new ArrayList<>(leaves));
+                        addedTaxa.addAll(leaves);
+                    }
+                }
+                if (addedTaxa.size() == tree.getLeafCount()) {
+                    done = true;
+                    break;
+                }
+                System.out.println(partitionList);
+            }
+        }
+        if (addedTaxa.size() != tree.getLeafCount()) {
+            throw new Exception("Please increase Taxa per partition");
+        }
+        return partitionList;
+    }
+
     public static String buildReferenceTree(Dataset<Row> sortedWqDf, int taxaCount) {
         System.out.println("================= Constructing Reference tree =================");
         List<Row> qtWeights = sortedWqDf.select("count").distinct().orderBy(desc("count")).collectAsList();
@@ -206,6 +241,7 @@ public class Distributer {
         }
         return quartetsList;
     }
+
     public static String buildReferenceTree2(Dataset<Row> sortedWqDf, int taxaCount) {
         System.out.println("================= Constructing Reference tree =================");
         List<Row> qtWeights = sortedWqDf.select("count").distinct().orderBy(desc("count")).collectAsList();
@@ -227,7 +263,16 @@ public class Distributer {
         return refTree;
     }
 
-    public static Dataset<Row> tagQuartetByGroup(Dataset<Row> initialDf, Map<String, ArrayList<String>> taxaPartitionMap){
+    public static String readReferenceTree() {
+        System.out.println("================= Reading Reference tree =================");
+        Dataset<Row> df = ConfigValues.SPARK.read().text(ConfigValues.HDFS_PATH + ConfigValues.REFERENCE_FILE_NAME);
+        String rawTree = df.first().getAs("value");
+        String refTree = rawTree.split(";")[0] + ";";
+        System.out.println("Final Reference Tree:" + refTree);
+        return refTree;
+    }
+
+    public static Dataset<Row> tagQuartetByGroup(Dataset<Row> initialDf, Map<String, ArrayList<String>> taxaPartitionMap) {
         UserDefinedFunction tagger = udf(
                 (String qtStr) -> TaxaPartition.getTag(qtStr, taxaPartitionMap), DataTypes.StringType
         );
@@ -237,7 +282,7 @@ public class Distributer {
         return taggedQtDf;
     }
 
-    public static String createInterPartitionTree(Dataset<Row> taggedQtDf, Map<String, ArrayList<String>> taxaPartitionMap){
+    public static String createInterPartitionTree(Dataset<Row> taggedQtDf, Map<String, ArrayList<String>> taxaPartitionMap) {
         String interPartitionTree = null;
         if (taxaPartitionMap.size() > 3) { // at least 4 partition is needed for constructing quartets
             UserDefinedFunction isQuartet = udf(
