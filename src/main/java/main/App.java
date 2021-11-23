@@ -31,11 +31,19 @@ public class App {
         long seconds = (time_del / 1000) % 60;
         System.out.format("\nTime taken = %d ms ==> %d minutes and %d seconds.\n", time_del, minutes, seconds);
         System.out.println("================= **** ======================== **** ====================");
-
+        wqfm.utils.IOHandler.writeToFile(tree, ConfigValues.OUTPUT_FILE_NAME);
         return tree;
     }
 
-    public static void initializeAndRun(){
+    public static void initializeAndRun(String[] args){
+        System.out.println("Input file :"+args[0]);
+        System.out.println("Output file :"+args[1]);
+        System.out.println("Reference file :"+args[2]);
+        System.out.println("Number of taxa per partition :"+args[3]);
+        ConfigValues.INPUT_FILE_NAME = args[0];
+        ConfigValues.OUTPUT_FILE_NAME = args[1];
+        ConfigValues.REFERENCE_FILE_NAME = args[2];
+        ConfigValues.TAXA_PER_PARTITION = Integer.parseInt(args[3]);
         if (ConfigValues.INPUT_MODE.equals("gene-trees")) {
             System.out.println("Input file consists of gene trees ... generating weighted quartets to file: " + DefaultConfigs.INPUT_FILE_NAME_WQRTS_DEFAULT);
             // IOHandler.generateWeightedQuartets(ConfigValues.INPUT_FILE_NAME, ConfigValues.OUTPUT_FILE_NAME);
@@ -70,6 +78,6 @@ public class App {
         // jsc.setLogLevel("WARN");
         // SparkSession spark = SparkSession.builder().config(jsc.getConf()).getOrCreate();
         // SQLContext sqlContext = new SQLContext(jsc); //deprecated
-        initializeAndRun();
+        initializeAndRun(args);
     }
 }

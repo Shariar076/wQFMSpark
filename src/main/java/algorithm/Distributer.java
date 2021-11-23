@@ -320,7 +320,7 @@ public class Distributer {
 
     public static String partitionDataAndRun(Dataset<Row> sortedWqDf, TaxaTable taxaTable) {
         long time_1 = System.currentTimeMillis();
-        String refTree = buildReferenceTree2(sortedWqDf, taxaTable.TAXA_COUNT);
+        String refTree = readReferenceTree(); //buildReferenceTree2(sortedWqDf, taxaTable.TAXA_COUNT);
         System.out.println("Reference Tree Construction Complete, Elapsed time: " + (System.currentTimeMillis() - time_1 + " ms"));
         try {
             taxaTable.TAXA_PARTITION_LIST = getTaxaPartitions(refTree);
